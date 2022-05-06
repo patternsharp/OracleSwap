@@ -164,4 +164,4 @@ const SentryWebpackPluginOptions = {
 module.exports = withSentryConfig(withPWA(withBundleAnalyzer(nextConfig)), SentryWebpackPluginOptions)
 
 // Don't delete this console log, useful to see the config in Vercel deployments
-console.log('next.config.js', JSON.stringify(module.exports, null, 2))
+// console.log('next.config.js', JSON.stringify(module.exports, null, 2))
