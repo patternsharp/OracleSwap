@@ -107,7 +107,7 @@ const useMenu: UseMenu = () => {
     let nftMenu: MenuItem = {
       key: 'nft',
       title: i18n._(t`NFT`),
-      link: 'https://nft.oracleswap.io',
+      link: 'https://comingsoon.oracleswap.io/',
       external: true,
       icon: <CollectionIcon width={20} />,
     }
@@ -158,26 +158,26 @@ const useMenu: UseMenu = () => {
         icon: <GlobeIcon width={20} />,
       })
 
-    if (featureEnabled(Feature.LIQUIDITY_MINING, chainId)) {
-      const farmItems = {
-        key: 'farm',
-        title: i18n._(t`Farm`),
-        icon: <SwitchVerticalIcon width={20} className="rotate-90 filter" />,
-        items: [
-          {
-            key: 'your-farms',
-            title: i18n._(t`Your Farms`),
-            link: '/farm?filter=portfolio',
-          },
-          {
-            key: 'all-farms',
-            title: i18n._(t`All Farms`),
-            link: '/farm',
-          },
-        ],
-      }
-      mainItems.push(farmItems)
-    }
+    // if (featureEnabled(Feature.LIQUIDITY_MINING, chainId)) {
+    //   const farmItems = {
+    //     key: 'farm',
+    //     title: i18n._(t`Farm`),
+    //     icon: <SwitchVerticalIcon width={20} className="rotate-90 filter" />,
+    //     items: [
+    //       {
+    //         key: 'your-farms',
+    //         title: i18n._(t`Your Farms`),
+    //         link: '/farm?filter=portfolio',
+    //       },
+    //       {
+    //         key: 'all-farms',
+    //         title: i18n._(t`All Farms`),
+    //         link: '/farm',
+    //       },
+    //     ],
+    //   }
+    //   mainItems.push(farmItems)
+    // }
 
     mainItems.push(nftMenu)
     // if (featureEnabled(Feature.KASHI, chainId)) {

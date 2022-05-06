@@ -15,6 +15,7 @@ import LogoImage from '../../../public/icons/icon-72x72.png'
 import { NavigationItem } from './NavigationItem'
 import { XIcon } from '@heroicons/react/outline'
 import Typography from 'app/components/Typography'
+import ExternalLink from '../ExternalLink'
 
 const Mobile: FC = () => {
   const menu = useMenu()
@@ -52,9 +53,9 @@ const Mobile: FC = () => {
             <MenuIcon width={28} className="text-white cursor-pointer hover:text-white" onClick={() => setOpen(true)} />
           </div>
           <div className="flex items-center mr-1">
-            <Link href="/swap" passHref={true}>
+            <ExternalLink href="https://www.oracleswap.io">
               <img src={LogoImage.src} className={'w-[30px] h-[30px]'} alt="Logo" />
-            </Link>
+            </ExternalLink>
           </div>
         </div>
         <Transition.Root show={open} as={Fragment}>

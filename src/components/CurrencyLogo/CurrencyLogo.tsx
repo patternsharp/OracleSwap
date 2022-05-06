@@ -1,4 +1,4 @@
-import { ChainId, Currency, WNATIVE } from '@sushiswap/core-sdk'
+import { ChainId, Currency, Token, WNATIVE } from '@sushiswap/core-sdk'
 import useHttpLocations from 'app/hooks/useHttpLocations'
 import { WrappedTokenInfo } from 'app/state/lists/wrappedTokenInfo'
 import React, { FunctionComponent, useMemo } from 'react'
@@ -7,8 +7,8 @@ import React, { FunctionComponent, useMemo } from 'react'
 import Logo, { UNKNOWN_ICON } from '../Logo'
 import CAND from '../../../public/CAND.png'
 import CNYX from '../../../public/CNYX.png'
-import dFLR from '../../../public/dFLR.png'
-import NFTP from '../../../public/NFTP.png'
+import HS from '../../../public/HS.png'
+import COOT from '../../../public/COOT.png'
 import ORACLE from '../../../public/ORACLE.png'
 import SFIN from '../../../public/SFIN.png'
 import SGB from '../../../public/SGB.png'
@@ -161,6 +161,49 @@ const CurrencyLogo: FunctionComponent<CurrencyLogoProps> = ({ currency, size = '
     }
   }
 
+  if (currency instanceof Token) {
+    if (currency.chainId === ChainId.SGB) {
+      if (currency.symbol === 'ORACLE') {
+        return <img src={ORACLE.src} width={size} height={size} className={className} />
+      }
+
+      if (currency.symbol === 'CAND') {
+        return <img src={CAND.src} width={size} height={size} className={className} />
+      }
+      if (currency.symbol === 'CNYX') {
+        return <img src={CNYX.src} width={size} height={size} className={className} />
+      }
+      if (currency.symbol === 'EXFI') {
+        return <img src={EXFI.src} width={size} height={size} className={className} />
+      }
+      if (currency.symbol === 'HS') {
+        return <img src={HS.src} width={size} height={size} className={className} />
+      }
+      if (currency.symbol === 'COOT') {
+        return <img src={COOT.src} width={size} height={size} className={className} />
+      }
+      if (currency.symbol === 'ORACLE') {
+        return <img src={ORACLE.src} width={size} height={size} className={className} />
+      }
+      if (currency.symbol === 'SFIN') {
+        return <img src={SFIN.src} width={size} height={size} className={className} />
+      }
+      if (currency.symbol === 'SGB') {
+        return <img src={SGB.src} width={size} height={size} className={className} />
+      }
+      if (currency.symbol === 'WSGB') {
+        return <img src={WSGB.src} width={size} height={size} className={className} />
+      }
+      if (currency.symbol === 'XFIN') {
+        return <img src={XFIN.src} width={size} height={size} className={className} />
+      }
+
+      if (currency.symbol === 'xORACLE') {
+        return <img src={xORACLE.src} width={size} height={size} className={className} />
+      }
+    }
+  }
+
   if (currency instanceof WrappedTokenInfo) {
     if (currency.tokenInfo.chainId === ChainId.SGB) {
       if (currency.tokenInfo.symbol === 'CAND') {
@@ -172,11 +215,11 @@ const CurrencyLogo: FunctionComponent<CurrencyLogoProps> = ({ currency, size = '
       if (currency.tokenInfo.symbol === 'EXFI') {
         return <img src={EXFI.src} width={size} height={size} className={className} />
       }
-      if (currency.tokenInfo.symbol === 'dFLR') {
-        return <img src={dFLR.src} width={size} height={size} className={className} />
+      if (currency.tokenInfo.symbol === 'HS') {
+        return <img src={HS.src} width={size} height={size} className={className} />
       }
-      if (currency.tokenInfo.symbol === 'NFTP') {
-        return <img src={NFTP.src} width={size} height={size} className={className} />
+      if (currency.tokenInfo.symbol === 'COOT') {
+        return <img src={COOT.src} width={size} height={size} className={className} />
       }
       if (currency.tokenInfo.symbol === 'ORACLE') {
         return <img src={ORACLE.src} width={size} height={size} className={className} />

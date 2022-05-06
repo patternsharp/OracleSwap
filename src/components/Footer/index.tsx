@@ -6,22 +6,30 @@ import { DiscordIcon, TwitterIcon, TelegramIcon, YoutubeIcon } from 'app/compone
 // import { featureEnabled } from 'app/functions'
 import { useActiveWeb3React } from 'app/services/web3'
 // import Image from 'next/image'
-// import Link from 'next/link'
+import Link from 'next/link'
 import React from 'react'
 
 import Container from '../Container'
 
 import LogoImage from '../../../public/songbird.png'
-
+import useIsCoinbaseWallet from 'app/hooks/useIsCoinbaseWallet'
+import { useNetworkModalToggle } from 'app/state/application/hooks'
+// import Image from 'next/image'
+// import SGB from '../../../public/SGB.png'
+// import { ChainId } from '@sushiswap/core-sdk'
+// import { NETWORK_ICON } from 'app/config/networks'
 const Footer = () => {
-  const { chainId } = useActiveWeb3React()
   const { i18n } = useLingui()
+  const { library } = useActiveWeb3React()
+  const isCoinbaseWallet = useIsCoinbaseWallet()
+
+  const toggleNetworkModal = useNetworkModalToggle()
 
   return (
     <div className="z-10 w-full py-20 mt-20">
       <Container maxWidth="7xl" className="px-6 mx-auto">
-        <div className="grid grid-cols-2 gap-10 pt-8 border-t xs:px-6 border-dark-900">
-          <div className="flex flex-col gap-3">
+        <div className="grid grid-cols-2 gap-2 pt-8 border-t xs:px-6 border-dark-900 sm:gap-3">
+          <div className="flex flex-col col-span-2 gap-3 sm:col-span-1">
             {/* <div className="flex items-center justify-start gap-2">
               <div className="">
                 <Image src="https://app.sushi.com/images/logo.svg" alt="OracleSwap logo" width="28px" height="28px" />
@@ -48,8 +56,40 @@ const Footer = () => {
                 <DiscordIcon width={16} className="text-low-emphesis" />
               </a>
 
+              <Link href="/portfolio" passHref={true}>
+                <a className="text-low-emphesis ">
+                  {/*@ts-ignore*/}
+                  {i18n._(t`Portfolio`)}
+                </a>
+              </Link>
+
+              {library && (library.provider.isMetaMask || isCoinbaseWallet) && (
+                <div
+                  className="flex items-center text-sm  text-low-emphesis cursor-pointer pointer-events-auto select-none   whitespace-nowrap"
+                  onClick={() => toggleNetworkModal()}
+                >
+                  {i18n._(t`Network`)}
+                  {/* <div className="grid items-center grid-flow-col  justify-center bg-dark-1000 h-[36px] w-[36px] text-sm rounded pointer-events-auto auto-cols-max text-secondary"> */}
+                  {/*@ts-ignore TYPE NEEDS FIXING*/}
+                  {/* {chainId === ChainId.SGB ? (
+                      <img src={SGB.src} className="rounded-md" width="22px" height="22px" />
+                    ) : (
+                      <Image
+                        // @ts-ignore TYPE NEEDS FIXING
+                        src={NETWORK_ICON[key]}
+                        alt="Switch Network"
+                        className="rounded-md"
+                        width="22px"
+                        height="22px"
+                      />
+                    )} */}
+
+                  {/* </div> */}
+                </div>
+              )}
+
               <a href="https://help.oracleswap.io" target="_blank" rel="noreferrer">
-                <span className="text-low-emphesis">{i18n._(t`Help`)}</span>
+                <span className="text-low-emphesis">{i18n._(t`Docs`)}</span>
               </a>
             </div>
           </div>
@@ -154,7 +194,7 @@ const Footer = () => {
             </a>
           </div> */}
 
-          <div className="flex flex-row justify-end gap-1 text-right">
+          <div className="flex flex-row justify-start gap-1 text-right sm:justify-end">
             <div className="flex items-center ">
               <a href="https://flare.xyz/" target="_blank" rel="noreferrer">
                 <img src={LogoImage.src} className={'h-[50px]'} alt="Logo" />

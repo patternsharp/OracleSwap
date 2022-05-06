@@ -21,22 +21,19 @@ export default function LiquidityPrice({
   className?: string
 }): JSX.Element {
   const { i18n } = useLingui()
+
   return (
     <div className={classNames('flex justify-between items-center rounded py-2 px-4 bg-dark-900', className)}>
       <div className="flex flex-col w-full text-secondary">
         <Typography variant="sm" className="select-none">
-          {i18n._(
-            t`${price?.toSignificant(6) ?? '-'} ${currencies[Field.CURRENCY_B]?.symbol} per ${
-              currencies[Field.CURRENCY_A]?.symbol
-            }`
-          )}
+          {`${price?.toSignificant(6) ?? '-'} ${currencies[Field.CURRENCY_B]?.symbol} ` +
+            i18n._(t`per`) +
+            ` ${currencies[Field.CURRENCY_A]?.symbol}`}
         </Typography>
         <Typography variant="sm" className="select-none">
-          {i18n._(
-            t`${price?.invert()?.toSignificant(6) ?? '-'} ${currencies[Field.CURRENCY_A]?.symbol} per ${
-              currencies[Field.CURRENCY_B]?.symbol
-            }`
-          )}
+          {`${price?.invert()?.toSignificant(6) ?? '-'} ${currencies[Field.CURRENCY_A]?.symbol} ` +
+            i18n._(t`per`) +
+            ` ${currencies[Field.CURRENCY_B]?.symbol}`}
         </Typography>
       </div>
 

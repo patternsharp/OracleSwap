@@ -188,11 +188,11 @@ export default function Add() {
           setAttemptingTxn(false)
 
           addTransaction(response, {
-            summary: i18n._(
-              t`Add ${parsedAmounts[Field.CURRENCY_A]?.toSignificant(3)} ${
-                currencies[Field.CURRENCY_A]?.symbol
-              } and ${parsedAmounts[Field.CURRENCY_B]?.toSignificant(3)} ${currencies[Field.CURRENCY_B]?.symbol}`
-            ),
+            summary:
+              i18n._(t`Add `) +
+              `${parsedAmounts[Field.CURRENCY_A]?.toSignificant(3)} ${currencies[Field.CURRENCY_A]?.symbol}` +
+              i18n._(t` and `) +
+              `${parsedAmounts[Field.CURRENCY_B]?.toSignificant(3)} ${currencies[Field.CURRENCY_B]?.symbol}`,
           })
 
           setTxHash(response.hash)
@@ -256,11 +256,11 @@ export default function Add() {
     />
   )
 
-  const pendingText = i18n._(
-    t`Supplying ${parsedAmounts[Field.CURRENCY_A]?.toSignificant(6)} ${
-      currencies[Field.CURRENCY_A]?.symbol
-    } and ${parsedAmounts[Field.CURRENCY_B]?.toSignificant(6)} ${currencies[Field.CURRENCY_B]?.symbol}`
-  )
+  const pendingText =
+    i18n._(t`Supplying `) +
+    `${parsedAmounts[Field.CURRENCY_A]?.toSignificant(6)} ${currencies[Field.CURRENCY_A]?.symbol}` +
+    i18n._(t` and `) +
+    `${parsedAmounts[Field.CURRENCY_B]?.toSignificant(6)} ${currencies[Field.CURRENCY_B]?.symbol}`
 
   const handleCurrencyASelect = useCallback(
     (currencyA: Currency) => {

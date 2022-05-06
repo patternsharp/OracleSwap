@@ -16,6 +16,7 @@ import { NavigationItem } from './NavigationItem'
 import LogoImage from '../../../public/icons/icon-72x72.png'
 import { XIcon } from '@heroicons/react/outline'
 import { useDexWarningOpen, useToggleDexWarning } from 'app/state/application/hooks'
+import ExternalLink from '../ExternalLink'
 const HEADER_HEIGHT = 64
 
 const Desktop: FC = () => {
@@ -57,9 +58,12 @@ const Desktop: FC = () => {
             <div className="flex items-center justify-between gap-4 px-6">
               <div className="flex gap-4">
                 <div className="flex items-center mr-4">
-                  <img src={LogoImage.src} className={'w-[30px] h-[30px]'} alt="Logo" />
-                  {/* <Image src="/logo.png" alt="OracleSwap logo" width="24px" height="24px" /> */}
+                  <ExternalLink href="https://www.oracleswap.io">
+                    <img src={LogoImage.src} className={'w-[30px] h-[30px]'} alt="Logo" />
+                    {/* <Image src="/logo.png" alt="OracleSwap logo" width="24px" height="24px" /> */}
+                  </ExternalLink>
                 </div>
+
                 {menu.map((node) => {
                   return <NavigationItem node={node} key={node.key} />
                 })}

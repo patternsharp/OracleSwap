@@ -3,7 +3,7 @@
 import { Head, Html, Main, NextScript } from 'next/document'
 
 const APP_NAME = 'OracleSwap'
-const APP_DESCRIPTION = 'Swap, yield, lend, borrow, leverage, limit, launch all on one community driven ecosystem'
+const APP_DESCRIPTION = 'Oracle Swap | The premiere Decentralized Exchange on the Songbird Network.'
 
 export default function Document() {
   return (
