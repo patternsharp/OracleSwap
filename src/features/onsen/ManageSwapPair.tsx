@@ -17,7 +17,7 @@ const ManageSwapPair = ({ farm }) => {
   const [toggle, setToggle] = useState(true)
 
   const token0 = useCurrency(farm.pair.token0.id)
-  const token1 = useCurrency(farm.pair.token1.id)
+  const token1 = useCurrency(farm.pair.token1?.id)
 
   const header = useMemo(
     () => (

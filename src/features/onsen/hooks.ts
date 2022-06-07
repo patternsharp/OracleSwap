@@ -1,15 +1,8 @@
 import { Zero } from '@ethersproject/constants'
 import { Contract } from '@ethersproject/contracts'
-import {
-  ChainId,
-  CurrencyAmount,
-  JSBI,
-  MASTERCHEF_ADDRESS,
-  MASTERCHEF_V2_ADDRESS,
-  MINICHEF_ADDRESS,
-  SUSHI,
-} from '@sushiswap/core-sdk'
+import { ChainId, CurrencyAmount, JSBI, MASTERCHEF_V2_ADDRESS, MINICHEF_ADDRESS, SUSHI } from '@sushiswap/core-sdk'
 import { OLD_FARMS } from 'app/config/farms'
+import { MASTERCHEF_ADDRESS } from 'app/constants'
 import {
   useMasterChefContract,
   useMasterChefV2Contract,
@@ -95,7 +88,7 @@ export function usePendingSushi(farm) {
     return [String(farm.id), String(account)]
   }, [farm, account])
 
-  const result = useSingleCallResult(args ? contract : null, 'pendingOracle', args)?.result
+  const result = useSingleCallResult(args ? contract : null, 'pendingPro', args)?.result
 
   const value = result?.[0]
 
@@ -140,7 +133,7 @@ export function useChefPositions(contract?: Contract | null, rewarder?: Contract
   }, [numberOfPools, account])
 
   // @ts-ignore TYPE NEEDS FIXING
-  const pendingSushi = useSingleContractMultipleData(args ? contract : null, 'pendingOracle', args)
+  const pendingSushi = useSingleContractMultipleData(args ? contract : null, 'pendingPro', args)
 
   // @ts-ignore TYPE NEEDS FIXING
   const userInfo = useSingleContractMultipleData(args ? contract : null, 'userInfo', args)

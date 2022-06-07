@@ -18,17 +18,20 @@ interface FarmListItem {
 // @ts-ignore TYPE NEEDS FIXING
 const FarmListItem: FC<FarmListItem> = ({ farm, onClick }) => {
   const { i18n } = useLingui()
-  const token0 = useCurrency(farm.pair.token0.id) ?? undefined
-  const token1 = useCurrency(farm.pair.token1.id) ?? undefined
+  const token0 = useCurrency(farm.pair.token0?.id) ?? undefined
+  const token1 = useCurrency(farm.pair.token1?.id) ?? undefined
 
   return (
     <div className={classNames(TABLE_TBODY_TR_CLASSNAME, 'grid grid-cols-4')} onClick={onClick}>
       <div className={classNames('flex gap-2', TABLE_TBODY_TD_CLASSNAME(0, 4))}>
         {token0 && token1 && <CurrencyLogoArray currencies={[token0, token1]} dense size={32} />}
+
+        {token0 && !token1 && <CurrencyLogo currency={token0} size={32} />}
+
         <div className="flex flex-col items-start">
           <Typography weight={700} className="flex gap-1 text-high-emphesis">
             {farm?.pair?.token0?.symbol}
-            <span className="text-low-emphesis">/</span>
+            {farm?.pair?.token1 && <span className="text-low-emphesis">/</span>}
             {farm?.pair?.token1?.symbol}
           </Typography>
           {farm?.pair?.type === PairType.SWAP && (
@@ -45,7 +48,7 @@ const FarmListItem: FC<FarmListItem> = ({ farm, onClick }) => {
       </div>
       <div className={TABLE_TBODY_TD_CLASSNAME(1, 4)}>
         <Typography weight={700} className="text-high-emphesis">
-          {formatNumber(farm.tvl, true)}
+          {formatNumber(farm.tvl, false)}
         </Typography>
       </div>
       <div className={classNames('flex flex-col !items-end !justify-center', TABLE_TBODY_TD_CLASSNAME(2, 4))}>
@@ -59,7 +62,7 @@ const FarmListItem: FC<FarmListItem> = ({ farm, onClick }) => {
             component="span"
           >
             {formatNumber(reward.rewardPerDay)}
-            <CurrencyLogo currency={reward.currency} size={16} />
+            <CurrencyLogo currency={reward.currency} size={32} />
           </Typography>
         ))}
       </div>

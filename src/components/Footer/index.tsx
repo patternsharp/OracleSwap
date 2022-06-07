@@ -65,7 +65,7 @@ const Footer = () => {
 
               {library && (library.provider.isMetaMask || isCoinbaseWallet) && (
                 <div
-                  className="flex items-center text-sm  text-low-emphesis cursor-pointer pointer-events-auto select-none   whitespace-nowrap"
+                  className="flex items-center text-sm cursor-pointer pointer-events-auto select-none text-low-emphesis whitespace-nowrap"
                   onClick={() => toggleNetworkModal()}
                 >
                   {i18n._(t`Network`)}
@@ -88,7 +88,7 @@ const Footer = () => {
                 </div>
               )}
 
-              <a href="https://help.oracleswap.io" target="_blank" rel="noreferrer">
+              <a href="https://docs.oracleswap.io/" target="_blank" rel="noreferrer">
                 <span className="text-low-emphesis">{i18n._(t`Docs`)}</span>
               </a>
             </div>

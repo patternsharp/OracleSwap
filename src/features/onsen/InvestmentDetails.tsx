@@ -41,15 +41,15 @@ const InvestmentDetails = ({ farm }) => {
   const addTransaction = useTransactionAdder()
   const kashiPair = useKashiPair(farm.pair.id)
   const [pendingTx, setPendingTx] = useState(false)
-  const token0 = useCurrency(farm.pair.token0.id)
-  const token1 = useCurrency(farm.pair.token1.id)
+  const token0 = useCurrency(farm.pair.token0?.id)
+  const token1 = useCurrency(farm.pair.token1?.id)
 
   const liquidityToken = new Token(
     // @ts-ignore TYPE NEEDS FIXING
     chainId,
     getAddress(farm.pair.id),
     farm.pair.type === PairType.KASHI ? Number(farm.pair.asset.decimals) : 18,
-    farm.pair.symbol ?? farm.pair.type === PairType.KASHI ? 'KMP' : 'OLP',
+    farm.pair.type === PairType.SINGLE ? farm.pair.symbol : farm.pair.type === PairType.KASHI ? 'KMP' : 'OLP',
     farm.pair.name
   )
 
@@ -100,7 +100,7 @@ const InvestmentDetails = ({ farm }) => {
     try {
       const tx = await harvest(farm.id)
       addTransaction(tx, {
-        summary: i18n._(t`Harvest ${farm.pair.token0.name}/${farm.pair.token1.name}`),
+        summary: i18n._(t`Harvest ${farm.pair.token0.name}/${farm.pair.token1?.name}`),
       })
     } catch (error) {
       console.error(error)
@@ -108,6 +108,7 @@ const InvestmentDetails = ({ farm }) => {
     setPendingTx(false)
   }
 
+  console.log('investmentDetail:', farm?.rewards)
   return (
     <>
       <HeadlessUiModal.BorderedContent className="flex flex-col gap-2 bg-dark-1000/40">
@@ -116,9 +117,11 @@ const InvestmentDetails = ({ farm }) => {
             {i18n._(t`Your Deposits`)}
           </Typography>
           <Typography variant="xs" className="flex gap-1 text-secondary">
-            {formatNumber(stakedAmount?.toSignificant(6) ?? 0)} {farm.pair.token0.symbol}-{farm.pair.token1.symbol}
+            {formatNumber(stakedAmount?.toSignificant(6) ?? 0)} {farm.pair.token0.symbol}
+            {farm.pair.token1 && '-'}
+            {farm.pair.token1?.symbol}
             <Typography variant="xs" weight={700} className="text-high-emphesis" component="span">
-              {formatNumber(positionFiatValue?.toSignificant(6) ?? 0, true)}
+              {/* {formatNumber(positionFiatValue?.toSignificant(6) ?? 0, true)} */}
             </Typography>
           </Typography>
         </div>
@@ -159,7 +162,7 @@ const InvestmentDetails = ({ farm }) => {
             {i18n._(t`Your Rewards`)}
           </Typography>
           <Typography variant="xs" weight={700} className="text-high-emphesis" component="span">
-            {formatNumber(rewardValue, true)}
+            {/* {formatNumber(rewardValue, true)} */}
           </Typography>
         </div>
 
@@ -167,7 +170,7 @@ const InvestmentDetails = ({ farm }) => {
         {farm?.rewards?.map((reward, i) => {
           return (
             <div className="flex items-center gap-2" key={i}>
-              <CurrencyLogo currency={reward.currency} size={18} />
+              <CurrencyLogo currency={reward.currency} size={30} />
               {!secondaryRewardOnly ? (
                 <>
                   {i === 0 && (

@@ -19,6 +19,12 @@ import xORACLE from '../../../public/xORACLE.png'
 
 import EXFI from '../../../public/EXFI.png'
 
+import DOOD from '../../../public/DOOD.png'
+
+import PRO from '../../../public/PRO.png'
+
+// import PRO_Logo3Gold from '../../../public/PRO_Logo3Gold.png'
+
 const BLOCKCHAIN = {
   [ChainId.ETHEREUM]: 'ethereum',
   [ChainId.BSC]: 'binance',
@@ -159,6 +165,10 @@ const CurrencyLogo: FunctionComponent<CurrencyLogoProps> = ({ currency, size = '
     if (currency.symbol === 'ORACLE') {
       return <img src={ORACLE.src} width={size} height={size} className={className} />
     }
+
+    if (currency.symbol === 'PRO') {
+      return <img src={PRO.src} width={size} height={size} className={className} />
+    }
   }
 
   if (currency instanceof Token) {
@@ -239,6 +249,14 @@ const CurrencyLogo: FunctionComponent<CurrencyLogoProps> = ({ currency, size = '
 
       if (currency.tokenInfo.symbol === 'xORACLE') {
         return <img src={xORACLE.src} width={size} height={size} className={className} />
+      }
+
+      if (currency.tokenInfo.symbol === 'PRO') {
+        return <img src={PRO.src} width={size} height={size} className={className} />
+      }
+
+      if (currency.tokenInfo.symbol === 'DOOD') {
+        return <img src={DOOD.src} width={size} height={size} className={className} />
       }
 
       return (

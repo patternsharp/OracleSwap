@@ -6,7 +6,7 @@ import ToggleButtonGroup from 'app/components/ToggleButton'
 import { selectOnsen, setOnsenModalView } from 'app/features/onsen/onsenSlice'
 import { classNames } from 'app/functions'
 import { useAppDispatch, useAppSelector } from 'app/state/hooks'
-import React, { createContext, ReactNode, useContext, useMemo, useState } from 'react'
+import React, { createContext, ReactNode, useContext, useEffect, useMemo, useState } from 'react'
 
 import { OnsenModalView, PairType } from './enum'
 import InformationDisclosure from './InformationDisclosure'
@@ -30,6 +30,13 @@ const FarmListItemDetails = ({ farm, onDismiss }) => {
   const { view } = useAppSelector(selectOnsen)
   const dispatch = useAppDispatch()
   const [content, setContent] = useState<ReactNode>()
+  useEffect(() => {
+    if (farm.pair.type === PairType.SINGLE) {
+      dispatch(setOnsenModalView(OnsenModalView.Staking))
+    }
+  }, [])
+
+  console.log('FarmListItemDetails', farm, PairType.SINGLE)
 
   return (
     <Context.Provider value={useMemo(() => ({ content, setContent }), [content, setContent])}>
@@ -55,9 +62,12 @@ const FarmListItemDetails = ({ farm, onDismiss }) => {
             onChange={(view: OnsenModalView) => dispatch(setOnsenModalView(view))}
             variant="filled"
           >
-            <ToggleButtonGroup.Button value={OnsenModalView.Liquidity}>
-              {farm.pair.type === PairType.KASHI ? i18n._(t`Lending`) : i18n._(t`Liquidity`)}
-            </ToggleButtonGroup.Button>
+            {farm.pair.type !== PairType.SINGLE && (
+              <ToggleButtonGroup.Button value={OnsenModalView.Liquidity}>
+                {farm.pair.type === PairType.KASHI ? i18n._(t`Lending`) : i18n._(t`Liquidity`)}
+              </ToggleButtonGroup.Button>
+            )}
+
             <ToggleButtonGroup.Button value={OnsenModalView.Staking}>{i18n._(t`Staking`)}</ToggleButtonGroup.Button>
             <ToggleButtonGroup.Button value={OnsenModalView.Position}>{i18n._(t`Rewards`)}</ToggleButtonGroup.Button>
           </ToggleButtonGroup>
@@ -67,7 +77,8 @@ const FarmListItemDetails = ({ farm, onDismiss }) => {
             <InvestmentDetails farm={farm} />
           </div>
           <div className={classNames(COLUMN_CONTAINER, view === OnsenModalView.Liquidity ? 'block' : 'hidden')}>
-            {farm.pair.type === PairType.KASHI ? <ManageKashiPair farm={farm} /> : <ManageSwapPair farm={farm} />}
+            {farm.pair.type === PairType.KASHI && <ManageKashiPair farm={farm} />}
+            {farm.pair.type === PairType.SWAP && <ManageSwapPair farm={farm} />}
           </div>
           <div className={classNames(COLUMN_CONTAINER, view === OnsenModalView.Staking ? 'block' : 'hidden')}>
             <ManageBar farm={farm} />

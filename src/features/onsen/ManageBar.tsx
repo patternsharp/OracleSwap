@@ -3,7 +3,8 @@ import { BigNumber } from '@ethersproject/bignumber'
 import { MinusIcon, PlusIcon } from '@heroicons/react/solid'
 import { i18n } from '@lingui/core'
 import { t } from '@lingui/macro'
-import { ChainId, MASTERCHEF_ADDRESS, MASTERCHEF_V2_ADDRESS, MINICHEF_ADDRESS, Token } from '@sushiswap/core-sdk'
+import { ChainId, MASTERCHEF_V2_ADDRESS, MINICHEF_ADDRESS, Token } from '@sushiswap/core-sdk'
+import { MASTERCHEF_ADDRESS } from 'app/constants'
 import AssetInput from 'app/components/AssetInput'
 import Button from 'app/components/Button'
 import { HeadlessUiModal } from 'app/components/Modal'
@@ -61,8 +62,10 @@ const ManageBar = ({ farm }) => {
     chainId || 1,
     getAddress(farm.pair.id),
     farm.pair.type === PairType.KASHI ? Number(farm.pair.asset.decimals) : 18,
-    farm.pair.type === PairType.KASHI ? 'KMP' : 'OLP'
+    farm.pair.type === PairType.SINGLE ? farm.pair.symbol : farm.pair.type === PairType.KASHI ? 'KMP' : 'OLP',
+    farm.pair.name
   )
+
   const balance = useCurrencyBalance(account ?? undefined, liquidityToken)
   const stakedAmount = useUserInfo(farm, liquidityToken)
   const parsedDepositValue = tryParseAmount(depositValue, liquidityToken)
@@ -182,7 +185,7 @@ const ManageBar = ({ farm }) => {
                     />
                   )
                   addTransaction(tx, {
-                    summary: `Deposit ${farm.pair.token0.name}/${farm.pair.token1.name}`,
+                    summary: `Deposit ${farm.pair.token0.name}/${farm.pair.token1?.name}`,
                   })
                 }
               } catch (error) {
@@ -215,7 +218,7 @@ const ManageBar = ({ farm }) => {
                   />
                 )
                 addTransaction(tx, {
-                  summary: `Withdraw ${farm.pair.token0.name}/${farm.pair.token1.name}`,
+                  summary: `Withdraw ${farm.pair.token0.name}/${farm.pair.token1?.name}`,
                 })
               }
             } catch (error) {

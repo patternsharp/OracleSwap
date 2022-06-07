@@ -1,4 +1,4 @@
-import { ChainId, JSBI, Percent } from '@sushiswap/core-sdk'
+import { AddressMap, ChainId, JSBI, Percent } from '@sushiswap/core-sdk'
 
 // TODO: Move some of this to config level...
 
@@ -78,4 +78,13 @@ export const EIP_1559_ACTIVATION_BLOCK: { [chainId in ChainId]?: number } = {
   [ChainId.ROPSTEN]: 10499401,
   [ChainId.GÖRLI]: 5062605,
   [ChainId.RINKEBY]: 8897988,
+}
+
+export const MASTERCHEF_ADDRESS: AddressMap = {
+  [ChainId.ETHEREUM]: '0xc2EdaD668740f1aA35E4D8f227fB8E17dcA888Cd',
+  [ChainId.ROPSTEN]: '0x80C7DD17B01855a6D2347444a0FCC36136a314de',
+  [ChainId.RINKEBY]: '0x80C7DD17B01855a6D2347444a0FCC36136a314de',
+  [ChainId.GÖRLI]: '0x80C7DD17B01855a6D2347444a0FCC36136a314de',
+  [ChainId.KOVAN]: '0x80C7DD17B01855a6D2347444a0FCC36136a314de',
+  [ChainId.SGB]: '0xA5E4abe4c3693AB0018df7a2b3b35e33E15f3028',
 }

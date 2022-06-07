@@ -2,8 +2,8 @@
   {
     "inputs": [
       {
-        "internalType": "contract OracleToken",
-        "name": "_oracle",
+        "internalType": "contract ProphetToken",
+        "name": "_pro",
         "type": "address"
       },
       {
@@ -13,7 +13,7 @@
       },
       {
         "internalType": "uint256",
-        "name": "_oraclePerBlock",
+        "name": "_proPerBlock",
         "type": "uint256"
       },
       {
@@ -262,60 +262,34 @@
     "type": "function"
   },
   {
-    "inputs": [
-      {
-        "internalType": "uint256",
-        "name": "_pid",
-        "type": "uint256"
-      }
-    ],
-    "name": "migrate",
-    "outputs": [],
-    "stateMutability": "nonpayable",
-    "type": "function"
-  },
-  {
-    "inputs": [],
-    "name": "migrator",
-    "outputs": [
-      {
-        "internalType": "contract IMigratorChef",
-        "name": "",
-        "type": "address"
-      }
-    ],
-    "stateMutability": "view",
-    "type": "function"
-  },
-  {
-    "inputs": [],
-    "name": "oracle",
-    "outputs": [
-      {
-        "internalType": "contract OracleToken",
-        "name": "",
-        "type": "address"
-      }
-    ],
-    "stateMutability": "view",
-    "type": "function"
-  },
-  {
-    "inputs": [],
-    "name": "oraclePerBlock",
-    "outputs": [
-      {
-        "internalType": "uint256",
-        "name": "",
-        "type": "uint256"
-      }
-    ],
-    "stateMutability": "view",
-    "type": "function"
-  },
-  {
     "inputs": [],
     "name": "owner",
+    "outputs": [
+      {
+        "internalType": "address",
+        "name": "",
+        "type": "address"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [],
+    "name": "ownerGovernance",
+    "outputs": [
+      {
+        "internalType": "address",
+        "name": "",
+        "type": "address"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [],
+    "name": "ownerSetter",
     "outputs": [
       {
         "internalType": "address",
@@ -339,7 +313,7 @@
         "type": "address"
       }
     ],
-    "name": "pendingOracle",
+    "name": "pendingPro",
     "outputs": [
       {
         "internalType": "uint256",
@@ -377,7 +351,7 @@
       },
       {
         "internalType": "uint256",
-        "name": "accOraclePerShare",
+        "name": "accProPerShare",
         "type": "uint256"
       }
     ],
@@ -399,7 +373,33 @@
   },
   {
     "inputs": [],
-    "name": "renounceOwnership",
+    "name": "pro",
+    "outputs": [
+      {
+        "internalType": "contract ProphetToken",
+        "name": "",
+        "type": "address"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [],
+    "name": "proPerBlock",
+    "outputs": [
+      {
+        "internalType": "uint256",
+        "name": "",
+        "type": "uint256"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [],
+    "name": "renounceOwnerSetter",
     "outputs": [],
     "stateMutability": "nonpayable",
     "type": "function"
@@ -430,12 +430,30 @@
   {
     "inputs": [
       {
-        "internalType": "contract IMigratorChef",
-        "name": "_migrator",
+        "internalType": "address",
+        "name": "owner_",
+        "type": "address"
+      },
+      {
+        "internalType": "address",
+        "name": "ownerGovernance_",
         "type": "address"
       }
     ],
-    "name": "setMigrator",
+    "name": "setOwner",
+    "outputs": [],
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "address",
+        "name": "newOwner",
+        "type": "address"
+      }
+    ],
+    "name": "setOwnerSetter",
     "outputs": [],
     "stateMutability": "nonpayable",
     "type": "function"
@@ -469,38 +487,25 @@
   {
     "inputs": [
       {
-        "internalType": "address",
-        "name": "newOwner",
-        "type": "address"
-      }
-    ],
-    "name": "transferOwnership",
-    "outputs": [],
-    "stateMutability": "nonpayable",
-    "type": "function"
-  },
-  {
-    "inputs": [
-      {
-        "internalType": "uint256",
-        "name": "_oraclePerBlock",
-        "type": "uint256"
-      }
-    ],
-    "name": "updateOraclePerBlock",
-    "outputs": [],
-    "stateMutability": "nonpayable",
-    "type": "function"
-  },
-  {
-    "inputs": [
-      {
         "internalType": "uint256",
         "name": "_pid",
         "type": "uint256"
       }
     ],
     "name": "updatePool",
+    "outputs": [],
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "uint256",
+        "name": "_proPerBlock",
+        "type": "uint256"
+      }
+    ],
+    "name": "updateProPerBlock",
     "outputs": [],
     "stateMutability": "nonpayable",
     "type": "function"

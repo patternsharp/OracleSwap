@@ -10,7 +10,6 @@ import {
   ENS_REGISTRAR_ADDRESS,
   FACTORY_ADDRESS,
   MAKER_ADDRESS,
-  MASTERCHEF_ADDRESS,
   MASTERCHEF_V2_ADDRESS,
   MERKLE_DISTRIBUTOR_ADDRESS,
   MINICHEF_ADDRESS,
@@ -20,6 +19,7 @@ import {
   TIMELOCK_ADDRESS,
   WNATIVE_ADDRESS,
 } from '@sushiswap/core-sdk'
+import { MASTERCHEF_ADDRESS } from 'app/constants'
 import { LIMIT_ORDER_HELPER_ADDRESS, STOP_LIMIT_ORDER_ADDRESS } from '@sushiswap/limit-order-sdk'
 import MISO from '@sushiswap/miso/exports/all.json'
 import TRIDENT from '@sushiswap/trident/exports/all.json'

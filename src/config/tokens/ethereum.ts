@@ -108,6 +108,8 @@ export const XSUSHI = new Token(
 )
 export const XORACLE = new Token(ChainId.SGB, '0x5795377c85e0fdf6370fae1b74fe03b930c4a892', 18, 'xORACLE', 'OracleBar')
 
+export const PROPHET = new Token(ChainId.SGB, '0xEa38B4255cF5B4e21824f58E3E0Ce2dab43CdcfC', 18, 'PRO', 'Prophet')
+
 export const LIFT = new Token(ChainId.ETHEREUM, '0xf9209d900f7ad1DC45376a2caA61c78f6dEA53B6', 18, 'LIFT', 'LiftKitchen')
 export const LFBTC = new Token(
   ChainId.ETHEREUM,

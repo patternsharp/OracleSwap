@@ -26,7 +26,7 @@ import React, { useEffect, useState } from 'react'
 import NetworkGuard from '../../guards/Network'
 
 import ORACLEImage from '../../../public/ORACLEGold.png'
-import xORACLEImage from '../../../public/xORACLE.png'
+import xORACLEImage from '../../../public/ORACLE_SilverLogo.png'
 import xORACLEFImage from '../../../public/xORACLEF.png'
 
 const INPUT_CHAR_LIMIT = 18
@@ -225,7 +225,7 @@ function Stake() {
             </div>
             <div className="max-w-lg pr-3 mb-2 text-sm leading-5 text-gray-500 md:text-base md:mb-4 md:pr-0">
               {i18n._(
-                t`For every swap on the exchange, 0.05% of the swap fees are distributed as ORACLE proportional to your share of the OracleFoundry. When your ORACLE is staked into the OracleFoundry, you receive xORACLE. Your xORACLE is continuously compounding, when you unstake you will receive all the originally deposited ORACLE and any additional from fees`
+                t`For every swap on the exchange, 0.035% of the swap fees are distributed as ORACLE proportional to your share of the OracleFoundry. When your ORACLE is staked into the OracleFoundry, you receive xORACLE. Your xORACLE is continuously compounding, when you unstake you will receive all the originally deposited ORACLE and any additional from fees`
               )}
             </div>
             {/* <div className="flex">
