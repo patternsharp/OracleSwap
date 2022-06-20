@@ -69,6 +69,17 @@ export const getCurrencyLogoUrls = (currency): string[] => {
         currency.address
       }/logo.png`
     )
+
+    if (currency.chainId === ChainId.SGB) {
+      // const hostname = window.location.hostname
+      // const protocal = window.location.protocol
+      // console.log('window.origin', window.origin)
+
+      urls.push(
+        // @ts-ignore TYPE NEEDS FIXING
+        `${window.origin}/${currency.symbol}.png`
+      )
+    }
   }
   return urls
 }
@@ -169,6 +180,46 @@ const CurrencyLogo: FunctionComponent<CurrencyLogoProps> = ({ currency, size = '
     if (currency.symbol === 'PRO') {
       return <img src={PRO.src} width={size} height={size} className={className} />
     }
+    if (currency.symbol === 'ORACLE') {
+      return <img src={ORACLE.src} width={size} height={size} className={className} />
+    }
+
+    if (currency.symbol === 'CAND') {
+      return <img src={CAND.src} width={size} height={size} className={className} />
+    }
+    if (currency.symbol === 'CNYX') {
+      return <img src={CNYX.src} width={size} height={size} className={className} />
+    }
+    if (currency.symbol === 'EXFI') {
+      return <img src={EXFI.src} width={size} height={size} className={className} />
+    }
+    if (currency.symbol === 'HS') {
+      return <img src={HS.src} width={size} height={size} className={className} />
+    }
+    if (currency.symbol === 'COOT') {
+      return <img src={COOT.src} width={size} height={size} className={className} />
+    }
+
+    if (currency.symbol === 'SFIN') {
+      return <img src={SFIN.src} width={size} height={size} className={className} />
+    }
+    if (currency.symbol === 'SGB') {
+      return <img src={SGB.src} width={size} height={size} className={className} />
+    }
+    if (currency.symbol === 'WSGB') {
+      return <img src={WSGB.src} width={size} height={size} className={className} />
+    }
+    if (currency.symbol === 'XFIN') {
+      return <img src={XFIN.src} width={size} height={size} className={className} />
+    }
+
+    if (currency.symbol === 'xORACLE') {
+      return <img src={xORACLE.src} width={size} height={size} className={className} />
+    }
+
+    if (currency.symbol === 'DOOD') {
+      return <img src={DOOD.src} width={size} height={size} className={className} />
+    }
   }
 
   if (currency instanceof Token) {
@@ -210,6 +261,14 @@ const CurrencyLogo: FunctionComponent<CurrencyLogoProps> = ({ currency, size = '
 
       if (currency.symbol === 'xORACLE') {
         return <img src={xORACLE.src} width={size} height={size} className={className} />
+      }
+
+      if (currency.symbol === 'PRO') {
+        return <img src={PRO.src} width={size} height={size} className={className} />
+      }
+
+      if (currency.symbol === 'DOOD') {
+        return <img src={DOOD.src} width={size} height={size} className={className} />
       }
     }
   }
