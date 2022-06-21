@@ -108,7 +108,7 @@ export function useMassBlocks({ timestamps, swrConfig = undefined }: useMassBloc
 
 export function useAverageBlockTime({ chainId = ChainId.ETHEREUM, swrConfig = undefined }) {
   if (chainId === ChainId.SGB) {
-    return 1.3
+    return 1.2
   }
 
   const { data } = useSWR(

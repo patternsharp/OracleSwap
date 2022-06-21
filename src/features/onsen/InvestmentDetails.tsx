@@ -4,6 +4,7 @@ import { t } from '@lingui/macro'
 import { useLingui } from '@lingui/react'
 import { ChainId, CurrencyAmount, JSBI, Token, USD, ZERO } from '@sushiswap/core-sdk'
 import Button from 'app/components/Button'
+
 import { CurrencyLogo } from 'app/components/CurrencyLogo'
 import { HeadlessUiModal } from 'app/components/Modal'
 import Typography from 'app/components/Typography'
@@ -19,6 +20,8 @@ import { PairType } from './enum'
 import { usePendingSushi, useUserInfo } from './hooks'
 import useMasterChef from './useMasterChef'
 import usePendingReward from './usePendingReward'
+import { useTotalSupply } from 'app/hooks/useTotalSupply'
+import { useV2Pair } from 'app/hooks/useV2Pairs'
 
 // @ts-ignore TYPE NEEDS FIXING
 const RewardRow = ({ value, symbol }) => {
@@ -108,7 +111,15 @@ const InvestmentDetails = ({ farm }) => {
     setPendingTx(false)
   }
 
-  console.log('investmentDetail:', farm?.rewards)
+  const [, pair] = useV2Pair(token0 ?? undefined, token1 ?? undefined)
+
+  // liquidity values
+  const totalSupply = useTotalSupply(liquidityToken)
+
+  const reserve0 = pair?.token0?.address === token0?.wrapped?.address ? pair?.reserve0 : pair?.reserve1
+
+  const reserve1 = pair?.token1?.address === token1?.wrapped?.address ? pair?.reserve1 : pair?.reserve0
+
   return (
     <>
       <HeadlessUiModal.BorderedContent className="flex flex-col gap-2 bg-dark-1000/40">
@@ -136,21 +147,31 @@ const InvestmentDetails = ({ farm }) => {
                 value={formatNumber(kashiAssetAmount?.value.toFixed(kashiPair.asset.tokenInfo.decimals) ?? 0)}
               />
             )}
-            {farm.pair.type === PairType.SWAP && (
+            {farm.pair.type === PairType.SWAP && reserve0 && stakedAmount && totalSupply && (
+              // <RewardRow
+              //   value={formatNumber(
+              //     (farm.pair.reserve0 * Number(stakedAmount?.toExact() ?? 0)) / farm.pair.totalSupply
+              //   )}
+              //   symbol={token0?.symbol}
+              // />
+
               <RewardRow
-                value={formatNumber(
-                  (farm.pair.reserve0 * Number(stakedAmount?.toExact() ?? 0)) / farm.pair.totalSupply
-                )}
+                value={formatNumber(reserve0?.multiply(stakedAmount).divide(totalSupply).toSignificant(6))}
                 symbol={token0?.symbol}
               />
             )}
           </div>
         )}
-        {farm.pair.type === PairType.SWAP && (
+        {farm.pair.type === PairType.SWAP && reserve0 && stakedAmount && totalSupply && (
           <div className="flex items-center gap-2">
             {token1 && <CurrencyLogo currency={token1} size={18} />}
-            <RewardRow
+            {/* <RewardRow
               value={formatNumber((farm.pair.reserve1 * Number(stakedAmount?.toExact() ?? 0)) / farm.pair.totalSupply)}
+              symbol={token1?.symbol}
+            /> */}
+
+            <RewardRow
+              value={formatNumber(reserve1?.multiply(stakedAmount).divide(totalSupply).toSignificant(6))}
               symbol={token1?.symbol}
             />
           </div>

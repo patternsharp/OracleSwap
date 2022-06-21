@@ -16,7 +16,7 @@ import FixedRatioHeader from 'app/features/trident/remove/FixedRatioHeader'
 import { selectTridentRemove } from 'app/features/trident/remove/removeSlice'
 import RemoveTransactionReviewSingleModal from 'app/features/trident/remove/RemoveTransactionReviewSingleModal'
 import RemoveTransactionReviewStandardModal from 'app/features/trident/remove/RemoveTransactionReviewStandardModal'
-import { isWrappedReturnNativeSymbol } from 'app/functions'
+// import { isWrappedReturnNativeSymbol } from 'app/functions'
 import NetworkGuard from 'app/guards/Network'
 import TridentLayout, { TridentBody, TridentHeader } from 'app/layouts/Trident'
 import { useActiveWeb3React } from 'app/services/web3'
@@ -49,8 +49,8 @@ const RemoveClassic = () => {
                         pathname: `/trident/pool`,
                         query: {
                           tokens: [
-                            isWrappedReturnNativeSymbol(chainId, poolWithState.pool.token0.address),
-                            isWrappedReturnNativeSymbol(chainId, poolWithState.pool.token1.address),
+                            // isWrappedReturnNativeSymbol(chainId, poolWithState.pool.token0.address),
+                            // isWrappedReturnNativeSymbol(chainId, poolWithState.pool.token1.address),
                           ],
                           fee: poolWithState.pool.fee,
                           twap: poolWithState.pool.twap,

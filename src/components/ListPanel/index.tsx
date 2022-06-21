@@ -180,7 +180,7 @@ const CurrencyAmountItem: FC<CurrencyAmountItemProps> = ({
       id={id}
       className={classNames(
         hideIfZero && amount?.equalTo(ZERO) ? 'hidden' : '',
-        'flex grid items-center grid-cols-3 gap-2 px-3 py-3 lg:px-4 border-dark-700'
+        'grid items-center grid-cols-3 gap-2 px-3 py-3 lg:px-4 border-dark-700'
       )}
     >
       <div className="flex items-center gap-3 -ml-1">

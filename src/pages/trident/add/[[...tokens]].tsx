@@ -12,7 +12,7 @@ import ClassicStandardMode from 'app/features/trident/add/ClassicStandardMode'
 import FixedRatioHeader from 'app/features/trident/add/FixedRatioHeader'
 import TransactionReviewStandardModal from 'app/features/trident/add/TransactionReviewStandardModal'
 import PoolContext, { usePoolContext } from 'app/features/trident/PoolContext'
-import { isWrappedReturnNativeSymbol } from 'app/functions'
+// import { isWrappedReturnNativeSymbol } from 'app/functions'
 import NetworkGuard from 'app/guards/Network'
 import TridentLayout, { TridentBody, TridentHeader } from 'app/layouts/Trident'
 import { useActiveWeb3React } from 'app/services/web3'
@@ -43,8 +43,8 @@ const AddClassic = () => {
                         pathname: `/trident/pool`,
                         query: {
                           tokens: [
-                            isWrappedReturnNativeSymbol(chainId, poolWithState.pool.token0.address),
-                            isWrappedReturnNativeSymbol(chainId, poolWithState.pool.token1.address),
+                            // isWrappedReturnNativeSymbol(chainId, poolWithState.pool.token0.address),
+                            // isWrappedReturnNativeSymbol(chainId, poolWithState.pool.token1.address),
                           ],
                           fee: poolWithState.pool.fee,
                           twap: poolWithState.pool.twap,

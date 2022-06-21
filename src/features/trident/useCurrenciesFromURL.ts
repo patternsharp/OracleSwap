@@ -25,7 +25,7 @@ const useCurrenciesFromURL = (): {
     if (!chainId) return
 
     // @ts-ignore TYPE NEEDS FIXING
-    const nativeSymbol = NATIVE[chainId].symbol
+    const nativeSymbol = NATIVE[chainId].symbol as string
     let tokens: string[] = []
     if (router.query && router.query.tokens) {
       tokens = [router.query.tokens?.[1], router.query.tokens?.[0]]
@@ -62,7 +62,7 @@ const useCurrenciesFromURL = (): {
       if (!chainId) return
 
       // @ts-ignore TYPE NEEDS FIXING
-      const nativeSymbol = NATIVE[chainId].symbol
+      const nativeSymbol = NATIVE[chainId].symbol as string
       let tokens: string[] = [
         currencyA?.isNative ? nativeSymbol : currencyA?.wrapped.address!,
         currencyB?.isNative ? nativeSymbol : currencyB?.wrapped.address!,
@@ -78,8 +78,8 @@ const useCurrenciesFromURL = (): {
 
         // @ts-ignore TYPE NEEDS FIXING
         const newToken = cur.isNative ? NATIVE[chainId].symbol : cur.wrapped.address
-        if (tokens.includes(newToken)) return // return if token already selected
-        tokens[index] = newToken
+        if (tokens.includes(newToken as string)) return // return if token already selected
+        tokens[index] = newToken as string
       }
 
       if (!router.query?.tokens) {
