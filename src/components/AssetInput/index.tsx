@@ -240,7 +240,7 @@ const AssetInputPanel = ({
             />
 
             {isDesktop && (
-              <span className="absolute leading-7 pointer-events-none text-low-emphesis" style={{ left: width }}>
+              <span className="hidden leading-7 pointer-events-none md:flex text-low-emphesis" style={{ left: width }}>
                 {currency?.symbol}
               </span>
             )}

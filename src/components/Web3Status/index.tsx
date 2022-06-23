@@ -18,6 +18,8 @@ import React, { useMemo } from 'react'
 import Loader from '../Loader'
 import Web3Connect from '../Web3Connect'
 
+import PROFILE from '../../../public/profile_icon.webp'
+
 // we want the latest one to come first, so return negative if a is after b
 function newTransactionsFirst(a: TransactionDetails, b: TransactionDetails) {
   return b.addedTime - a.addedTime
@@ -132,7 +134,8 @@ function Web3StatusInner() {
               size={20}
               address={account}
               defaultComponent={
-                <Image src="https://app.sushi.com/images/chef.svg" alt="OracleSwap Chef" width={20} height={20} />
+                <img src={PROFILE.src} width={20} height={20} alt="OracleSwap Chef" />
+                // <Image src="https://app.sushi.com/images/chef.svg" alt="OracleSwap Chef" width={20} height={20} />
               }
               style={{ borderRadius: 5 }}
               provider={library}

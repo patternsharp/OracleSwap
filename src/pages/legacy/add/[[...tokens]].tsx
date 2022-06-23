@@ -304,6 +304,7 @@ export default function Add() {
   //   { addIsUnsupported, isValid, approvalA, approvalB },
   //   approvalA === ApprovalState.APPROVED && approvalB === ApprovalState.APPROVED
   // )
+
   return (
     <>
       <Head>
@@ -420,7 +421,7 @@ export default function Add() {
 
                 <AutoColumn justify="space-between" className="py-2.5">
                   <AutoRow justify={isExpertMode ? 'space-between' : 'flex-start'} style={{ padding: '0 1rem' }}>
-                    <button className="z-10 -mt-6 -mb-6 rounded-full cursor-default bg-dark-900 p-3px">
+                    <button className="z-0 -mt-6 -mb-6 rounded-full cursor-default bg-dark-900 p-3px">
                       <div className="p-3 rounded-full bg-dark-800">
                         <Plus size="32" />
                       </div>

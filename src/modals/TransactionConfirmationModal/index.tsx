@@ -54,7 +54,7 @@ export const TransactionSubmittedContent: FC<TransactionSubmittedContentProps> =
   const { library } = useActiveWeb3React()
   const { addToken, success } = useAddTokenToMetaMask(currencyToAdd)
   return (
-    <div className="flex flex-col gap-4">
+    <div className="flex flex-col gap-4 z-[1000]">
       <HeadlessUiModal.Header header={i18n._(t`Transaction submitted`)} onClose={onDismiss} />
       <HeadlessUiModal.BorderedContent className="flex flex-col items-center justify-center gap-1">
         <div className="w-[102px] h-[102px] bg-dark-900 rounded-full">

@@ -6,7 +6,7 @@ import Button from 'app/components/Button'
 import Container from 'app/components/Container'
 import Dots from 'app/components/Dots'
 import Input from 'app/components/Input'
-import { XORACLE } from 'app/config/tokens'
+import { ORACLE, XORACLE } from 'app/config/tokens'
 import { Feature } from 'app/enums'
 import { classNames } from 'app/functions'
 import { aprToApy } from 'app/functions/convert/apyApr'
@@ -15,7 +15,7 @@ import { ApprovalState, useApproveCallback } from 'app/hooks/useApproveCallback'
 import { useOracleBar } from 'app/hooks/useOracleBar'
 import useSushiBar from 'app/hooks/useSushiBar'
 import TransactionFailedModal from 'app/modals/TransactionFailedModal'
-import { useFactory, useOneDayBlock } from 'app/services/graph/hooks'
+// import { useFactory, useOneDayBlock } from 'app/services/graph/hooks'
 // import { useBar } from 'app/services/graph/hooks/bar'
 import { useActiveWeb3React } from 'app/services/web3'
 import { useDexWarningOpen, useWalletModalToggle } from 'app/state/application/hooks'
@@ -27,7 +27,12 @@ import NetworkGuard from '../../guards/Network'
 
 import ORACLEImage from '../../../public/ORACLEGold.png'
 import xORACLEImage from '../../../public/ORACLE_SilverLogo.png'
-import xORACLEFImage from '../../../public/xORACLEF.png'
+// import xORACLEFImage from '../../../public/xORACLEF.png'
+import QuestionHelper from 'app/components/QuestionHelper'
+import useOracleDistributor, {
+  useOracleDistributorCovertAmount,
+  useOracleDistributorEnableCheck,
+} from 'app/hooks/useOracleDistributor'
 
 const INPUT_CHAR_LIMIT = 18
 
@@ -64,11 +69,19 @@ function Stake() {
 
   const { enter, leave } = useSushiBar()
 
+  const { convert } = useOracleDistributor()
+
+  const enabled = useOracleDistributorEnableCheck()
+
+  console.log('lpConvertClick', enabled)
+
   const walletConnected = !!account
   const toggleWalletModal = useWalletModalToggle()
 
   const [activeTab, setActiveTab] = useState(0)
   const [modalOpen, setModalOpen] = useState(false)
+
+  const oracleBalance = useTokenBalance(account ?? undefined, ORACLE)
 
   const [input, setInput] = useState<string>('')
   const [usingBalance, setUsingBalance] = useState(false)
@@ -102,6 +115,22 @@ function Stake() {
   const [pendingTx, setPendingTx] = useState(false)
 
   const buttonDisabled = !input || pendingTx || (parsedAmount && parsedAmount.equalTo(ZERO))
+
+  const lpConvertClick = async () => {
+    if (!walletConnected) {
+      toggleWalletModal()
+    } else {
+      setPendingTx(true)
+
+      const success = await sendTx(() => convert())
+      if (!success) {
+        setPendingTx(false)
+        return
+      }
+
+      setPendingTx(false)
+    }
+  }
 
   const handleClickButton = async () => {
     if (buttonDisabled) return
@@ -140,17 +169,17 @@ function Stake() {
     }
   }
 
-  const block1d = useOneDayBlock({ chainId: ChainId.ETHEREUM })
+  // const block1d = useOneDayBlock({ chainId: ChainId.ETHEREUM })
 
-  const exchange = useFactory({ chainId: ChainId.ETHEREUM })
+  // const exchange = useFactory({ chainId: ChainId.ETHEREUM })
 
-  const exchange1d = useFactory({
-    chainId: ChainId.ETHEREUM,
-    variables: {
-      block: block1d,
-    },
-    shouldFetch: !!block1d,
-  })
+  // const exchange1d = useFactory({
+  //   chainId: ChainId.ETHEREUM,
+  //   variables: {
+  //     block: block1d,
+  //   },
+  //   shouldFetch: !!block1d,
+  // })
 
   // const ethPrice = useNativePrice({ chainId: ChainId.ETHEREUM })
 
@@ -186,6 +215,8 @@ function Stake() {
 
   const showUseDexWarning = useDexWarningOpen()
 
+  const [foundry, treasury, burned, total] = useOracleDistributorCovertAmount()
+
   return (
     <Container id="bar-page" className="py-4 md:py-8 lg:py-12" maxWidth="full">
       <Head>
@@ -213,7 +244,12 @@ function Stake() {
         />
       </Head>
       <div className="flex flex-col w-full min-h-full">
-        <div className={classNames('flex justify-center mb-6', showUseDexWarning && 'mt-5')}>
+        <div
+          className={classNames(
+            'flex flex-col justify-center items-center md:flex-row  mb-6',
+            showUseDexWarning && 'mt-5'
+          )}
+        >
           <div className="flex flex-col w-full max-w-xl mt-auto mb-2">
             <div className="flex max-w-lg">
               <div className="self-end mb-3 text-lg font-bold md:text-2xl text-high-emphesis md:mb-7">
@@ -241,8 +277,56 @@ function Stake() {
                             </div>
                         </div> */}
           </div>
-          <div className="hidden px-8 ml-6 md:block w-72">
-            <img src={xORACLEFImage.src} alt="xORACLE sign" width="100%" height="100%" />
+          <div className="w-full h-full max-w-xl md:ml-6 md:block md:w-72">
+            <div className="flex flex-col flex-grow w-full px-4 pt-4 pb-3 rounded bg-dark-900 md:px-5 md:pt-5 md:pb-7">
+              <div className="flex flex-col flex-wrap">
+                {/* <img src={xORACLEFImage.src} alt="xORACLE sign" width="100%" height="100%" /> */}
+                <div className="flex flex-row mb-3">
+                  <p className="text-lg font-bold md:text-2xl md:font-medium text-high-emphesis">
+                    {i18n._(t`Distributor`)}
+                  </p>
+
+                  <QuestionHelper
+                    className="!bg-dark-800 !shadow-xl p-2"
+                    text={`The OracleDistributor receives DEX swap fees from the setFee to address of the OracleSwapFactory Contract. The fees are in the form of OLP Tokens. ORACLE Token holders can publicly call the Distribute function to convert the OLP Tokens to ORACLE and distribute them. 70% of the ORACLE is sent to the OracleFoundry/Stakers, 20% is sent to the treasury, and 10% is sent to the dead address. If the OracleTreasury address is zero then half of the OracleTreasury share will be sent to the OracleFoundry and half will be burnt.`}
+                  />
+                </div>
+
+                <div className="flex flex-col flex-grow text-base md:mb-3">
+                  <p>
+                    <span>&#128512;</span> LPTs Available:{' '}
+                    <span className={classNames(enabled ? 'text-green' : 'text-red')}>{enabled ? 'Yes' : 'No'}</span>
+                  </p>
+                  <p>
+                    <span>&#127789; </span> Oracle To Stakers: <span>{foundry?.toSignificant(6)}</span>
+                    {/* &#127835; */}
+                  </p>
+                  <p>
+                    <span>&#128293;</span> Oracle To Burned: <span>{burned?.toSignificant(6)}</span>
+                  </p>
+                  <p>
+                    <span>&#127974;</span> Oracle Treasury: <span>{treasury?.toSignificant(6)}</span>
+                  </p>
+
+                  {oracleBalance?.equalTo(ZERO) && (
+                    <div className="mt-2 text-base text-red">{`Your oracle balance is zero, so you cannot dist/burn olp`}</div>
+                  )}
+
+                  <div className="flex justify-center mt-4">
+                    <Button
+                      color={'gradient'}
+                      size={'sm'}
+                      variant={'filled'}
+                      disabled={pendingTx || !account || !enabled || oracleBalance?.equalTo(ZERO)}
+                      onClick={lpConvertClick}
+                      className="inline-flex items-center px-8 font-bold text-white rounded-full cursor-pointer bg-gradient-to-r from-yellow to-red"
+                    >
+                      {`DIST/BURN`}
+                    </Button>
+                  </div>
+                </div>
+              </div>
+            </div>
           </div>
         </div>
         <div className="flex flex-col justify-center md:flex-row">

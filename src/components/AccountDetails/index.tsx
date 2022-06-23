@@ -8,7 +8,7 @@ import { shortenAddress } from 'app/functions/format'
 import { useActiveWeb3React } from 'app/services/web3'
 import { useAppDispatch } from 'app/state/hooks'
 import { clearAllTransactions } from 'app/state/transactions/actions'
-import Image from 'next/image'
+// import Image from 'next/image'
 import React, { FC, useCallback, useMemo } from 'react'
 import { ExternalLink as LinkIcon } from 'react-feather'
 
@@ -17,6 +17,8 @@ import ExternalLink from '../ExternalLink'
 import Typography from '../Typography'
 import Copy from './Copy'
 import Transaction from './Transaction'
+
+import PROFILE from '../../../public/profile_icon.webp'
 
 interface AccountDetailsProps {
   toggleWalletModal: () => void
@@ -76,7 +78,8 @@ const AccountDetails: FC<AccountDetailsProps> = ({
                   // @ts-ignore TYPE NEEDS FIXING
                   address={account}
                   defaultComponent={
-                    <Image src="https://app.sushi.com/images/chef.svg" alt="OracleSwap Chef" width={48} height={48} />
+                    <img src={PROFILE.src} width={48} height={48} alt="OracleSwap Chef" />
+                    // <Image src="https://app.sushi.com/images/chef.svg" alt="OracleSwap Chef" width={48} height={48} />
                   }
                   provider={library}
                 />
