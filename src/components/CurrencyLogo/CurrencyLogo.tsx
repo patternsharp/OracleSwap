@@ -23,6 +23,8 @@ import DOOD from '../../../public/DOOD.png'
 
 import PRO from '../../../public/PRO.png'
 
+import LOVE from '../../../public/LOVE.png'
+
 // import PRO_Logo3Gold from '../../../public/PRO_Logo3Gold.png'
 
 const BLOCKCHAIN = {
@@ -177,11 +179,12 @@ const CurrencyLogo: FunctionComponent<CurrencyLogoProps> = ({ currency, size = '
       return <img src={ORACLE.src} width={size} height={size} className={className} />
     }
 
+    if (currency.symbol === 'LOVE') {
+      return <img src={LOVE.src} width={size} height={size} className={className} />
+    }
+
     if (currency.symbol === 'PRO') {
       return <img src={PRO.src} width={size} height={size} className={className} />
-    }
-    if (currency.symbol === 'ORACLE') {
-      return <img src={ORACLE.src} width={size} height={size} className={className} />
     }
 
     if (currency.symbol === 'CAND') {
@@ -228,6 +231,10 @@ const CurrencyLogo: FunctionComponent<CurrencyLogoProps> = ({ currency, size = '
         return <img src={ORACLE.src} width={size} height={size} className={className} />
       }
 
+      if (currency.symbol === 'LOVE') {
+        return <img src={LOVE.src} width={size} height={size} className={className} />
+      }
+
       if (currency.symbol === 'CAND') {
         return <img src={CAND.src} width={size} height={size} className={className} />
       }
@@ -243,9 +250,7 @@ const CurrencyLogo: FunctionComponent<CurrencyLogoProps> = ({ currency, size = '
       if (currency.symbol === 'COOT') {
         return <img src={COOT.src} width={size} height={size} className={className} />
       }
-      if (currency.symbol === 'ORACLE') {
-        return <img src={ORACLE.src} width={size} height={size} className={className} />
-      }
+
       if (currency.symbol === 'SFIN') {
         return <img src={SFIN.src} width={size} height={size} className={className} />
       }
@@ -278,6 +283,11 @@ const CurrencyLogo: FunctionComponent<CurrencyLogoProps> = ({ currency, size = '
       if (currency.tokenInfo.symbol === 'CAND') {
         return <img src={CAND.src} width={size} height={size} className={className} />
       }
+
+      if (currency.tokenInfo.symbol === 'LOVE') {
+        return <img src={LOVE.src} width={size} height={size} className={className} />
+      }
+
       if (currency.tokenInfo.symbol === 'CNYX') {
         return <img src={CNYX.src} width={size} height={size} className={className} />
       }

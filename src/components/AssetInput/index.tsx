@@ -220,39 +220,40 @@ const AssetInputPanel = ({
         className={classNames(
           error ? 'border-red border-opacity-40' : 'border-dark-800',
           size === 'md' ? 'py-4' : 'py-2',
-          'flex gap-3 py-4 px-3 items-center border-b'
+          'flex gap-3 py-4 px-3 items-center border-b justify-between'
         )}
       >
-        {currencyLogo && (
-          <div>
-            <CurrencyLogo currency={currency} size={size === 'md' ? 48 : 40} className="!rounded-full" />
-          </div>
-        )}
-        <div className="flex flex-col flex-grow">
-          <Typography variant="h3" weight={700} className="relative flex flex-row items-baseline overflow-hidden">
-            <NumericalInput
-              disabled={disabled}
-              value={value || ''}
-              onUserInput={onChange}
-              placeholder="0.00"
-              className="bg-transparent"
-              autoFocus
-            />
+        <div className="flex flex-row">
+          {currencyLogo && (
+            <div className={classNames(size === 'md' ? 'w-[48px]' : 'w-40px')}>
+              <CurrencyLogo currency={currency} size={size === 'md' ? 48 : 40} className="!rounded-full" />
+            </div>
+          )}
+          <div className="flex flex-col justify-between ml-2 w-content ">
+            <Typography variant="h3" weight={700} className="relative flex flex-row items-baseline overflow-hidden">
+              <NumericalInput
+                disabled={disabled}
+                value={value || ''}
+                onUserInput={onChange}
+                placeholder="0.00"
+                className="flex-1 bg-transparent w-content max-w-[220px]"
+                autoFocus
+              />
 
-            {isDesktop && (
-              <span className="hidden leading-7 pointer-events-none md:flex text-low-emphesis" style={{ left: width }}>
-                {currency?.symbol}
-              </span>
-            )}
-          </Typography>
-          <Typography
-            id={currency.symbol + '-usdc-value'}
-            variant="xs"
-            className={error ? 'text-red' : usdcValue && value ? 'text-green' : 'text-low-emphesis'}
-          >
-            ≈${usdcValue ? usdcValue.toSignificant(6) : '0.00'}
-          </Typography>
+              {isDesktop && (
+                <span className="hidden pointer-events-none md:flex text-low-emphesis">{currency?.symbol}</span>
+              )}
+            </Typography>
+            <Typography
+              id={currency.symbol + '-usdc-value'}
+              variant="xs"
+              className={error ? 'text-red' : usdcValue && value ? 'text-green' : 'text-low-emphesis'}
+            >
+              ≈${usdcValue ? usdcValue.toSignificant(6) : '0.00'}
+            </Typography>
+          </div>
         </div>
+
         {error ? (
           <ExclamationCircleIcon className="w-8 h-8 mr-2 text-red" />
         ) : (

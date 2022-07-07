@@ -59,16 +59,23 @@ export function useOracleDistributorCovertAmount() {
 
   const amount3 = value3 ? JSBI.BigInt(value3.toString()) : undefined
 
+  const result4 = useSingleCallResult(contract, 'prophetSacrificeTotalAmount')?.result
+
+  const value4 = result4?.[0]
+
+  const amount4 = value4 ? JSBI.BigInt(value4.toString()) : undefined
+
   return useMemo(() => {
-    if (amount && amount1 && amount2 && amount3) {
+    if (amount && amount1 && amount2 && amount3 && amount4) {
       const foundry = CurrencyAmount.fromRawAmount(ORACLE, amount)
       const treasury = CurrencyAmount.fromRawAmount(ORACLE, amount1)
       const burned = CurrencyAmount.fromRawAmount(ORACLE, amount2)
       const total = CurrencyAmount.fromRawAmount(ORACLE, amount3)
-      return [foundry, treasury, burned, total]
+      const prophet = CurrencyAmount.fromRawAmount(ORACLE, amount4)
+      return [foundry, treasury, burned, prophet, total]
     }
-    return [undefined, undefined, undefined, undefined]
-  }, [amount, amount1, amount2, amount3])
+    return [undefined, undefined, undefined, undefined, undefined]
+  }, [amount, amount1, amount2, amount3, amount4])
 }
 
 export default useOracleDistributor

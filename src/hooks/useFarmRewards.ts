@@ -2,7 +2,7 @@ import { getAddress } from '@ethersproject/address'
 import { ChainId, Currency, JSBI, NATIVE, SUSHI, SUSHI_ADDRESS, Token } from '@sushiswap/core-sdk'
 import { ARBITRUM_TOKENS, MATIC_TOKENS, XDAI_TOKENS, XORACLE, PROPHET } from 'app/config/tokens'
 import { Chef, PairType } from 'app/features/onsen/enum'
-import { usePositions, useUserInfo } from 'app/features/onsen/hooks'
+import { usePositions, useProphetPoolInfos, useUserInfo } from 'app/features/onsen/hooks'
 import { aprToApy } from 'app/functions/convert'
 import { MASTERCHEF_ADDRESS } from 'app/constants'
 import {
@@ -984,6 +984,8 @@ export default function useFarmRewards() {
 
   const blocksPerDay = 86400 / Number(averageBlockTime)
 
+  const poolInfos = useProphetPoolInfos()
+
   // @ts-ignore TYPE NEEDS FIXING
   const map = (pool) => {
     // TODO: Deal with inconsistencies between properties on subgraph
@@ -1018,8 +1020,10 @@ export default function useFarmRewards() {
 
       pool.owner.totalAllocPoint = masterChefV1TotalAllocPoint
 
+      const allocPoint = poolInfos?.find((poolInfo) => poolInfo.id === pool.id)?.allocPoint
+
       // @ts-ignore TYPE NEEDS FIXING
-      const rewardPerBlock = (pool.allocPoint / pool.owner.totalAllocPoint) * sushiPerBlock
+      const rewardPerBlock = (allocPoint / pool.owner.totalAllocPoint) * sushiPerBlock
 
       // const defaultReward = {
       //   currency: SUSHI[ChainId.ETHEREUM],
@@ -1097,14 +1101,14 @@ export default function useFarmRewards() {
           rewards[1] = reward
         }
       } else if (pool.chef === Chef.MINICHEF) {
-        const sushiPerSecond = ((pool.allocPoint / pool.miniChef.totalAllocPoint) * pool.miniChef.sushiPerSecond) / 1e18
+        const sushiPerSecond = ((allocPoint / pool.miniChef.totalAllocPoint) * pool.miniChef.sushiPerSecond) / 1e18
         const sushiPerBlock = sushiPerSecond * averageBlockTime
         const sushiPerDay = sushiPerBlock * blocksPerDay
 
         const rewardPerSecond =
           pool.rewarder.rewardPerSecond && chainId === ChainId.ARBITRUM
             ? pool.rewarder.rewardPerSecond / 1e18
-            : ((pool.allocPoint / pool.miniChef.totalAllocPoint) * pool.rewarder.rewardPerSecond) / 1e18
+            : ((allocPoint / pool.miniChef.totalAllocPoint) * pool.rewarder.rewardPerSecond) / 1e18
 
         const rewardPerBlock = rewardPerSecond * averageBlockTime
 
@@ -1208,14 +1212,14 @@ export default function useFarmRewards() {
           }
         }
       } else if (pool.chef === Chef.OLD_FARMS) {
-        const sushiPerSecond = ((pool.allocPoint / pool.miniChef.totalAllocPoint) * pool.miniChef.sushiPerSecond) / 1e18
+        const sushiPerSecond = ((allocPoint / pool.miniChef.totalAllocPoint) * pool.miniChef.sushiPerSecond) / 1e18
         const sushiPerBlock = sushiPerSecond * averageBlockTime
         const sushiPerDay = sushiPerBlock * blocksPerDay
 
         const rewardPerSecond =
           pool.rewarder.rewardPerSecond && chainId === ChainId.ARBITRUM
             ? pool.rewarder.rewardPerSecond / 1e18
-            : ((pool.allocPoint / pool.miniChef.totalAllocPoint) * pool.rewarder.rewardPerSecond) / 1e18
+            : ((allocPoint / pool.miniChef.totalAllocPoint) * pool.rewarder.rewardPerSecond) / 1e18
 
         const rewardPerBlock = rewardPerSecond * averageBlockTime
 

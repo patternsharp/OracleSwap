@@ -215,7 +215,7 @@ function Stake() {
 
   const showUseDexWarning = useDexWarningOpen()
 
-  const [foundry, treasury, burned, total] = useOracleDistributorCovertAmount()
+  const [foundry, treasury, burned, prophet, total] = useOracleDistributorCovertAmount()
 
   return (
     <Container id="bar-page" className="py-4 md:py-8 lg:py-12" maxWidth="full">
@@ -302,10 +302,13 @@ function Stake() {
                     {/* &#127835; */}
                   </p>
                   <p>
-                    <span>&#128293;</span> Oracle To Burned: <span>{burned?.toSignificant(6)}</span>
+                    <span>&#128293;</span> Oracle Burned: <span>{burned?.toSignificant(6)}</span>
                   </p>
                   <p>
-                    <span>&#127974;</span> Oracle Treasury: <span>{treasury?.toSignificant(6)}</span>
+                    <span>&#128293;</span> Oracle To Sacrifice: <span>{prophet?.toSignificant(6)}</span>
+                  </p>
+                  <p>
+                    <span>&#127974;</span> Oracle To Treasury: <span>{treasury?.toSignificant(6)}</span>
                   </p>
 
                   {oracleBalance?.equalTo(ZERO) && (

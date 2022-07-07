@@ -142,6 +142,19 @@
         "type": "uint256"
       }
     ],
+    "name": "ProphetSacrificeConvert",
+    "type": "event"
+  },
+  {
+    "anonymous": false,
+    "inputs": [
+      {
+        "indexed": false,
+        "internalType": "uint256",
+        "name": "amountORACLE",
+        "type": "uint256"
+      }
+    ],
     "name": "TotalConvert",
     "type": "event"
   },
@@ -281,6 +294,19 @@
   },
   {
     "inputs": [],
+    "name": "limit_gas",
+    "outputs": [
+      {
+        "internalType": "uint256",
+        "name": "",
+        "type": "uint256"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [],
     "name": "oracleBurnTotalAmount",
     "outputs": [
       {
@@ -384,6 +410,45 @@
     "type": "function"
   },
   {
+    "inputs": [],
+    "name": "prophetSacrifice",
+    "outputs": [
+      {
+        "internalType": "address",
+        "name": "",
+        "type": "address"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [],
+    "name": "prophetSacrificeSetter",
+    "outputs": [
+      {
+        "internalType": "address",
+        "name": "",
+        "type": "address"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [],
+    "name": "prophetSacrificeTotalAmount",
+    "outputs": [
+      {
+        "internalType": "uint256",
+        "name": "",
+        "type": "uint256"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
     "inputs": [
       {
         "internalType": "address",
@@ -405,11 +470,37 @@
     "inputs": [
       {
         "internalType": "uint256",
+        "name": "_limit_gas",
+        "type": "uint256"
+      }
+    ],
+    "name": "setGasLimit",
+    "outputs": [],
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "uint256",
         "name": "_amount",
         "type": "uint256"
       }
     ],
     "name": "setMinLPAmount",
+    "outputs": [],
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "bool",
+        "name": "_onlyOracleLp",
+        "type": "bool"
+      }
+    ],
+    "name": "setOracleLPEnable",
     "outputs": [],
     "stateMutability": "nonpayable",
     "type": "function"
@@ -436,6 +527,32 @@
       }
     ],
     "name": "setOracleTreasurySetter",
+    "outputs": [],
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "address",
+        "name": "_prophetSacrifice",
+        "type": "address"
+      }
+    ],
+    "name": "setProphetSacrifice",
+    "outputs": [],
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "address",
+        "name": "_prophetSacrificeSetter",
+        "type": "address"
+      }
+    ],
+    "name": "setProphetSacrificeSetter",
     "outputs": [],
     "stateMutability": "nonpayable",
     "type": "function"

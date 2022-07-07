@@ -1,6 +1,6 @@
 {
   "name": "SushiSwap Menu",
-  "timestamp": "2022-06-05T13:58:53.012Z",
+  "timestamp": "2022-07-06T14:17:34.899Z",
   "version": {
     "major": 23,
     "minor": 14,
@@ -3806,6 +3806,14 @@
       "name": "Honey Stick",
       "address": "0x9dC8639bff70B019088f0b7D960561654269B5BE",
       "symbol": "HS",
+      "decimals": 18,
+      "chainId": 19,
+      "logoURI": "https://raw.githubusercontent.com/trustwallet/assets/master/blockchains/ethereum/assets/0xd0A1E359811322d97991E03f863a0C30C2cF029C/logo.png"
+    },
+    {
+      "name": "Love Token",
+      "address": "0x0825b803aCcc0B5424Ef3fbbCba5EFa9478F2Bb4",
+      "symbol": "LOVE",
       "decimals": 18,
       "chainId": 19,
       "logoURI": "https://raw.githubusercontent.com/trustwallet/assets/master/blockchains/ethereum/assets/0xd0A1E359811322d97991E03f863a0C30C2cF029C/logo.png"

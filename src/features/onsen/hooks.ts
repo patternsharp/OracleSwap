@@ -118,7 +118,38 @@ export function usePendingToken(farm, contract) {
 
   return useMemo(() => pendingTokens, [pendingTokens])
 }
+export function useProphetPoolInfos() {
+  const contract = useChefContract(Chef.MASTERCHEF)
 
+  const numberOfPools = useSingleCallResult(contract ? contract : null, 'poolLength', undefined, NEVER_RELOAD)
+    ?.result?.[0]
+
+  const args = useMemo(() => {
+    if (!numberOfPools) {
+      return
+    }
+    return [...Array(numberOfPools.toNumber()).keys()].map((pid) => [String(pid)])
+  }, [numberOfPools])
+
+  // @ts-ignore TYPE NEEDS FIXING
+  const poolInfo = useSingleContractMultipleData(args ? contract : null, 'poolInfo', args)
+
+  return useMemo(() => {
+    if (!poolInfo) {
+      return []
+    }
+    return poolInfo.map((data, i) => ({
+      // @ts-ignore TYPE NEEDS FIXING
+      id: args[i][0],
+      allocPoint: data.result?.allocPoint?.toNumber() || 0,
+      lpToken: data.result?.lpToken,
+      lastRewardBlock: data.result?.lastRewardBlock || Zero,
+      accProPerShare: data.result?.accProPerShare || Zero,
+      // @ts-ignore TYPE NEEDS FIXING
+      // pendingTokens: data?.[2]?.result,
+    }))
+  }, [args, poolInfo])
+}
 export function useChefPositions(contract?: Contract | null, rewarder?: Contract | null, chainId = undefined) {
   const { account } = useActiveWeb3React()
 
