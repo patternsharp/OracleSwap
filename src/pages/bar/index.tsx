@@ -288,7 +288,7 @@ function Stake() {
 
                   <QuestionHelper
                     className="!bg-dark-800 !shadow-xl p-2"
-                    text={`The OracleDistributor receives DEX swap fees from the setFee to address of the OracleSwapFactory Contract. The fees are in the form of OLP Tokens. ORACLE Token holders can publicly call the Distribute function to convert the OLP Tokens to ORACLE and distribute them. 70% of the ORACLE is sent to the OracleFoundry/Stakers, 20% is sent to the treasury, and 10% is sent to the dead address. If the OracleTreasury address is zero then half of the OracleTreasury share will be sent to the OracleFoundry and half will be burnt.`}
+                    text={`BE AWARE OF GAS SPENING WHEN CALLING THE DIST/BURN! The OracleDistributor receives DEX swap fees from the feeToo address of the OracleSwapFactory Contract. The fees are in the form of OLP Tokens. ORACLE Token holders can publicly call the Distribute function to convert the OLP Tokens to ORACLE and distribute them. 70% of the ORACLE is sent to the OracleFoundry/Stakers, 10% is sent to the treasury, 10% is sent to Prophet Sacrifice, and 10% is sent to the dead address. If the OracleTreasury address is zero then the 10% is sent to Prophet Sarifice.`}
                   />
                 </div>
 
