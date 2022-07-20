@@ -183,7 +183,7 @@ export default function Farm(): JSX.Element {
                 </p>
 
                 <p>
-                  <span>&#129472;</span> ORACLE Available:{' '}
+                  <span>&#128512;</span> ORACLE Available:{' '}
                   <span className={classNames(enabled ? 'text-green' : 'text-red')}>{enabled ? 'Yes' : 'No'}</span>
                 </p>
 
