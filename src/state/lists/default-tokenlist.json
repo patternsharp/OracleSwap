@@ -3819,6 +3819,30 @@
       "logoURI": "https://raw.githubusercontent.com/trustwallet/assets/master/blockchains/ethereum/assets/0xd0A1E359811322d97991E03f863a0C30C2cF029C/logo.png"
     },
     {
+      "name": "sFortuna",
+      "address": "0x9E2E6c16803878C18E54Ed74F05AeafCCe464626",
+      "symbol": "SFORT",
+      "decimals": 18,
+      "chainId": 19,
+      "logoURI": "https://raw.githubusercontent.com/trustwallet/assets/master/blockchains/ethereum/assets/0xd0A1E359811322d97991E03f863a0C30C2cF029C/logo.png"
+    },
+    {
+      "name": "Pangolin Songbird",
+      "address": "0xd2C217a4798FB7C331876B54D6cA6cb369dEb70C",
+      "symbol": "PSB",
+      "decimals": 18,
+      "chainId": 19,
+      "logoURI": "https://raw.githubusercontent.com/trustwallet/assets/master/blockchains/ethereum/assets/0xd0A1E359811322d97991E03f863a0C30C2cF029C/logo.png"
+    },
+    {
+      "name": "sDOODToken",
+      "address": "0x697bb3B5E1eCf4fEbE6016321b0648d3d6C270B6",
+      "symbol": "SDOOD",
+      "decimals": 18,
+      "chainId": 19,
+      "logoURI": "https://raw.githubusercontent.com/trustwallet/assets/master/blockchains/ethereum/assets/0xd0A1E359811322d97991E03f863a0C30C2cF029C/logo.png"
+    },
+    {
       "name": "OracleSwap.io",
       "address": "0xd7565b16b65376e2ddb6c71e7971c7185a7ff3ff",
       "symbol": "ORACLE",

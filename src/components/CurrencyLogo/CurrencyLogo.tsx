@@ -25,6 +25,13 @@ import PRO from '../../../public/PRO.png'
 
 import LOVE from '../../../public/LOVE.png'
 
+import SFORT from '../../../public/sFORT.png'
+
+import PSB from '../../../public/PNG.png'
+
+import SDOOD from '../../../public/sDOOD.png'
+
+
 // import PRO_Logo3Gold from '../../../public/PRO_Logo3Gold.png'
 
 const BLOCKCHAIN = {
@@ -183,6 +190,18 @@ const CurrencyLogo: FunctionComponent<CurrencyLogoProps> = ({ currency, size = '
       return <img src={LOVE.src} width={size} height={size} className={className} />
     }
 
+    if (currency.symbol === 'SFORT') {
+      return <img src={SFORT.src} width={size} height={size} className={className} />
+    }
+
+    if (currency.symbol === 'SDOOD') {
+      return <img src={SDOOD.src} width={size} height={size} className={className} />
+    }
+
+    if (currency.symbol === 'PSB') {
+      return <img src={PSB.src} width={size} height={size} className={className} />
+    }
+
     if (currency.symbol === 'PRO') {
       return <img src={PRO.src} width={size} height={size} className={className} />
     }
@@ -233,6 +252,18 @@ const CurrencyLogo: FunctionComponent<CurrencyLogoProps> = ({ currency, size = '
 
       if (currency.symbol === 'LOVE') {
         return <img src={LOVE.src} width={size} height={size} className={className} />
+      }
+
+      if (currency.symbol === 'SFORT') {
+        return <img src={SFORT.src} width={size} height={size} className={className} />
+      }
+
+      if (currency.symbol === 'SDOOD') {
+        return <img src={SDOOD.src} width={size} height={size} className={className} />
+      }
+
+      if (currency.symbol === 'PSB') {
+        return <img src={PSB.src} width={size} height={size} className={className} />
       }
 
       if (currency.symbol === 'CAND') {
