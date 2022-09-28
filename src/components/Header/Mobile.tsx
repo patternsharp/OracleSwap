@@ -40,9 +40,8 @@ const Mobile: FC = () => {
             </div>
           </div>
           <Typography variant="xs" weight={700} className="py-0 px-4 text-[1rem] text-high-emphesis bg-[#eb4326]">
-            {`You are using the Oracle Swap Beta platform on the Songbird Canary Network. OracleSwap is
-  a brand new DEX on the Songbird Network with low liquidity. It is upto the Flare Community to
-  increase the liquidity on this DEX. Please be aware of the associated risks with using DeFi
+          {`You are using the Oracle Swap Beta platform on the Songbird Canary Network. OracleSwap is
+  a brand new DEX on the Songbird Network. Liquidity is decentralized and added by users. Please be aware of the associated risks with using DeFi
   platforms.`}
           </Typography>
         </div>

@@ -12,24 +12,20 @@ import COOT from '../../../public/COOT.png'
 import ORACLE from '../../../public/ORACLE.png'
 import SFIN from '../../../public/SFIN.png'
 import SGB from '../../../public/SGB.png'
-
 import WSGB from '../../../public/WSGB.png'
 import XFIN from '../../../public/XFIN.png'
 import xORACLE from '../../../public/xORACLE.png'
-
 import EXFI from '../../../public/EXFI.png'
-
 import DOOD from '../../../public/DOOD.png'
-
 import PRO from '../../../public/PRO.png'
-
 import LOVE from '../../../public/LOVE.png'
-
 import SFORT from '../../../public/sFORT.png'
-
 import PSB from '../../../public/PNG.png'
-
 import SDOOD from '../../../public/sDOOD.png'
+import SRIBBITS from '../../../public/SRIBBITS.png'
+import TRSH from '../../../public/TRSH.png'
+import CGLD from '../../../public/CGLD.png'
+import dFLR from '../../../public/dFLR.png'
 
 
 // import PRO_Logo3Gold from '../../../public/PRO_Logo3Gold.png'
@@ -202,6 +198,22 @@ const CurrencyLogo: FunctionComponent<CurrencyLogoProps> = ({ currency, size = '
       return <img src={PSB.src} width={size} height={size} className={className} />
     }
 
+    if (currency.symbol === 'dFLR') {
+      return <img src={dFLR.src} width={size} height={size} className={className} />
+    }
+
+    if (currency.symbol === 'SRIBBITS') {
+      return <img src={SRIBBITS.src} width={size} height={size} className={className} />
+    }
+
+    if (currency.symbol === 'TRSH') {
+      return <img src={TRSH.src} width={size} height={size} className={className} />
+    }
+
+    if (currency.symbol === 'CGLD') {
+      return <img src={CGLD.src} width={size} height={size} className={className} />
+    }
+
     if (currency.symbol === 'PRO') {
       return <img src={PRO.src} width={size} height={size} className={className} />
     }
@@ -264,6 +276,10 @@ const CurrencyLogo: FunctionComponent<CurrencyLogoProps> = ({ currency, size = '
 
       if (currency.symbol === 'PSB') {
         return <img src={PSB.src} width={size} height={size} className={className} />
+      }
+
+      if (currency.symbol === 'dFLR') {
+        return <img src={dFLR.src} width={size} height={size} className={className} />
       }
 
       if (currency.symbol === 'CAND') {

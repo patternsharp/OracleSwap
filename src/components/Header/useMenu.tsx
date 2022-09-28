@@ -1,4 +1,4 @@
-import { GlobeIcon, SwitchVerticalIcon, CollectionIcon } from '@heroicons/react/outline'
+import { GlobeIcon, SwitchVerticalIcon, CollectionIcon,  CurrencyDollarIcon } from '@heroicons/react/outline'
 
 import { t } from '@lingui/macro'
 import { useLingui } from '@lingui/react'
@@ -104,6 +104,14 @@ const useMenu: UseMenu = () => {
       icon: <GlobeIcon width={20} />,
     }
 
+    let earnMenu: MenuItem = {
+      key: 'earn',
+      title: i18n._(t`💲Earn`),
+      link: 'https://earn.oracleswap.io/',
+      external: true,
+      icon: <CurrencyDollarIcon width={20} />,
+    }
+
     let nftMenu: MenuItem = {
       key: 'nft',
       title: i18n._(t`NFT`),
@@ -111,6 +119,7 @@ const useMenu: UseMenu = () => {
       external: true,
       icon: <CollectionIcon width={20} />,
     }
+
 
     const exploreMenu: MenuItemLeaf[] = []
     // if (featureEnabled(Feature.VESTING, chainId)) {
@@ -180,6 +189,7 @@ const useMenu: UseMenu = () => {
     }
 
     mainItems.push(nftMenu)
+    mainItems.push(earnMenu)
     // if (featureEnabled(Feature.KASHI, chainId)) {
     //   mainItems.push({
     //     key: 'lending',

@@ -3835,6 +3835,38 @@
       "logoURI": "https://raw.githubusercontent.com/trustwallet/assets/master/blockchains/ethereum/assets/0xd0A1E359811322d97991E03f863a0C30C2cF029C/logo.png"
     },
     {
+      "name": "xWhales Trash",
+      "address": "0x43344Ced39E2d7a6Be7Eda306E1750747D9Dcb01",
+      "symbol": "TRSH",
+      "decimals": 18,
+      "chainId": 19,
+      "logoURI": "https://raw.githubusercontent.com/trustwallet/assets/master/blockchains/ethereum/assets/0xd0A1E359811322d97991E03f863a0C30C2cF029C/logo.png"
+    },
+    {
+      "name": "sRIBBITS",
+      "address": "0x399E279c814a3100065fceaB8CbA1aB114805344",
+      "symbol": "SRIBBITS",
+      "decimals": 18,
+      "chainId": 19,
+      "logoURI": "https://raw.githubusercontent.com/trustwallet/assets/master/blockchains/ethereum/assets/0xd0A1E359811322d97991E03f863a0C30C2cF029C/logo.png"
+    },
+    {
+      "name": "CanaryGold",
+      "address": "0x1c7d1dd0995dd0ABdd71FD67924C9dD4Cf7b4135",
+      "symbol": "CGLD",
+      "decimals": 18,
+      "chainId": 19,
+      "logoURI": "https://raw.githubusercontent.com/trustwallet/assets/master/blockchains/ethereum/assets/0xd0A1E359811322d97991E03f863a0C30C2cF029C/logo.png"
+    },
+    {
+      "name": "dFLR",
+      "address": "0x6f1Be01f9cD0c14E38f94E81Cb281ecB98Cc6A9b",
+      "symbol": "dFLR",
+      "decimals": 18,
+      "chainId": 19,
+      "logoURI": "https://raw.githubusercontent.com/trustwallet/assets/master/blockchains/ethereum/assets/0xd0A1E359811322d97991E03f863a0C30C2cF029C/logo.png"
+    },
+    {
       "name": "sDOODToken",
       "address": "0x697bb3B5E1eCf4fEbE6016321b0648d3d6C270B6",
       "symbol": "SDOOD",
