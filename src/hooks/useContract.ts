@@ -19,7 +19,7 @@ import {
   TIMELOCK_ADDRESS,
   WNATIVE_ADDRESS,
 } from '@sushiswap/core-sdk'
-import { MASTERCHEF_ADDRESS, ORACLE_DISTRIBUTOR_ADDRESS, PROPHET_SACRIFICE_ADDRESS } from 'app/constants'
+import { MASTERCHEF_ADDRESS, ORACLE_DISTRIBUTOR_ADDRESS, PROPHET_SACRIFICE_ADDRESS,PROSTAKING_ADDRESS } from 'app/constants'
 import { LIMIT_ORDER_HELPER_ADDRESS, STOP_LIMIT_ORDER_ADDRESS } from '@sushiswap/limit-order-sdk'
 import MISO from '@sushiswap/miso/exports/all.json'
 import TRIDENT from '@sushiswap/trident/exports/all.json'
@@ -33,6 +33,7 @@ import BAR_ABI from 'app/constants/abis/bar.json'
 
 import ORACLE_DISTRIBUTOR_ABI from 'app/constants/abis/oracledistributor.json'
 import PROPHET_SACRIFICE_ABI from 'app/constants/abis/prophet-sacrifice.json'
+import PROSTAKING_ABI  from 'app/constants/abis/prostaking.json'
 
 import BENTOBOX_ABI from 'app/constants/abis/bentobox.json'
 import BORING_HELPER_ABI from 'app/constants/abis/boring-helper.json'
@@ -187,6 +188,11 @@ export function useRouterContract(withSignerIfPossible?: boolean): Contract | nu
 export function useSushiBarContract(withSignerIfPossible?: boolean): Contract | null {
   const { chainId } = useActiveWeb3React()
   return useContract(chainId ? BAR_ADDRESS[chainId] : undefined, BAR_ABI, withSignerIfPossible)
+}
+
+export function useProStakingContract(withSignerIfPossible?: boolean): Contract | null {
+  const { chainId } = useActiveWeb3React()
+  return useContract(chainId ? PROSTAKING_ADDRESS : undefined, PROSTAKING_ABI, withSignerIfPossible)
 }
 
 export function useOracleDistributorContract(withSignerIfPossible?: boolean): Contract | null {
