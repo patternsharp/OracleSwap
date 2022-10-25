@@ -95,14 +95,33 @@ const useMenu: UseMenu = () => {
     //   })
     // }
 
+    const stakeMenu = [
+      {
+        key: 'oracle',
+        title: i18n._(t`Oracle`),
+        link: '/stake',
+      },
+      {
+        key: 'pro',
+        title: i18n._(t`PRO`),
+        link: `/prostaking`,
+      },
+      {
+        key: 'nft',
+        title: i18n._(t`NFT`),
+        link: `/prostaking`,
+      },
+    ]
+
+
     const mainItems: Menu = [tradeMenu]
 
-    let stakeMenu: MenuItem = {
-      key: 'stake',
-      title: i18n._(t`Stake`),
-      link: '/stake',
-      icon: <GlobeIcon width={20} />,
-    }
+    // let stakeMenu: MenuItem = {
+    //   key: 'stake',
+    //   title: i18n._(t`Stake`),
+    //   link: '/stake',
+    //   icon: <GlobeIcon width={20} />,
+    // }
 
     let earnMenu: MenuItem = {
       key: 'earn',
@@ -156,7 +175,20 @@ const useMenu: UseMenu = () => {
       })
 
     if (featureEnabled(Feature.VESTING, chainId)) {
-      mainItems.push(stakeMenu)
+
+          // let stakeMenu: MenuItem = {
+    //   key: 'stake',
+    //   title: i18n._(t`Stake`),
+    //   link: '/stake',
+    //   icon: <GlobeIcon width={20} />,
+    // }
+
+      mainItems.push({
+        key: 'stake',
+        title: i18n._(t`Stake`),
+        items: stakeMenu,
+        icon: <GlobeIcon width={20} />,
+      })
     }
 
     if (exploreMenu.length > 0)
