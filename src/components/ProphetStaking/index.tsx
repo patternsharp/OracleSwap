@@ -1,31 +1,37 @@
-import Slider from '@mui/material/Slider'
-import Image from 'next/image'
-import React, { useState } from 'react'
-import Switch from '../Switch'
-import Typography from '../Typography'
+import { BigNumber } from '@ethersproject/bignumber'
+import { MinusIcon, PlusIcon } from '@heroicons/react/solid'
 import { i18n } from '@lingui/core'
 import { t } from '@lingui/macro'
-import { MinusIcon, PlusIcon } from '@heroicons/react/solid'
-import { HeadlessUiModal } from '../Modal'
-import AssetInput from '../AssetInput'
+import Slider from '@mui/material/Slider'
+import {  Currency, CurrencyAmount, JSBI, ZERO, } from '@sushiswap/core-sdk'
 import { PROPHET, XORACLE } from 'app/config/tokens'
-import { useTokenBalance } from 'app/state/wallet/hooks'
-import { useActiveWeb3React } from 'app/services/web3'
-import Button from '../Button'
+import { PROSTAKING_ADDRESS } from 'app/constants'
 import { tryParseAmount } from 'app/functions'
-import { ApprovalState, useApproveCallback, useProStakingContract } from 'app/hooks'
-import { useFarmListItemDetailsModal } from 'app/features/onsen/FarmListItemDetails'
+import { ApprovalState, useApproveCallback } from 'app/hooks'
+import { useProPendingReward, useProStakingActions, useProStakingUserInfo, useProStakingUserNFTCount } from 'app/hooks/useProstaking'
+import { useActiveWeb3React } from 'app/services/web3'
 import { useAppDispatch } from 'app/state/hooks'
 import { useTransactionAdder } from 'app/state/transactions/hooks'
-import { setOnsenModalOpen } from 'app/features/onsen/onsenSlice'
-import { PROSTAKING_ADDRESS } from 'app/constants'
-import Web3Connect from '../Web3Connect'
-import { useProStakingActions } from 'app/hooks/useProstaking'
-import { useRowState } from 'react-table'
-import { BigNumber } from '@ethersproject/bignumber'
+import { useTokenBalance } from 'app/state/wallet/hooks'
 import { isArray } from 'lodash'
+import Image from 'next/image'
+import React, { FC,useMemo, useState } from 'react'
 
-export const ProphetStaking = () => {
+import AssetInput from '../AssetInput'
+import Button from '../Button'
+import { HeadlessUiModal } from '../Modal'
+import Switch from '../Switch'
+import Typography from '../Typography'
+import Web3Connect from '../Web3Connect'
+
+
+interface ProphetStakingProps {
+  totalPoolSize: CurrencyAmount<Currency>
+}
+
+// export const NeonSelectItem: FC<NeonSelectItemProps> = ({ onClick, value, children }) => {
+
+export const ProphetStaking  : FC<ProphetStakingProps> = ({totalPoolSize }) => {
   const [toggle, setToggle] = useState(true)
   const [depositValue, setDepositValue] = useState<string>()
   const [withdrawValue, setWithdrawValue] = useState<string>()
@@ -86,9 +92,34 @@ export const ProphetStaking = () => {
 
   const addTransaction = useTransactionAdder()
 
-  const { deposit, withdraw } = useProStakingActions()
+  const { deposit, withdraw,harvest } = useProStakingActions()
 
   const [lockMode, setLockMode] = useState(2)
+
+  const userReward = useProPendingReward()
+
+  const { lockMode:userLockMode, unlockTime, lockedProAmount, userNFTWeight, userTotalWeight, lockXOracle } = useProStakingUserInfo()
+
+  const nftCount = useProStakingUserNFTCount();
+
+  const rate = useMemo(()=> {
+    if(totalPoolSize && userTotalWeight && totalPoolSize.greaterThan(ZERO)){
+
+      const rateInfo =  userTotalWeight.multiply(100).divide(totalPoolSize).quotient.toString();
+      console.log('prostakers s',rateInfo)
+      return parseFloat(rateInfo);
+    }
+    return 0 
+  },[totalPoolSize,userTotalWeight])
+
+  const timeLock = useMemo(()=> {
+    if(!unlockTime){
+      return null;
+    }
+    var date = new  Date(unlockTime*1000)
+
+    return date.toLocaleDateString()
+  },[unlockTime])
 
   return (
     <>
@@ -136,7 +167,6 @@ export const ProphetStaking = () => {
                 *If you unstake your PRO before the time loack period is over you will forfiet 50% of your staked
                 PRO/xORACLES!
               </p>
-
             </div>
           ) : (
             <div className="flex flex-col w-full gap-1 p-4 stake-wrap">
@@ -265,43 +295,53 @@ export const ProphetStaking = () => {
             <h2 className="mb-2 text-xl">Stake Balance</h2>
             <div className="flex items-center pb-1 balance1">
               <Image
-                src="https://res.cloudinary.com/sushi-cdn/image/fetch/f_auto,c_limit,w_32,q_auto/https://app.sushi.com/images/logo.svg"
+                src="https://dex.oracleswap.io/PRO_Logo3Gold.png"
                 height={30}
                 width={30}
                 alt="true"
               />
-              <p className="ml-2">PRO: 1111</p>
+              <p className="ml-2">{`PRO: ${lockedProAmount? lockedProAmount.toSignificant(6): ''}`}</p>
             </div>
             <div className="flex items-center pb-1 balance2">
               <Image
-                src="https://res.cloudinary.com/sushi-cdn/image/fetch/f_auto,c_limit,w_32,q_auto/https://app.sushi.com/images/logo.svg"
+                src="https://dex.oracleswap.io/profile_icon.webp"
                 height={30}
                 width={30}
                 alt="true"
               />
-              <p className="ml-2">PRO: 1111</p>
+              <p className="ml-2">{`ORACLE NFT: ${nftCount}`}</p>
             </div>
             <div className="flex items-center pb-1 balance3">
               <Image
-                src="https://res.cloudinary.com/sushi-cdn/image/fetch/f_auto,c_limit,w_32,q_auto/https://app.sushi.com/images/logo.svg"
+                src="https://dex.oracleswap.io/ORACLE_SilverLogo.png"
                 height={30}
                 width={30}
                 alt="true"
               />
-              <p className="ml-2">PRO: 1111</p>
+              <p className="ml-2">{`XORACLE: ${lockXOracle ? lockXOracle.toSignificant(6): ''}`}</p>
             </div>
             <p>
               YOUR TOTAL POOL SHARE:
-              <br /> <span className="text-green-600">65000 = 0.1857%</span>
+              <br /> <span className="text-green-600"> {`${userTotalWeight? userTotalWeight.toSignificant(6) : ''} = ${rate}%`}</span>
             </p>
             <p>
               TIME LOCK
-              <br /> <span className={`text-red-600 ${toggle ? 'opacity-100' : 'opacity-0'}`}>65000 = 0.1857%</span>
+              <br /> <span className={``}>{timeLock}</span>
             </p>
           </div>
-          <div className="flex-1 px-5 rewards bg-dark-800 rounded-3xl py-7">
+          <div className="flex flex-col justify-between flex-1 px-5 rewards bg-dark-800 rounded-3xl py-7">
+            <div>
             <h2 className="mb-2 text-xl">Rewards</h2>
-            <p className="flex items-center">
+            <div className="flex flex-col">
+              {userReward.map((item, index) => (
+                <p key={`user-rewardinfo-${index}`}>{`${item.token.symbol}: ${
+                  item.amount ? item.amount.toSignificant(6) : ''
+                }`}</p>
+              ))}
+            </div>
+            </div>
+
+            {/* <p className="flex items-center">
               <span className="w-1/2">SGB .01</span>
               <span className="w-1/2 text-xl">OLPs</span>
             </p>
@@ -320,13 +360,35 @@ export const ProphetStaking = () => {
             <p className="flex items-center">
               <span className="w-1/2">SGB .01</span>
               <span className="w-1/2">PRO/WSGB .01</span>
-            </p>
-            <button
+            </p> */}
+            {/* <button
               type="button"
               className="inline-block px-4 py-2 mt-4 text-xl font-semibold text-white rounded-md bg-yellow"
             >
               HARVEST
-            </button>
+            </button> */}
+
+            <Button
+                fullWidth
+                color={'pink'}
+                onClick={async () => {
+                  try {
+                    // KMP decimals depend on asset, OLP is always 18
+                    // @ts-ignore TYPE NEEDS FIXING
+                    const tx = await harvest()
+                    if (tx?.hash) {
+                      addTransaction(tx, {
+                        summary: `harvest in pro staking`,
+                      })
+                    }
+                  } catch (error) {
+                    console.error(error)
+                  }
+                }}
+                disabled={!userReward || userReward?.length === 0}
+              >
+                {i18n._(t`HARVEST`)}
+              </Button>
           </div>
         </div>
       </div>

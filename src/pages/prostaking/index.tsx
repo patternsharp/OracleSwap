@@ -16,13 +16,11 @@ import { Feature } from 'app/enums'
 import { classNames } from 'app/functions'
 import { tryParseAmount } from 'app/functions/parse'
 import { ApprovalState, useApproveCallback } from 'app/hooks/useApproveCallback'
-import useOracleDistributor, {
-  useOracleDistributorEnableCheck,
-} from 'app/hooks/useOracleDistributor'
+import { useProPendingReward, useProStakingInfo, useTotalDistributedReward } from 'app/hooks/useProstaking'
 import useSushiBar from 'app/hooks/useSushiBar'
 import TransactionFailedModal from 'app/modals/TransactionFailedModal'
 import { useActiveWeb3React } from 'app/services/web3'
-import { useDexWarningOpen, useWalletModalToggle } from 'app/state/application/hooks'
+import { useDexWarningOpen, useProStakingWarningOpen, useToggleProStakingWarning, useWalletModalToggle } from 'app/state/application/hooks'
 import { useTokenBalance } from 'app/state/wallet/hooks'
 import Head from 'next/head'
 // import Image from 'next/image'
@@ -60,94 +58,16 @@ const buttonStyleConnectWallet = `${buttonStyle} text-high-emphesis bg-blue hove
 function ProStaking() {
   const { i18n } = useLingui()
   const { account } = useActiveWeb3React()
-  const sushiBalance = useTokenBalance(account ?? undefined, SUSHI[ChainId.SGB])
-  const xSushiBalance = useTokenBalance(account ?? undefined, XORACLE)
 
-  const { enter, leave } = useSushiBar()
+  const {totalProAmount,totalxOracleAmount ,totalPoolSize,totalNFTCount} = useProStakingInfo()
 
-  const walletConnected = !!account
-  const toggleWalletModal = useWalletModalToggle()
-
-  const [activeTab, setActiveTab] = useState(0)
-  const [modalOpen, setModalOpen] = useState(false)
-
-  const oracleBalance = useTokenBalance(account ?? undefined, ORACLE)
-
-  const [input, setInput] = useState<string>('')
-  const [usingBalance, setUsingBalance] = useState(false)
-
-  const balance = activeTab === 0 ? sushiBalance : xSushiBalance
-
-  const formattedBalance = balance?.toSignificant(4)
-
-  const parsedAmount = usingBalance ? balance : tryParseAmount(input, balance?.currency)
-
-  const [approvalState, approve] = useApproveCallback(parsedAmount, BAR_ADDRESS[ChainId.SGB])
-
-  const handleInput = (v: string) => {
-    if (v.length <= INPUT_CHAR_LIMIT) {
-      setUsingBalance(false)
-      setInput(v)
-    }
-  }
-
-  const handleClickMax = () => {
-    // @ts-ignore TYPE NEEDS FIXING
-    setInput(parsedAmount ? parsedAmount.toSignificant(balance.currency.decimals).substring(0, INPUT_CHAR_LIMIT) : '')
-    setUsingBalance(true)
-  }
-
-  // @ts-ignore TYPE NEEDS FIXING
-  const insufficientFunds = (balance && balance.equalTo(ZERO)) || parsedAmount?.greaterThan(balance)
-
-  const inputError = insufficientFunds
-
-  const [pendingTx, setPendingTx] = useState(false)
-
-  const buttonDisabled = !input || pendingTx || (parsedAmount && parsedAmount.equalTo(ZERO))
-
-
-
-  const handleClickButton = async () => {
-    if (buttonDisabled) return
-
-    if (!walletConnected) {
-      toggleWalletModal()
-    } else {
-      setPendingTx(true)
-
-      if (activeTab === 0) {
-        if (approvalState === ApprovalState.NOT_APPROVED) {
-          const success = await sendTx(() => approve())
-          if (!success) {
-            setPendingTx(false)
-            // setModalOpen(true)
-            return
-          }
-        }
-        const success = await sendTx(() => enter(parsedAmount))
-        if (!success) {
-          setPendingTx(false)
-          // setModalOpen(true)
-          return
-        }
-      } else if (activeTab === 1) {
-        const success = await sendTx(() => leave(parsedAmount))
-        if (!success) {
-          setPendingTx(false)
-          // setModalOpen(true)
-          return
-        }
-      }
-
-      handleInput('')
-      setPendingTx(false)
-    }
-  }
+  const distributedReward =  useTotalDistributedReward()
 
   const showUseDexWarning = useDexWarningOpen()
 
-  const [showWarning, setShowWarning] = useState(true)
+  const showWarning  = useProStakingWarningOpen()
+
+  const toggleWarning = useToggleProStakingWarning()
 
   return (
     <Container id="prostaking-page" className="py-4 md:py-8 lg:py-12" maxWidth="5xl">
@@ -168,9 +88,7 @@ function ProStaking() {
           <div className="absolute right-1 top-1">
             <div
               className="flex items-center justify-center w-6 h-6 cursor-pointer hover:text-white"
-              onClick={() => {
-                setShowWarning(!showWarning)
-              }}
+              onClick={toggleWarning}
             >
               <XIcon width={24} height={24} className="text-high-emphesis" />
             </div>
@@ -207,19 +125,22 @@ USE AT YOUR OWN RISK!`}
               <div className="flex flex-wrap p-5 rounded-md global-stat bg-dark-800">
                 <div className="w-full sm:w-1/2">
                   <h3 className="text-2xl">Global Stats</h3>
-                  <p>Current Global Pool Size: 35,000,000</p>
-                  <p>Total PRO Locked: 555555</p>
-                  <p>Total Oracle NFTs Locked: 15000</p>
-                  <p>Total XORACLE Locked: 1500000</p>
+                  <p>{`Current Global Pool Size:  ${totalPoolSize? totalPoolSize.toSignificant(6): ''}`}</p>
+                  <p>{`Total PRO Locked:  ${totalProAmount? totalProAmount.toSignificant(6): ''}`}</p>
+                  <p>{`Total Oracle NFTs Locked:  ${totalNFTCount? totalNFTCount: ''}`}</p>
+                  <p>{`Total XORACLE Locked:  ${totalxOracleAmount? totalxOracleAmount.toSignificant(6): ''}`}</p>
                 </div>
                 <div className="w-full mt-5 sm:w-1/2 sm:mt-0">
                   <p className="text-lg">DISTRIBUTED</p>
-                  <p>SGB: 3500</p>
+                  {
+                    distributedReward.map((item,index) => (<p key={`rewardinfo-${index}`}>{`${item.token.symbol}: ${item.amount?item.amount.toSignificant(6):''}`}</p>))
+                  }
+                  {/* <p>SGB: 3500</p>
                   <p>W56B: 3500</p>
                   <p>PRO: 5000</p>
                   <p>ORACLE: 10000</p>
                   <p>XORACLE: 2000</p>
-                  <p>OLPs Total: 500</p>
+                  <p>OLPs Total: 500</p> */}
                 </div>
               </div>
             </div>

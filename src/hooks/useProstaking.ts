@@ -1,8 +1,13 @@
 import { BigNumber } from '@ethersproject/bignumber'
+import { ChainId, CurrencyAmount, JSBI, Token, ZERO } from '@sushiswap/core-sdk'
+import { PROPHET, XORACLE } from 'app/config/tokens'
 import { useActiveWeb3React } from 'app/services/web3'
-import { useSingleCallResult, useSingleContractMultipleData } from 'app/state/multicall/hooks'
+import { useSingleCallResult } from 'app/state/multicall/hooks'
 import { useTransactionAdder } from 'app/state/transactions/hooks'
+
 import { useCallback, useMemo } from 'react'
+
+import { useAllTokens } from './Tokens'
 
 import { useProStakingContract } from './useContract'
 
@@ -11,15 +16,18 @@ export const useProStakingActions = () => {
 
   const prostakingContract = useProStakingContract()
 
-  const deposit = useCallback(async (amount:BigNumber,lockMode:number) => {
-    try {
-      const tx = await prostakingContract?.deposit(amount,lockMode)
+  const deposit = useCallback(
+    async (amount: BigNumber, lockMode: number) => {
+      try {
+        const tx = await prostakingContract?.deposit(amount, lockMode)
 
-      return addTransaction(tx, { summary: 'Deposit in prostaking' })
-    } catch (e) {
-      return e
-    }
-  }, [addTransaction, prostakingContract])
+        return addTransaction(tx, { summary: 'Deposit in prostaking' })
+      } catch (e) {
+        return e
+      }
+    },
+    [addTransaction, prostakingContract]
+  )
 
   const harvest = useCallback(async () => {
     try {
@@ -31,88 +39,151 @@ export const useProStakingActions = () => {
     }
   }, [addTransaction, prostakingContract])
 
-  const withdraw = useCallback(async (amount:BigNumber) => {
-    try {
-      const tx = await prostakingContract?.withdraw(amount)
+  const withdraw = useCallback(
+    async (amount: BigNumber) => {
+      try {
+        const tx = await prostakingContract?.withdraw(amount)
 
-      return addTransaction(tx, { summary: 'withdraw in prostaking' })
-    } catch (e) {
-      return e
-    }
-  }, [addTransaction, prostakingContract])
+        return addTransaction(tx, { summary: 'withdraw in prostaking' })
+      } catch (e) {
+        return e
+      }
+    },
+    [addTransaction, prostakingContract]
+  )
 
-  const increaseLockAmount = useCallback(async (amount:BigNumber) => {
-    try {
-      const tx = await prostakingContract?.increaseLockAmount(amount)
+  const increaseLockAmount = useCallback(
+    async (amount: BigNumber) => {
+      try {
+        const tx = await prostakingContract?.increaseLockAmount(amount)
 
-      return addTransaction(tx, { summary: 'increaseLockAmount in prostaking' })
-    } catch (e) {
-      return e
-    }
-  }, [addTransaction, prostakingContract])
+        return addTransaction(tx, { summary: 'increaseLockAmount in prostaking' })
+      } catch (e) {
+        return e
+      }
+    },
+    [addTransaction, prostakingContract]
+  )
 
-  
-  const oracleNFTStake = useCallback(async (tokenId:number) => {
-    try {
-      const tx = await prostakingContract?.NFTStake(tokenId)
+  const oracleNFTStake = useCallback(
+    async (tokenId: number) => {
+      try {
+        const tx = await prostakingContract?.NFTStake(tokenId)
 
-      return addTransaction(tx, { summary: 'Oracle nft stake in ProStaking' })
-    } catch (e) {
-      return e
-    }
-  }, [addTransaction, prostakingContract])
+        return addTransaction(tx, { summary: 'Oracle nft stake in ProStaking' })
+      } catch (e) {
+        return e
+      }
+    },
+    [addTransaction, prostakingContract]
+  )
 
-  const oracleNFTWithdraw = useCallback(async (tokenId:number) => {
-    try {
-      const tx = await prostakingContract?.NFTWithdraw(tokenId)
+  const oracleNFTWithdraw = useCallback(
+    async (tokenId: number) => {
+      try {
+        const tx = await prostakingContract?.NFTWithdraw(tokenId)
 
-      return addTransaction(tx, { summary: 'Oracle nft withdraw in ProStaking' })
-    } catch (e) {
-      return e
-    }
-  }, [addTransaction, prostakingContract])
+        return addTransaction(tx, { summary: 'Oracle nft withdraw in ProStaking' })
+      } catch (e) {
+        return e
+      }
+    },
+    [addTransaction, prostakingContract]
+  )
 
-  const extendLockMode = useCallback(async (lockMode:number) => {
-    try {
-      const tx = await prostakingContract?.extendLockTime(lockMode)
+  const extendLockMode = useCallback(
+    async (lockMode: number) => {
+      try {
+        const tx = await prostakingContract?.extendLockTime(lockMode)
 
-      return addTransaction(tx, { summary: 'extend lock time in ProStaking' })
-    } catch (e) {
-      return e
-    }
-  }, [addTransaction, prostakingContract])
+        return addTransaction(tx, { summary: 'extend lock time in ProStaking' })
+      } catch (e) {
+        return e
+      }
+    },
+    [addTransaction, prostakingContract]
+  )
 
-  return { deposit,withdraw,harvest,oracleNFTStake,oracleNFTWithdraw,extendLockMode,increaseLockAmount }
+  return { deposit, withdraw, harvest, oracleNFTStake, oracleNFTWithdraw, extendLockMode, increaseLockAmount }
 }
 
-export function useProStakingRewardHistory(){
+export function useProStakingRewardHistory() {
   const prostakingContract = useProStakingContract()
 
   const result1 = useSingleCallResult(prostakingContract, 'getRewardHistory')?.result
 
-  console.log('getRewardHistory',result1)
+  console.log('getRewardHistory', result1)
 
-  const times = result1?.times;
-  const rewards =  result1?.rewards;
+  const times = result1?.times
+  const rewards = result1?.rewards
 
-  const history = useMemo(()=>{
-    if(!times || !rewards){
+  const history = useMemo(() => {
+    if (!times || !rewards) {
       return []
     }
     let temp: any[] = []
-    times.map((item:BigNumber,index:number)=> {
+    times.map((item: BigNumber, index: number) => {
       history.push({
-        timestamp:item.toNumber(),
-        reward:rewards[index]
+        timestamp: item.toNumber(),
+        reward: rewards[index],
       })
     })
-    return temp;
-
-  },[times,rewards])
+    return temp
+  }, [times, rewards])
 }
 
-export function useProStakingUserInfo(){
+export function useProStakingUserInfo() {
+  const { account } = useActiveWeb3React()
 
+  const contract = useProStakingContract()
+
+  const args = useMemo(() => {
+    if (!account) {
+      return
+    }
+    return [String(account)]
+  }, [account])
+
+  const results = useSingleCallResult(args ? contract : null, 'userLocks', args)?.result
+
+  console.log('prostakers userLock', results)
+
+  const lockModeInfo = results?.lockMode
+
+  const lockedAmountInfo = results?.lockedAmount
+
+  const nftWeightInfo = results?.nftWeight
+
+  const totalWeightInfo = results?.totalWeight
+
+  const unlockTimeInfo = results?.unlockTime
+
+  const xOracleLockInfo = results?.xOracleLock
+
+  const lockMode = lockModeInfo ? lockModeInfo.toNumber() : undefined
+
+  const unlockTime = unlockTimeInfo ? unlockTimeInfo.toNumber() : undefined
+
+  const lockedAmount = lockedAmountInfo ? JSBI.BigInt(lockedAmountInfo.toString()) : undefined
+  // @ts-ignore TYPE NEEDS FIXING
+  const lockedProAmount = lockedAmount ? CurrencyAmount.fromRawAmount(PROPHET, lockedAmount) : undefined
+
+  const nftWeight = nftWeightInfo ? JSBI.BigInt(nftWeightInfo.toString()) : undefined
+  // @ts-ignore TYPE NEEDS FIXING
+  const userNFTWeight = nftWeight ? CurrencyAmount.fromRawAmount(PROPHET, nftWeight) : undefined
+
+  const totalWeight = totalWeightInfo ? JSBI.BigInt(totalWeightInfo.toString()) : undefined
+  // @ts-ignore TYPE NEEDS FIXING
+  const userTotalWeight = totalWeight ? CurrencyAmount.fromRawAmount(PROPHET, totalWeight) : undefined
+
+  const xOracleLock = xOracleLockInfo ? JSBI.BigInt(xOracleLockInfo.toString()) : undefined
+  // @ts-ignore TYPE NEEDS FIXING
+  const lockXOracle = xOracleLock ? CurrencyAmount.fromRawAmount(XORACLE, xOracleLock) : undefined
+
+  return { lockMode, unlockTime, lockedProAmount, userNFTWeight, userTotalWeight, lockXOracle }
+}
+
+export function useProStakingNFTInfo() {
   const { account, chainId } = useActiveWeb3React()
 
   const contract = useProStakingContract()
@@ -124,10 +195,6 @@ export function useProStakingUserInfo(){
     return [String(account)]
   }, [account])
 
-  const userLockInfo = useSingleCallResult(args ? contract : null, 'userLocks', args)?.result
-
-  const userLock = userLockInfo?.[0]
-
   const userStakedNFTInfo = useSingleCallResult(args ? contract : null, 'userStakedNFT', args)?.result
 
   const userStakedNFT = userStakedNFTInfo?.[0]
@@ -136,89 +203,132 @@ export function useProStakingUserInfo(){
 
   const userWalletNFT = userWalletNFTInfo?.[0]
 
-  const userPendingRewardInfo = useSingleCallResult(args ? contract : null, 'pendingRewards', args)?.result
-
-  const userPendingReward = userPendingRewardInfo?.[0]
-
-  return {userLock }
-
+  return { userStakedNFT, userWalletNFT }
 }
 
-export function useProStakingInfo(){
-
+export function useProStakingUserNFTCount() {
   const { account, chainId } = useActiveWeb3React()
 
   const contract = useProStakingContract()
 
-  const totalNFTCountInfo = useSingleCallResult( contract , 'totalNFTCount')?.result
-
-  const totalNFTCount = totalNFTCountInfo?.[0]
-
-  const totalNFTWeightInfo = useSingleCallResult( contract , 'totalNFTWeight')?.result
-
-  const totalNFTWeight = totalNFTWeightInfo?.[0]
-
-  const totalPoolWeightInfo = useSingleCallResult( contract , 'totalPoolWeight')?.result
-
-  const totalPoolWeight = totalPoolWeightInfo?.[0]
-
-  const totalProAmountInfo = useSingleCallResult( contract , 'totalProAmount')?.result
-
-  const totalProAmount = totalProAmountInfo?.[0]
-
-
-  const results = useSingleContractMultipleData( contract , 'totalProAmount',[[0],[1],[2],[3],[4]])
-
-  const proAmountForLock = useMemo(()=>{
-    if (results && Array.isArray(results) && results.length === 5) {
-      console.log('proAmountForLock',results);
-      return [0,0,0,0,0]
-      // return results.map<BigNumber | undefined>((el) => {
-      //   if (el.result && Array.isArray(el.result) && el.result.length > 0) {
-
-      //     const value = el.result[0]
-          
-      //     const amount = value ? JSBI.BigInt(value[0].toString()) : undefined
-      //     return amount;
-      //   }
-      //     return undefined
-      // })
+  const args = useMemo(() => {
+    if (!account) {
+      return
     }
-  
-    return Array(5).fill(undefined)
-  },[results])
+    return [String(account)]
+  }, [account])
 
+  const userStakedNFTInfo = useSingleCallResult(args ? contract : null, 'userStakedNFTCount', args)?.result
 
-  return {totalNFTCount }
+  const userStakedNFT = userStakedNFTInfo?.[0]
 
+  return userStakedNFT ? userStakedNFT.toNumber() : 0
 }
 
+export function useProPendingReward() {
+  const { account, chainId } = useActiveWeb3React()
 
-// export function useOracleBar() {
-//   const { account, chainId } = useActiveWeb3React()
+  const contract = useProStakingContract()
 
-//   const oracleTokenContract = useTokenContract(SUSHI_ADDRESS[ChainId.SGB])
+  const args = useMemo(() => {
+    if (!account) {
+      return
+    }
+    return [String(account)]
+  }, [account])
 
-//   const result1 = useSingleCallResult(oracleTokenContract, 'balanceOf', [XORACLE.address])?.result
+  const userPendingRewardInfo = useSingleCallResult(args ? contract : null, 'pendingRewards', args)?.result
 
-//   const value1 = result1?.[0]
+  const rewardsInfo = userPendingRewardInfo?.rewards
 
-//   const amount1 = value1 ? JSBI.BigInt(value1.toString()) : undefined
+  const alltokens = useAllTokens()
 
-//   const contract = useSushiBarContract()
+  const rewards = useMemo(() => {
+    if (!rewardsInfo) {
+      return []
+    }
+    let infos: any[] = []
+    rewardsInfo.map((item: { token: string; amount: BigNumber }) => {
+      const OLPToken = new Token(ChainId.SGB, item.token, 18, 'OLP', 'OracleSwap LP Token')
+      const tokenInfo = alltokens[item.token] || OLPToken
 
-//   const result = useSingleCallResult(contract, 'totalSupply')?.result
+      const amountInfo = item.amount ? JSBI.BigInt(item.amount.toString()) : undefined
 
-//   const value = result?.[0]
+      // @ts-ignore TYPE NEEDS FIXING
+      const amount = tokenInfo && amountInfo ? CurrencyAmount.fromRawAmount(tokenInfo, amountInfo) : undefined
 
-//   const amount = value ? JSBI.BigInt(value.toString()) : undefined
+      if (amount && amount.greaterThan(ZERO)) {
+        infos.push({
+          token: tokenInfo,
+          amount: amount,
+        })
+      }
+    })
+    return infos
+  }, [rewardsInfo, alltokens])
+  return rewards
+}
 
-//   return useMemo(() => {
-//     if (amount && amount1) {
-//       const ratio = JSBI.toNumber(amount1) / JSBI.toNumber(amount)
-//       const totalSupply = CurrencyAmount.fromRawAmount(XORACLE, amount)
-//       return [ratio, totalSupply]
-//     }
-//     return [undefined, undefined]
-//   }, [amount, amount1])
-// }
+export function useProStakingInfo() {
+  const contract = useProStakingContract()
+
+  const results = useSingleCallResult(contract, 'getGlobalStatus')?.result
+
+  const totalPoolInfo = results?.poolSize
+
+  const proAmountInfo = results?.proAmount
+
+  const nftCountInfo = results?.nftCount
+
+  const totalNFTCount = nftCountInfo ? nftCountInfo.toNumber() : undefined
+
+  const xOracleAmountInfo = results?.xOracleAmount
+
+  const totalPool = totalPoolInfo ? JSBI.BigInt(totalPoolInfo.toString()) : undefined
+  // @ts-ignore TYPE NEEDS FIXING
+  const totalPoolSize = totalPool ? CurrencyAmount.fromRawAmount(PROPHET, totalPool) : undefined
+
+  const proAmount = proAmountInfo ? JSBI.BigInt(proAmountInfo.toString()) : undefined
+  // @ts-ignore TYPE NEEDS FIXING
+  const totalProAmount = proAmount ? CurrencyAmount.fromRawAmount(PROPHET, proAmount) : undefined
+
+  const xOracleAmount = xOracleAmountInfo ? JSBI.BigInt(xOracleAmountInfo.toString()) : undefined
+
+  // @ts-ignore TYPE NEEDS FIXING
+  const totalxOracleAmount = xOracleAmount ? CurrencyAmount.fromRawAmount(XORACLE, xOracleAmount) : undefined
+
+  return { totalProAmount, totalxOracleAmount, totalPoolSize, totalNFTCount }
+}
+
+export function useTotalDistributedReward() {
+  const contract = useProStakingContract()
+
+  const results = useSingleCallResult(contract, 'distributedTotalReward')?.result
+
+  const rewardsInfo = results?.rewards
+
+  const alltokens = useAllTokens()
+
+  const rewards = useMemo(() => {
+    if (!rewardsInfo) {
+      return []
+    }
+    let infos: any[] = []
+    rewardsInfo.map((item: { token: string; amount: BigNumber }) => {
+      const OLPToken = new Token(ChainId.SGB, item.token, 18, 'OLP', 'OracleSwap LP Token')
+      const tokenInfo = alltokens[item.token] || OLPToken
+
+      const amountInfo = item.amount ? JSBI.BigInt(item.amount.toString()) : undefined
+
+      // @ts-ignore TYPE NEEDS FIXING
+      const amount = tokenInfo && amountInfo ? CurrencyAmount.fromRawAmount(tokenInfo, amountInfo) : undefined
+
+      infos.push({
+        token: tokenInfo,
+        amount: amount,
+      })
+    })
+    return infos
+  }, [rewardsInfo, alltokens])
+  return rewards
+}
