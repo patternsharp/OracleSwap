@@ -13,6 +13,7 @@ import {
   updateBlockTimestamp,
   updateChainId,
   setDexUseWarning,
+  setProStakingWarning
 } from './actions'
 
 type PopupList = Array<{
@@ -27,6 +28,7 @@ export interface ApplicationState {
   readonly blockTimestamp: { readonly [chainId: number]: number }
   readonly chainConnectivityWarning: boolean
   readonly dexUseWarning: boolean
+  readonly proStakingWarning: boolean
   readonly chainId: number | null
   readonly implements3085: boolean
   readonly popupList: PopupList
@@ -41,6 +43,7 @@ const initialState: ApplicationState = {
   chainId: null,
   implements3085: false,
   dexUseWarning: true,
+  proStakingWarning:true,
   popupList: [],
   openModal: null,
   kashiApprovalPending: '',
@@ -75,6 +78,10 @@ export default createReducer(initialState, (builder) =>
     .addCase(setDexUseWarning, (state, action) => {
       const { dexUseWarning } = action.payload
       state.dexUseWarning = dexUseWarning
+    })
+    .addCase(setProStakingWarning, (state, action) => {
+      const { proStakingWarning } = action.payload
+      state.proStakingWarning = proStakingWarning
     })
     .addCase(setImplements3085, (state, action) => {
       const { implements3085 } = action.payload

@@ -7,6 +7,7 @@ import {
   removePopup,
   setOpenModal,
   setDexUseWarning,
+  setProStakingWarning,
 } from 'app/state/application/actions'
 import { useAppDispatch } from 'app/state/hooks'
 import { useCallback, useMemo } from 'react'
@@ -22,6 +23,17 @@ export function useBlockTimestamp(): number | undefined {
   const { chainId } = useActiveWeb3React()
 
   return useSelector((state: AppState) => state.application.blockTimestamp[chainId ?? -1])
+}
+
+export function useProStakingWarningOpen(): boolean {
+  const isShow = useSelector((state: AppState) => state.application.proStakingWarning)
+  return isShow
+}
+
+export function useToggleProStakingWarning(): () => void {
+  const isShow = useProStakingWarningOpen()
+  const dispatch = useAppDispatch()
+  return useCallback(() => dispatch(setProStakingWarning({ proStakingWarning: !isShow })), [dispatch, isShow])
 }
 
 export function useDexWarningOpen(): boolean {
