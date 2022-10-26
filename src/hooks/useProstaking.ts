@@ -6,7 +6,7 @@ import { useCallback, useMemo } from 'react'
 
 import { useProStakingContract } from './useContract'
 
-const useProStakingActions = () => {
+export const useProStakingActions = () => {
   const addTransaction = useTransactionAdder()
 
   const prostakingContract = useProStakingContract()

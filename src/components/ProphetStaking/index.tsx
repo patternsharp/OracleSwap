@@ -1,12 +1,35 @@
 import Slider from '@mui/material/Slider'
 import Image from 'next/image'
 import React, { useState } from 'react'
+import Switch from '../Switch'
+import Typography from '../Typography'
+import { i18n } from '@lingui/core'
+import { t } from '@lingui/macro'
+import { MinusIcon, PlusIcon } from '@heroicons/react/solid'
+import { HeadlessUiModal } from '../Modal'
+import AssetInput from '../AssetInput'
+import { PROPHET, XORACLE } from 'app/config/tokens'
+import { useTokenBalance } from 'app/state/wallet/hooks'
+import { useActiveWeb3React } from 'app/services/web3'
+import Button from '../Button'
+import { tryParseAmount } from 'app/functions'
+import { ApprovalState, useApproveCallback, useProStakingContract } from 'app/hooks'
+import { useFarmListItemDetailsModal } from 'app/features/onsen/FarmListItemDetails'
+import { useAppDispatch } from 'app/state/hooks'
+import { useTransactionAdder } from 'app/state/transactions/hooks'
+import { setOnsenModalOpen } from 'app/features/onsen/onsenSlice'
+import { PROSTAKING_ADDRESS } from 'app/constants'
+import Web3Connect from '../Web3Connect'
+import { useProStakingActions } from 'app/hooks/useProstaking'
+import { useRowState } from 'react-table'
+import { BigNumber } from '@ethersproject/bignumber'
+import { isArray } from 'lodash'
 
 export const ProphetStaking = () => {
-  const [isActive, setActive] = useState(false)
-  const toggleClass = () => {
-    setActive(!isActive)
-  }
+  const [toggle, setToggle] = useState(true)
+  const [depositValue, setDepositValue] = useState<string>()
+  const [withdrawValue, setWithdrawValue] = useState<string>()
+
   const marks = [
     {
       value: 0,
@@ -32,114 +55,91 @@ export const ProphetStaking = () => {
   function valuetext(value: any) {
     return `${value}`
   }
+  const { account, chainId } = useActiveWeb3React()
+  const liquidityToken = PROPHET
+
+  const balance = useTokenBalance(account || '', liquidityToken)
+
+  const stakedAmount = useTokenBalance(account || '', liquidityToken)
+
+  const parsedDepositValue = tryParseAmount(depositValue, liquidityToken)
+  const parsedWithdrawValue = tryParseAmount(withdrawValue, liquidityToken)
+  // @ts-ignore TYPE NEEDS FIXING
+  const [approvalState, approve] = useApproveCallback(parsedDepositValue, PROSTAKING_ADDRESS)
+
+  const depositError = !parsedDepositValue
+    ? 'Enter an amount'
+    : balance?.lessThan(parsedDepositValue)
+    ? 'Insufficient balance'
+    : undefined
+  const isDepositValid = !depositError
+  const withdrawError = !parsedWithdrawValue
+    ? 'Enter an amount'
+    : // @ts-ignore TYPE NEEDS FIXING
+    stakedAmount?.lessThan(parsedWithdrawValue)
+    ? 'Insufficient balance'
+    : undefined
+  const isWithdrawValid = !withdrawError
+  // const { setContent } = useFarmListItemDetailsModal()
+
+  const dispatch = useAppDispatch()
+
+  const addTransaction = useTransactionAdder()
+
+  const { deposit, withdraw } = useProStakingActions()
+
+  const [lockMode, setLockMode] = useState(2)
+
   return (
     <>
       <div className="flex flex-wrap mt-4 prophet-staking-wrapper">
         <div className="w-full md:w-[calc(100%-316px)] md:mr-4 md:pr-4 bg-dark-800 rounded-3xl p-5">
-          <div className="flex items-center justify-between mb-4 head">
-            <h2 className="text-2xl">Prophet Staking</h2>
-            <div
-              onClick={toggleClass}
-              className={`action cursor-pointer relative w-[60px] h-[30px] rounded-3xl bg-dark-700`}
-            >
-              <div
-                className={`circle absolute top-0 h-[30px] w-[30px] text-2xl rounded-full bg-white text-dark-1000 flex items-center justify-center transition-all ${
-                  isActive ? 'left-0' : 'right-0'
-                }`}
-              >
-                {isActive ? '-' : '+'}
-              </div>
+          <HeadlessUiModal.BorderedContent className="flex flex-col gap-4 bg-dark-800/40">
+            <div className="flex justify-between">
+              <Typography variant="h3" weight={700} className="text-high-emphesis">
+                {toggle ? i18n._(t`Prophet Staking`) : i18n._(t`Prophet Unstake`)}
+              </Typography>
+              <Switch
+                size="md"
+                checked={toggle}
+                onChange={() => setToggle(!toggle)}
+                checkedIcon={<PlusIcon className="text-dark-1000" />}
+                uncheckedIcon={<MinusIcon className="text-dark-1000" />}
+              />
             </div>
-          </div>
-          {isActive ? (
-            <div className="max-w-lg unstake-wrap">
-              <div className="p-4 mb-4 rounded-md box-wrapper">
-                <div className="flex items-end justify-between top">
-                  <p className="opacity-50">
-                    0.00
-                    <br />
-                    <span className="text-xs">$00</span>
-                  </p>
-                  <p className="text-xl">PRO</p>
-                </div>
-                <div className="top flex justify-between items-end pt-2 mt-2 border-t-[1px] border-solid border-white/10">
-                  <p className="flex">
-                    <svg
-                      xmlns="http://www.w3.org/2000/svg"
-                      fill="none"
-                      viewBox="0 0 24 24"
-                      strokeWidth={1.5}
-                      stroke="currentColor"
-                      className="w-6 h-6"
-                    >
-                      <path
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                        d="M21 12a2.25 2.25 0 00-2.25-2.25H15a3 3 0 11-6 0H5.25A2.25 2.25 0 003 12m18 0v6a2.25 2.25 0 01-2.25 2.25H5.25A2.25 2.25 0 013 18v-6m18 0V9M3 12V9m18 0a2.25 2.25 0 00-2.25-2.25H5.25A2.25 2.25 0 003 9m18 0V6a2.25 2.25 0 00-2.25-2.25H5.25A2.25 2.25 0 003 6v3"
-                      />
-                    </svg>
 
-                    <span className="ml-2">Balance:</span>
-                  </p>
-                  <p>0 PPO</p>
-                </div>
-              </div>
-              <div className="flex justify-between p-4 mt-6 mb-2 rounded-md box-wrapper">
+            <AssetInput
+              currencyLogo={false}
+              currency={liquidityToken}
+              value={toggle ? depositValue : withdrawValue}
+              onChange={toggle ? setDepositValue : setWithdrawValue}
+              balance={toggle ? undefined : stakedAmount}
+              showMax={false}
+            />
+          </HeadlessUiModal.BorderedContent>
+
+          {!toggle ? (
+            <div className="flex flex-col w-full gap-1 p-4 stake-wrap">
+              <div className="flex justify-between p-2 mt-2 mb-1 rounded-md box-wrapper">
                 <p className="text-lg font-semibold">ORACLES SELECTED</p>
                 <p className="text-lg font-semibold">333</p>
               </div>
-              <div className="flex justify-between p-4 rounded-md box-wrapper">
+              <div className="flex justify-between p-2 rounded-md box-wrapper">
                 <p className="text-lg font-semibold">xORACLES SELECTED</p>
                 <p className="text-lg font-semibold">333</p>
               </div>
-              <div className="flex justify-between p-4 rounded-md box-wrapper">
+              <div className="flex justify-between p-2 rounded-md box-wrapper">
                 <p className="text-lg font-semibold">TIME LOCK</p>
                 <p className="text-lg font-semibold text-red-500">1DAY 10 Min 5 Sec</p>
               </div>
-              <p className="mt-4 text-red-500">
+              <p className="mt-2 text-red-500">
                 *If you unstake your PRO before the time loack period is over you will forfiet 50% of your staked
                 PRO/xORACLES!
               </p>
-              <button
-                type="button"
-                className="inline-block px-8 py-2 mt-8 text-xl font-semibold text-white bg-red-500 rounded-md"
-              >
-                UNSTAKE
-              </button>
+
             </div>
           ) : (
-            <div className="max-w-lg stake-wrap">
-              <div className="p-4 mb-4 rounded-md box-wrapper">
-                <div className="flex items-end justify-between top">
-                  <p className="opacity-50">
-                    0.00
-                    <br />
-                    <span className="text-xs">$00</span>
-                  </p>
-                  <p className="text-xl">PRO</p>
-                </div>
-                <div className="top flex justify-between items-end pt-2 mt-2 border-t-[1px] border-solid border-white/10">
-                  <p className="flex">
-                    <svg
-                      xmlns="http://www.w3.org/2000/svg"
-                      fill="none"
-                      viewBox="0 0 24 24"
-                      strokeWidth={1.5}
-                      stroke="currentColor"
-                      className="w-6 h-6"
-                    >
-                      <path
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                        d="M21 12a2.25 2.25 0 00-2.25-2.25H15a3 3 0 11-6 0H5.25A2.25 2.25 0 003 12m18 0v6a2.25 2.25 0 01-2.25 2.25H5.25A2.25 2.25 0 013 18v-6m18 0V9M3 12V9m18 0a2.25 2.25 0 00-2.25-2.25H5.25A2.25 2.25 0 003 9m18 0V6a2.25 2.25 0 00-2.25-2.25H5.25A2.25 2.25 0 003 6v3"
-                      />
-                    </svg>
-
-                    <span className="ml-2">Balance:</span>
-                  </p>
-                  <p>0 PPO</p>
-                </div>
-              </div>
+            <div className="flex flex-col w-full gap-1 p-4 stake-wrap">
               <p>Space Time Lock</p>
               <div className="px-2 slider-wrapper">
                 <div className="flex items-center justify-between mt-2 -mx-2 labels">
@@ -154,8 +154,15 @@ export const ProphetStaking = () => {
                   getAriaValueText={valuetext}
                   defaultValue={2}
                   marks={marks}
-                  onChange={(e, vaule, activeThumb) => {
-                    console.log(vaule, activeThumb)
+                  onChange={(e, value, activeThumb) => {
+                    console.log(value, activeThumb)
+                    if (isArray(value)) {
+                      if (value && value.length > 0) {
+                        setLockMode(value[0])
+                      }
+                    } else {
+                      setLockMode(value)
+                    }
                   }}
                   sx={{ color: 'yellow' }}
                   min={0}
@@ -163,24 +170,97 @@ export const ProphetStaking = () => {
                   step={1}
                 />
               </div>
-              <div className="flex justify-between p-4 mt-6 mb-2 rounded-md box-wrapper">
+              <div className="flex justify-between p-2 mt-4 mb-2 rounded-md box-wrapper">
                 <p className="text-lg font-semibold">ORACLES SELECTED</p>
                 <p className="text-lg font-semibold">333</p>
               </div>
-              <div className="flex justify-between p-4 rounded-md box-wrapper">
+              <div className="flex justify-between p-2 rounded-md box-wrapper">
                 <p className="text-lg font-semibold">xORACLES SELECTED</p>
                 <p className="text-lg font-semibold">333</p>
               </div>
-              <button
-                type="button"
-                className="inline-block px-8 py-2 mt-8 text-xl font-semibold text-white rounded-md bg-yellow"
-              >
-                STAKE
-              </button>
             </div>
           )}
+          <div className="p-4">
+            {toggle ? (
+              !account ? (
+                <Web3Connect size="lg" color="blue" fullWidth />
+              ) : isDepositValid &&
+                (approvalState === ApprovalState.NOT_APPROVED || approvalState === ApprovalState.PENDING) ? (
+                <Button
+                  fullWidth
+                  loading={approvalState === ApprovalState.PENDING}
+                  color="gradient"
+                  onClick={approve}
+                  disabled={approvalState !== ApprovalState.NOT_APPROVED}
+                >
+                  {i18n._(t`Approve`)}
+                </Button>
+              ) : (
+                <Button
+                  fullWidth
+                  color={!isDepositValid && !!parsedDepositValue ? 'red' : 'blue'}
+                  onClick={async () => {
+                    try {
+                      // KMP decimals depend on asset, OLP is always 18
+                      // @ts-ignore TYPE NEEDS FIXING
+
+                      console.log(
+                        'parsedDepositValue',
+                        parsedDepositValue,
+                        parsedDepositValue?.quotient,
+                        parsedDepositValue?.quotient.toString()
+                      )
+                      const tx = await deposit(BigNumber.from(parsedDepositValue?.quotient.toString()), lockMode)
+                      if (tx?.hash) {
+                        // setContent(
+                        //   <HeadlessUiModal.SubmittedModalContent
+                        //     txHash={tx?.hash}
+                        //     header={i18n._(t`Success!`)}
+                        //     subheader={i18n._(t`Success! Transaction successfully submitted`)}
+                        //     onDismiss={() => dispatch(setOnsenModalOpen(false))}
+                        //   />
+                        // )
+                        addTransaction(tx, {
+                          summary: `Deposit `,
+                        })
+                      }
+                    } catch (error) {
+                      console.error(error)
+                    }
+                  }}
+                  disabled={!isDepositValid}
+                >
+                  {depositError || i18n._(t`Confirm Deposit`)}
+                </Button>
+              )
+            ) : !account ? (
+              <Web3Connect color="blue" className="w-full" />
+            ) : (
+              <Button
+                fullWidth
+                color={!isWithdrawValid && !!parsedWithdrawValue ? 'red' : 'pink'}
+                onClick={async () => {
+                  try {
+                    // KMP decimals depend on asset, OLP is always 18
+                    // @ts-ignore TYPE NEEDS FIXING
+                    const tx = await withdraw(BigNumber.from(parsedWithdrawValue?.quotient.toString()))
+                    if (tx?.hash) {
+                      addTransaction(tx, {
+                        summary: `Withdraw in pro staking`,
+                      })
+                    }
+                  } catch (error) {
+                    console.error(error)
+                  }
+                }}
+                disabled={!isWithdrawValid}
+              >
+                {withdrawError || i18n._(t`Confirm Withdraw`)}
+              </Button>
+            )}
+          </div>
         </div>
-        <div className="w-full md:w-[300px]">
+        <div className="w-full md:w-[300px] flex flex-col">
           <div className="px-5 mt-4 mb-4 balance bg-dark-800 rounded-3xl py-7 md:mt-0">
             <h2 className="mb-2 text-xl">Stake Balance</h2>
             <div className="flex items-center pb-1 balance1">
@@ -216,10 +296,10 @@ export const ProphetStaking = () => {
             </p>
             <p>
               TIME LOCK
-              <br /> <span className={`text-red-600 ${isActive ? 'opacity-100' : 'opacity-0'}`}>65000 = 0.1857%</span>
+              <br /> <span className={`text-red-600 ${toggle ? 'opacity-100' : 'opacity-0'}`}>65000 = 0.1857%</span>
             </p>
           </div>
-          <div className="px-5 rewards bg-dark-800 rounded-3xl py-7">
+          <div className="flex-1 px-5 rewards bg-dark-800 rounded-3xl py-7">
             <h2 className="mb-2 text-xl">Rewards</h2>
             <p className="flex items-center">
               <span className="w-1/2">SGB .01</span>

@@ -223,13 +223,13 @@ const AssetInputPanel = ({
           'flex gap-2 py-4 px-3 items-center border-b justify-between flex-row'
         )}
       >
-        <div className="flex flex-row">
+        <div className="flex flex-row flex-1">
           {currencyLogo && (
             <div className={classNames(size === 'md' ? 'w-[48px]  min-w-[48px]' : 'w-40px min-w-[40px]')}>
               <CurrencyLogo currency={currency} size={size === 'md' ? 48 : 40} className="!rounded-full" />
             </div>
           )}
-          <div className="flex flex-col justify-between ml-2 ">
+          <div className="flex flex-col justify-between flex-1 ml-2 ">
             <Typography variant="h3" weight={700} className="relative flex flex-row items-baseline overflow-hidden">
               <NumericalInput
                 disabled={disabled}
