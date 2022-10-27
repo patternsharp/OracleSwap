@@ -120,8 +120,6 @@ export function useProStakingRewardHistory() {
 
   const result1 = useSingleCallResult(prostakingContract, 'getRewardHistory')?.result
 
-  console.log('getRewardHistory', result1)
-
   const times = result1?.times
   const rewards = result1?.rewards
 

@@ -16,8 +16,6 @@ import {
   useProUserTotalReward,
 } from 'app/hooks/useProstaking'
 import { useActiveWeb3React } from 'app/services/web3'
-import { useAppDispatch } from 'app/state/hooks'
-import { useTransactionAdder } from 'app/state/transactions/hooks'
 import { useTokenBalance } from 'app/state/wallet/hooks'
 import { isArray } from 'lodash'
 import Image from 'next/image'
@@ -32,11 +30,25 @@ import Web3Connect from '../Web3Connect'
 
 const moment = require('moment')
 
-interface ProphetStakingProps {
-  totalPoolSize: CurrencyAmount<Currency>
+
+
+const sendTx = async (txFunc: () => Promise<any>): Promise<boolean> => {
+  let success = true
+  try {
+    const ret = await txFunc()
+    if (ret?.error) {
+      success = false
+    }
+  } catch (e) {
+    console.error(e)
+    success = false
+  }
+  return success
 }
 
-// export const NeonSelectItem: FC<NeonSelectItemProps> = ({ onClick, value, children }) => {
+interface ProphetStakingProps {
+  totalPoolSize: CurrencyAmount<Currency> | undefined
+}
 
 export const ProphetStaking: FC<ProphetStakingProps> = ({ totalPoolSize }) => {
   const [toggle, setToggle] = useState(true)
@@ -69,9 +81,10 @@ export const ProphetStaking: FC<ProphetStakingProps> = ({ totalPoolSize }) => {
     return `${value}`
   }
   const { account, chainId } = useActiveWeb3React()
+
   const liquidityToken = PROPHET
 
-  const balance = useTokenBalance(account || '', liquidityToken)
+  const balance = useTokenBalance(account?? undefined, liquidityToken)
 
   const {
     lockMode: userLockMode,
@@ -102,11 +115,69 @@ export const ProphetStaking: FC<ProphetStakingProps> = ({ totalPoolSize }) => {
   const isWithdrawValid = !withdrawError
   // const { setContent } = useFarmListItemDetailsModal()
 
-  const dispatch = useAppDispatch()
-
-  const addTransaction = useTransactionAdder()
-
   const { deposit, withdraw, harvest, increaseLockAmount } = useProStakingActions()
+
+  const [pendingTx, setPendingTx] = useState(false)
+
+  const proHarvest = async () => {
+    if (!account) {
+      return
+    } else {
+      setPendingTx(true)
+
+      const success = await sendTx(() => harvest())
+      if (!success) {
+        setPendingTx(false)
+        return
+      }
+
+      setPendingTx(false)
+    }
+  }
+
+  const proDeposit = async () => {
+    if (!account || !isDepositValid) {
+      return
+    } else {
+      setPendingTx(true)
+
+      const amount = BigNumber.from(parsedDepositValue?.quotient.toString())
+
+      if (stakedAmount && stakedAmount.greaterThan(ZERO)) {
+        const success = await sendTx(() => increaseLockAmount(amount))
+        if (!success) {
+          setPendingTx(false)
+          return
+        }
+      }else{
+        const success = await sendTx(() => deposit(amount,lockMode))
+        if (!success) {
+          setPendingTx(false)
+          return
+        }
+      }
+      setPendingTx(false)
+    }
+  }
+
+  const proWithdraw = async () => {
+    if (!account || !isWithdrawValid) {
+      return
+    } else {
+      setPendingTx(true)
+
+      const amount = BigNumber.from(parsedWithdrawValue?.quotient.toString())
+
+      const success = await sendTx(() => withdraw(amount))
+      if (!success) {
+        setPendingTx(false)
+        return
+      }
+
+      setPendingTx(false)
+    }
+  }
+
 
   const [lockMode, setLockMode] = useState(2)
 
@@ -258,39 +329,8 @@ export const ProphetStaking: FC<ProphetStakingProps> = ({ totalPoolSize }) => {
                 <Button
                   fullWidth
                   color={!isDepositValid && !!parsedDepositValue ? 'red' : 'blue'}
-                  onClick={async () => {
-                    try {
-                      // KMP decimals depend on asset, OLP is always 18
-                      // @ts-ignore TYPE NEEDS FIXING
-
-                      console.log(
-                        'parsedDepositValue',
-                        parsedDepositValue,
-                        parsedDepositValue?.quotient,
-                        parsedDepositValue?.quotient.toString(),
-                        lockMode
-                      )
-
-                      if (stakedAmount && stakedAmount.greaterThan(ZERO)) {
-                        const tx = await increaseLockAmount(BigNumber.from(parsedDepositValue?.quotient.toString()))
-                        if (tx?.hash) {
-                          addTransaction(tx, {
-                            summary: `Deposit `,
-                          })
-                        }
-                      } else {
-                        const tx = await deposit(BigNumber.from(parsedDepositValue?.quotient.toString()), lockMode)
-                        if (tx?.hash) {
-                          addTransaction(tx, {
-                            summary: `Deposit `,
-                          })
-                        }
-                      }
-                    } catch (error) {
-                      console.error(error)
-                    }
-                  }}
-                  disabled={!isDepositValid}
+                  onClick={proDeposit}
+                  disabled={!isDepositValid || pendingTx}
                 >
                   {depositError || i18n._(t`Confirm Deposit`)}
                 </Button>
@@ -301,21 +341,8 @@ export const ProphetStaking: FC<ProphetStakingProps> = ({ totalPoolSize }) => {
               <Button
                 fullWidth
                 color={!isWithdrawValid && !!parsedWithdrawValue ? 'red' : 'pink'}
-                onClick={async () => {
-                  try {
-                    // KMP decimals depend on asset, OLP is always 18
-                    // @ts-ignore TYPE NEEDS FIXING
-                    const tx = await withdraw(BigNumber.from(parsedWithdrawValue?.quotient.toString()))
-                    if (tx?.hash) {
-                      addTransaction(tx, {
-                        summary: `Withdraw in pro staking`,
-                      })
-                    }
-                  } catch (error) {
-                    console.error(error)
-                  }
-                }}
-                disabled={!isWithdrawValid}
+                onClick={proWithdraw}
+                disabled={!isWithdrawValid || pendingTx}
               >
                 {withdrawError || i18n._(t`Confirm Withdraw`)}
               </Button>
@@ -374,10 +401,6 @@ export const ProphetStaking: FC<ProphetStakingProps> = ({ totalPoolSize }) => {
                   ))}
                 </div>
               </div>
-
-              {/* {userReward?.length > 0 && (
-
-              )} */}
             </div>
 
             {/* <p className="flex items-center">
@@ -411,20 +434,7 @@ export const ProphetStaking: FC<ProphetStakingProps> = ({ totalPoolSize }) => {
               className='mt-1'
               fullWidth
               color={'pink'}
-              onClick={async () => {
-                try {
-                  // KMP decimals depend on asset, OLP is always 18
-                  // @ts-ignore TYPE NEEDS FIXING
-                  const tx = await harvest()
-                  if (tx?.hash) {
-                    addTransaction(tx, {
-                      summary: `harvest in pro staking`,
-                    })
-                  }
-                } catch (error) {
-                  console.error(error)
-                }
-              }}
+              onClick={proHarvest}
               disabled={!userReward || userReward?.length === 0}
             >
               {i18n._(t`HARVEST`)}

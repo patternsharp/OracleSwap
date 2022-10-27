@@ -1,48 +1,20 @@
 
 import { XIcon } from '@heroicons/react/solid'
-import { t } from '@lingui/macro'
-import { useLingui } from '@lingui/react'
-import { BAR_ADDRESS, ChainId, SUSHI, ZERO } from '@sushiswap/core-sdk'
-import Button from 'app/components/Button'
 import Container from 'app/components/Container'
-import Dots from 'app/components/Dots'
-import Input from 'app/components/Input'
 import { ProphetStaking } from 'app/components/ProphetStaking'
-import QuestionHelper from 'app/components/QuestionHelper'
 import { SelectedOracles } from 'app/components/SelectedOracles'
 import Typography from 'app/components/Typography'
-import { ORACLE, XORACLE } from 'app/config/tokens'
 import { Feature } from 'app/enums'
 import { classNames } from 'app/functions'
-import { tryParseAmount } from 'app/functions/parse'
-import { ApprovalState, useApproveCallback } from 'app/hooks/useApproveCallback'
-import { useProPendingReward, useProStakingInfo, useTotalDistributedReward } from 'app/hooks/useProstaking'
-import useSushiBar from 'app/hooks/useSushiBar'
-import TransactionFailedModal from 'app/modals/TransactionFailedModal'
-import { useActiveWeb3React } from 'app/services/web3'
-import { useDexWarningOpen, useProStakingWarningOpen, useToggleProStakingWarning, useWalletModalToggle } from 'app/state/application/hooks'
-import { useTokenBalance } from 'app/state/wallet/hooks'
+import NetworkGuard from 'app/guards/Network'
+import {  useProStakingInfo, useTotalDistributedReward } from 'app/hooks/useProstaking'
+import { useDexWarningOpen, useProStakingWarningOpen, useToggleProStakingWarning,  } from 'app/state/application/hooks'
 import Head from 'next/head'
-// import Image from 'next/image'
-import React, { useState } from 'react'
+import React from 'react'
 
-import NetworkGuard from '../../guards/Network'
 
 const INPUT_CHAR_LIMIT = 18
 
-const sendTx = async (txFunc: () => Promise<any>): Promise<boolean> => {
-  let success = true
-  try {
-    const ret = await txFunc()
-    if (ret?.error) {
-      success = false
-    }
-  } catch (e) {
-    console.error(e)
-    success = false
-  }
-  return success
-}
 
 const tabStyle = 'flex justify-center items-center h-full w-full rounded-lg cursor-pointer text-sm md:text-base'
 const activeTabStyle = `${tabStyle} text-high-emphesis font-bold bg-dark-900`
@@ -56,8 +28,6 @@ const buttonStyleDisabled = `${buttonStyle} text-secondary bg-dark-700`
 const buttonStyleConnectWallet = `${buttonStyle} text-high-emphesis bg-blue hover:bg-opacity-90`
 
 function ProStaking() {
-  const { i18n } = useLingui()
-  const { account } = useActiveWeb3React()
 
   const {totalProAmount,totalxOracleAmount ,totalPoolSize,totalNFTCount} = useProStakingInfo()
 

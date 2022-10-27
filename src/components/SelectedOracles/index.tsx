@@ -3,7 +3,7 @@ import { t } from '@lingui/macro'
 import { ZERO } from '@sushiswap/core-sdk'
 import { XORACLE } from 'app/config/tokens'
 import { PROSTAKING_ADDRESS } from 'app/constants'
-import { classNames, tryParseAmount } from 'app/functions'
+import { classNames } from 'app/functions'
 import { ApprovalState, useApproveCallback } from 'app/hooks'
 import {
   useMinProAmount,
@@ -48,7 +48,7 @@ export const SelectedOracles = () => {
 
   const liquidityToken = XORACLE
 
-  const balance = useTokenBalance(account || '', liquidityToken)
+  const balance = useTokenBalance(account?? undefined, liquidityToken)
 
   // const [depositValue, setDepositValue] = useState<string>('100')
 
@@ -163,7 +163,6 @@ export const SelectedOracles = () => {
 
   const addTransaction = useTransactionAdder()
 
-  console.log('sdfsdfsd',stakedNFT,depositError)
 
   return (
     <div className="mt-5 select-oracles">
