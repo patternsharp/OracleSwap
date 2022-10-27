@@ -1,15 +1,23 @@
 import { BigNumber } from '@ethersproject/bignumber'
 import { ChainId, CurrencyAmount, JSBI, Token, ZERO } from '@sushiswap/core-sdk'
 import { PROPHET, XORACLE } from 'app/config/tokens'
+import { PROSTAKING_ADDRESS } from 'app/constants'
 import { useActiveWeb3React } from 'app/services/web3'
 import { useSingleCallResult } from 'app/state/multicall/hooks'
 import { useTransactionAdder } from 'app/state/transactions/hooks'
-
-import { useCallback, useMemo } from 'react'
+import axios from 'axios'
+import { useCallback, useEffect, useMemo, useState } from 'react'
 
 import { useAllTokens } from './Tokens'
+import { useOracleNFTContract, useProStakingContract } from './useContract'
 
-import { useProStakingContract } from './useContract'
+const fetchNFTMetaInfo = async (id: number) => {
+  const url = `https://ipfs.io/ipfs/QmV3yAjc2WXQNZycGq3G8B6KGfNZutJFcQM3UuCRiXYgBH/${id}.json`
+  const response = await axios.get(url)
+  const token = response.data
+
+  return token
+}
 
 export const useProStakingActions = () => {
   const addTransaction = useTransactionAdder()
@@ -146,8 +154,6 @@ export function useProStakingUserInfo() {
 
   const results = useSingleCallResult(args ? contract : null, 'userLocks', args)?.result
 
-  console.log('prostakers userLock', results)
-
   const lockModeInfo = results?.lockMode
 
   const lockedAmountInfo = results?.lockedAmount
@@ -203,7 +209,83 @@ export function useProStakingNFTInfo() {
 
   const userWalletNFT = userWalletNFTInfo?.[0]
 
-  return { userStakedNFT, userWalletNFT }
+  const [walletNFT, setWalletNFT] = useState<Array<any>>([])
+
+  const [stakedNFT, setStakedNFT] = useState<Array<any>>([])
+
+  const walletNFTFetch = useCallback(async () => {
+    if (!userWalletNFT) {
+      return []
+    }
+    const ids = userWalletNFT.map((item: BigNumber) => item.toNumber())
+
+    let promises: Promise<any>[] = []
+    let result: any[] = []
+
+    ids.forEach((id: number) => {
+      promises.push(fetchNFTMetaInfo(id))
+    })
+
+    if (promises.length) {
+      const data = await Promise.allSettled(promises)
+      data.forEach((el) => {
+        if (el.status !== 'fulfilled') return
+        const tokenResponse = el.value
+        if (!tokenResponse) return
+        if (tokenResponse) result.push(tokenResponse)
+      })
+    }
+    setWalletNFT(result)
+    return result
+  }, [userWalletNFT])
+
+  const stakedNFTFetch = useCallback(async () => {
+    if (!userStakedNFT) {
+      return []
+    }
+    const ids = userStakedNFT.map((item: BigNumber) => item.toNumber())
+
+    let promises: Promise<any>[] = []
+    let result: any[] = []
+
+    ids.forEach((id: number) => {
+      promises.push(fetchNFTMetaInfo(id))
+    })
+
+    if (promises.length) {
+      const data = await Promise.allSettled(promises)
+      data.forEach((el) => {
+        if (el.status !== 'fulfilled') return
+        const tokenResponse = el.value
+        if (!tokenResponse) return
+        if (tokenResponse) result.push(tokenResponse)
+      })
+    }
+    setStakedNFT(result as any[])
+    return result
+  }, [userStakedNFT])
+
+  useEffect(() => {
+    if (userWalletNFT && userWalletNFT.length > 0) {
+      walletNFTFetch()
+    }else{
+      if(userWalletNFT?.length === 0){
+        setWalletNFT([])
+      }
+    }
+  }, [walletNFTFetch, userWalletNFT])
+
+  useEffect(() => {
+    if (userStakedNFT && userStakedNFT.length > 0) {
+      stakedNFTFetch()
+    }else{
+      if(userStakedNFT?.length === 0){
+        setStakedNFT([])
+      }
+    }
+  }, [stakedNFTFetch, userStakedNFT])
+
+  return { walletNFT, stakedNFT }
 }
 
 export function useProStakingUserNFTCount() {
@@ -223,6 +305,71 @@ export function useProStakingUserNFTCount() {
   const userStakedNFT = userStakedNFTInfo?.[0]
 
   return userStakedNFT ? userStakedNFT.toNumber() : 0
+}
+
+export function useOracleNFTAllApproved() {
+  const { account, chainId } = useActiveWeb3React()
+
+  const contract = useOracleNFTContract()
+
+  const args = useMemo(() => {
+    if (!account) {
+      return
+    }
+    return [String(account), PROSTAKING_ADDRESS]
+  }, [account])
+
+  const approvedInfo = useSingleCallResult(args ? contract : null, 'isApprovedForAll', args)?.result
+
+  const approved = approvedInfo?.[0]
+
+  return approved
+}
+
+export function useOracleNFTApproved(tokenId: number) {
+  const contract = useOracleNFTContract()
+
+  const args = useMemo(() => {
+    if (!tokenId) {
+      return
+    }
+    return [String(tokenId)]
+  }, [tokenId])
+
+  const approvedInfo = useSingleCallResult(args ? contract : null, 'getApproved', args)?.result
+
+  const operator = approvedInfo?.[0]
+
+  return operator && operator.toLowerCase() === PROSTAKING_ADDRESS.toLowerCase()
+}
+
+export function useOracleNFTApprove() {
+  const contract = useOracleNFTContract()
+
+  const addTransaction = useTransactionAdder()
+
+  const approveAll = useCallback(async () => {
+    try {
+      const tx = await contract?.setApprovalForAll(PROSTAKING_ADDRESS, true)
+      return addTransaction(tx, { summary: 'approve all oracle nft in prostaking' })
+    } catch (e) {
+      return e
+    }
+  }, [addTransaction, contract])
+
+  const approveStaker = useCallback(
+    async (tokenId: number) => {
+      try {
+        const tx = await contract?.approve(PROSTAKING_ADDRESS, tokenId)
+        return addTransaction(tx, { summary: 'approve oracle nft in prostaking' })
+      } catch (e) {
+        return e
+      }
+    },
+    [addTransaction, contract]
+  )
+
+  return { approveAll, approveStaker }
 }
 
 export function useProPendingReward() {
@@ -267,6 +414,77 @@ export function useProPendingReward() {
     return infos
   }, [rewardsInfo, alltokens])
   return rewards
+}
+
+export function useProUserTotalReward() {
+  const { account, chainId } = useActiveWeb3React()
+
+  const contract = useProStakingContract()
+
+  const args = useMemo(() => {
+    if (!account) {
+      return
+    }
+    return [String(account)]
+  }, [account])
+
+  const userPendingRewardInfo = useSingleCallResult(args ? contract : null, 'distributedUserTotalReward', args)?.result
+
+  const rewardsInfo = userPendingRewardInfo?.rewards
+
+  const alltokens = useAllTokens()
+
+  const rewards = useMemo(() => {
+    if (!rewardsInfo) {
+      return []
+    }
+    let infos: any[] = []
+    rewardsInfo.map((item: { token: string; amount: BigNumber }) => {
+      const OLPToken = new Token(ChainId.SGB, item.token, 18, 'OLP', 'OracleSwap LP Token')
+      const tokenInfo = alltokens[item.token] || OLPToken
+
+      const amountInfo = item.amount ? JSBI.BigInt(item.amount.toString()) : undefined
+
+      // @ts-ignore TYPE NEEDS FIXING
+      const amount = tokenInfo && amountInfo ? CurrencyAmount.fromRawAmount(tokenInfo, amountInfo) : undefined
+
+      if (amount && amount.greaterThan(ZERO)) {
+        infos.push({
+          token: tokenInfo,
+          amount: amount,
+        })
+      }
+    })
+    return infos
+  }, [rewardsInfo, alltokens])
+  return rewards
+}
+
+export function useMinProAmount() {
+  const contract = useProStakingContract()
+
+  const results = useSingleCallResult(contract, 'minProAmount')?.result
+
+  const value = results?.[0]
+  const amount = value ? JSBI.BigInt(value.toString()) : undefined
+
+  // @ts-ignore TYPE NEEDS FIXING
+  const minPro = amount ? CurrencyAmount.fromRawAmount(PROPHET, amount) : undefined
+
+  return minPro
+}
+
+export function useMinXOracleAmount() {
+  const contract = useProStakingContract()
+  const results = useSingleCallResult(contract, 'minxOracleAmount')?.result
+
+  const value = results?.[0]
+  const amount = value ? JSBI.BigInt(value.toString()) : undefined
+
+  // @ts-ignore TYPE NEEDS FIXING
+  const minXOracle = amount ? CurrencyAmount.fromRawAmount(XORACLE, amount) : undefined
+
+  return minXOracle
 }
 
 export function useProStakingInfo() {

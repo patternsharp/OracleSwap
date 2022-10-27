@@ -115,6 +115,7 @@ export const ORACLE = new Token(
   'OracleSwap.io'
 )
 
+
 export const PROPHET = new Token(ChainId.SGB, '0xf810576A68C3731875BDe07404BE815b16fC0B4e', 18, 'PRO', 'Prophet')
 
 export const LIFT = new Token(ChainId.ETHEREUM, '0xf9209d900f7ad1DC45376a2caA61c78f6dEA53B6', 18, 'LIFT', 'LiftKitchen')

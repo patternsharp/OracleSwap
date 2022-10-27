@@ -158,7 +158,7 @@ USE AT YOUR OWN RISK!`}
               </p>
             </div>
           </div>
-          <ProphetStaking />
+          <ProphetStaking  totalPoolSize={totalPoolSize} />
           <SelectedOracles />
         </div>
       </div>

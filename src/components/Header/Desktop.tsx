@@ -17,6 +17,7 @@ import LogoImage from '../../../public/icons/icon-72x72.png'
 import { XIcon } from '@heroicons/react/outline'
 import { useDexWarningOpen, useToggleDexWarning } from 'app/state/application/hooks'
 import ExternalLink from '../ExternalLink'
+import { classNames } from 'app/functions'
 const HEADER_HEIGHT = 64
 
 const Desktop: FC = () => {
@@ -29,12 +30,10 @@ const Desktop: FC = () => {
   const toggleWarning = useToggleDexWarning()
   const showUseDexWarning = useDexWarningOpen()
 
-  console.log('showUseDexWarning', showUseDexWarning)
-
   return (
     <>
       <header className="fixed z-20 hidden w-full lg:block" style={{ height: HEADER_HEIGHT }}>
-        <nav className={NAV_CLASS}>
+        <nav className={classNames( NAV_CLASS,showUseDexWarning && 'before:backdrop-blur-[20px]')}>
           <Container maxWidth="7xl" className="mx-auto">
             {showUseDexWarning && (
               <div className="py-2 px-4 text-[1rem] text-high-emphesis bg-[#eb4326] relative">

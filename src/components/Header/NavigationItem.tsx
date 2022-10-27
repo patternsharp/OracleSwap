@@ -4,6 +4,7 @@ import { MenuItem, MenuItemLeaf, MenuItemNode } from 'app/components/Header/useM
 import Typography from 'app/components/Typography'
 import { classNames } from 'app/functions'
 import useDesktopMediaQuery, { useTouchDeviceMediaQuery } from 'app/hooks/useDesktopMediaQuery'
+import { useDexWarningOpen } from 'app/state/application/hooks'
 import { useRouter } from 'next/router'
 import React, { FC, Fragment, useCallback, useRef } from 'react'
 
@@ -16,6 +17,8 @@ export const NavigationItem: FC<NavigationItem> = ({ node }) => {
   const buttonRef = useRef<HTMLButtonElement>(null)
   const isDesktop = useDesktopMediaQuery()
   const touchDevice = useTouchDeviceMediaQuery()
+
+  const showUseDexWarning = useDexWarningOpen()
 
   const handleToggle = useCallback((open, type) => {
     if (!open && type === 'enter') {
@@ -97,8 +100,9 @@ export const NavigationItem: FC<NavigationItem> = ({ node }) => {
                   className={classNames(
                     'shadow-md shadow-black/40 border border-dark-700 rounded overflow-hidden',
                     !touchDevice
-                      ? "backdrop-blur-fallback before:z-[-1] before:rounded before:absolute before:w-full before:h-full before:content-[''] before:backdrop-blur-[20px] bg-white bg-opacity-[0.02]"
-                      : 'bg-dark-800 inset-0'
+                      ? "backdrop-blur-fallback before:z-[-1] before:rounded before:absolute before:w-full before:h-full before:content-['']  bg-white bg-opacity-[0.02]"
+                      : 'bg-dark-800 inset-0',
+                      showUseDexWarning ? 'before:backdrop-blur-[40px]' : 'before:backdrop-blur-[20px]'
                   )}
                 >
                   {(node as MenuItemNode).items.map((leaf) => (

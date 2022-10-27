@@ -3,19 +3,25 @@ import { MinusIcon, PlusIcon } from '@heroicons/react/solid'
 import { i18n } from '@lingui/core'
 import { t } from '@lingui/macro'
 import Slider from '@mui/material/Slider'
-import {  Currency, CurrencyAmount, JSBI, ZERO, } from '@sushiswap/core-sdk'
-import { PROPHET, XORACLE } from 'app/config/tokens'
+import { Currency, CurrencyAmount, ZERO } from '@sushiswap/core-sdk'
+import { PROPHET } from 'app/config/tokens'
 import { PROSTAKING_ADDRESS } from 'app/constants'
 import { tryParseAmount } from 'app/functions'
 import { ApprovalState, useApproveCallback } from 'app/hooks'
-import { useProPendingReward, useProStakingActions, useProStakingUserInfo, useProStakingUserNFTCount } from 'app/hooks/useProstaking'
+import {
+  useProPendingReward,
+  useProStakingActions,
+  useProStakingUserInfo,
+  useProStakingUserNFTCount,
+  useProUserTotalReward,
+} from 'app/hooks/useProstaking'
 import { useActiveWeb3React } from 'app/services/web3'
 import { useAppDispatch } from 'app/state/hooks'
 import { useTransactionAdder } from 'app/state/transactions/hooks'
 import { useTokenBalance } from 'app/state/wallet/hooks'
 import { isArray } from 'lodash'
 import Image from 'next/image'
-import React, { FC,useMemo, useState } from 'react'
+import React, { FC, useEffect, useMemo, useState } from 'react'
 
 import AssetInput from '../AssetInput'
 import Button from '../Button'
@@ -24,6 +30,7 @@ import Switch from '../Switch'
 import Typography from '../Typography'
 import Web3Connect from '../Web3Connect'
 
+const moment = require('moment')
 
 interface ProphetStakingProps {
   totalPoolSize: CurrencyAmount<Currency>
@@ -31,7 +38,7 @@ interface ProphetStakingProps {
 
 // export const NeonSelectItem: FC<NeonSelectItemProps> = ({ onClick, value, children }) => {
 
-export const ProphetStaking  : FC<ProphetStakingProps> = ({totalPoolSize }) => {
+export const ProphetStaking: FC<ProphetStakingProps> = ({ totalPoolSize }) => {
   const [toggle, setToggle] = useState(true)
   const [depositValue, setDepositValue] = useState<string>()
   const [withdrawValue, setWithdrawValue] = useState<string>()
@@ -66,7 +73,14 @@ export const ProphetStaking  : FC<ProphetStakingProps> = ({totalPoolSize }) => {
 
   const balance = useTokenBalance(account || '', liquidityToken)
 
-  const stakedAmount = useTokenBalance(account || '', liquidityToken)
+  const {
+    lockMode: userLockMode,
+    unlockTime,
+    lockedProAmount: stakedAmount,
+    userNFTWeight,
+    userTotalWeight,
+    lockXOracle,
+  } = useProStakingUserInfo()
 
   const parsedDepositValue = tryParseAmount(depositValue, liquidityToken)
   const parsedWithdrawValue = tryParseAmount(withdrawValue, liquidityToken)
@@ -92,34 +106,49 @@ export const ProphetStaking  : FC<ProphetStakingProps> = ({totalPoolSize }) => {
 
   const addTransaction = useTransactionAdder()
 
-  const { deposit, withdraw,harvest } = useProStakingActions()
+  const { deposit, withdraw, harvest, increaseLockAmount } = useProStakingActions()
 
   const [lockMode, setLockMode] = useState(2)
 
+  useEffect(() => {
+    setLockMode(userLockMode)
+  }, [userLockMode])
+
   const userReward = useProPendingReward()
 
-  const { lockMode:userLockMode, unlockTime, lockedProAmount, userNFTWeight, userTotalWeight, lockXOracle } = useProStakingUserInfo()
+  const userTotalReward = useProUserTotalReward()
 
-  const nftCount = useProStakingUserNFTCount();
+  // const stakedAmount = lockedProAmount
 
-  const rate = useMemo(()=> {
-    if(totalPoolSize && userTotalWeight && totalPoolSize.greaterThan(ZERO)){
+  const nftCount = useProStakingUserNFTCount()
 
-      const rateInfo =  userTotalWeight.multiply(100).divide(totalPoolSize).quotient.toString();
-      console.log('prostakers s',rateInfo)
-      return parseFloat(rateInfo);
+  const rate = useMemo(() => {
+    if (totalPoolSize && userTotalWeight && totalPoolSize.greaterThan(ZERO)) {
+      const rateInfo = userTotalWeight.multiply(100).divide(totalPoolSize).quotient.toString()
+
+      return parseFloat(rateInfo)
     }
-    return 0 
-  },[totalPoolSize,userTotalWeight])
+    return 0
+  }, [totalPoolSize, userTotalWeight])
 
-  const timeLock = useMemo(()=> {
-    if(!unlockTime){
-      return null;
+  const timeLock = useMemo(() => {
+    if (!unlockTime) {
+      return null
     }
-    var date = new  Date(unlockTime*1000)
 
-    return date.toLocaleDateString()
-  },[unlockTime])
+    var date = new Date(unlockTime * 1000)
+    var started = moment(date)
+
+    var current = moment()
+
+    var diff = started.diff(current)
+
+    var duration = moment.duration(diff)
+
+    var formated = duration.humanize(true)
+
+    return formated
+  }, [unlockTime])
 
   return (
     <>
@@ -144,7 +173,7 @@ export const ProphetStaking  : FC<ProphetStakingProps> = ({totalPoolSize }) => {
               currency={liquidityToken}
               value={toggle ? depositValue : withdrawValue}
               onChange={toggle ? setDepositValue : setWithdrawValue}
-              balance={toggle ? undefined : stakedAmount}
+              balance={toggle ? balance : stakedAmount}
               showMax={false}
             />
           </HeadlessUiModal.BorderedContent>
@@ -153,15 +182,15 @@ export const ProphetStaking  : FC<ProphetStakingProps> = ({totalPoolSize }) => {
             <div className="flex flex-col w-full gap-1 p-4 stake-wrap">
               <div className="flex justify-between p-2 mt-2 mb-1 rounded-md box-wrapper">
                 <p className="text-lg font-semibold">ORACLES SELECTED</p>
-                <p className="text-lg font-semibold">333</p>
+                <p className="text-lg font-semibold"></p>
               </div>
               <div className="flex justify-between p-2 rounded-md box-wrapper">
                 <p className="text-lg font-semibold">xORACLES SELECTED</p>
-                <p className="text-lg font-semibold">333</p>
+                <p className="text-lg font-semibold"></p>
               </div>
               <div className="flex justify-between p-2 rounded-md box-wrapper">
                 <p className="text-lg font-semibold">TIME LOCK</p>
-                <p className="text-lg font-semibold text-red-500">1DAY 10 Min 5 Sec</p>
+                <p className="text-lg font-semibold text-red-500">{timeLock}</p>
               </div>
               <p className="mt-2 text-red-500">
                 *If you unstake your PRO before the time loack period is over you will forfiet 50% of your staked
@@ -176,8 +205,8 @@ export const ProphetStaking  : FC<ProphetStakingProps> = ({totalPoolSize }) => {
                   <p>1x</p>
                   <p>1.5x</p>
                   <p>2x</p>
-                  <p>5x</p>
-                  <p>10x</p>
+                  <p>4x</p>
+                  <p>33x</p>
                 </div>
                 <Slider
                   aria-labelledby="track-inverted-slider"
@@ -202,11 +231,11 @@ export const ProphetStaking  : FC<ProphetStakingProps> = ({totalPoolSize }) => {
               </div>
               <div className="flex justify-between p-2 mt-4 mb-2 rounded-md box-wrapper">
                 <p className="text-lg font-semibold">ORACLES SELECTED</p>
-                <p className="text-lg font-semibold">333</p>
+                <p className="text-lg font-semibold"></p>
               </div>
               <div className="flex justify-between p-2 rounded-md box-wrapper">
                 <p className="text-lg font-semibold">xORACLES SELECTED</p>
-                <p className="text-lg font-semibold">333</p>
+                <p className="text-lg font-semibold"></p>
               </div>
             </div>
           )}
@@ -238,21 +267,24 @@ export const ProphetStaking  : FC<ProphetStakingProps> = ({totalPoolSize }) => {
                         'parsedDepositValue',
                         parsedDepositValue,
                         parsedDepositValue?.quotient,
-                        parsedDepositValue?.quotient.toString()
+                        parsedDepositValue?.quotient.toString(),
+                        lockMode
                       )
-                      const tx = await deposit(BigNumber.from(parsedDepositValue?.quotient.toString()), lockMode)
-                      if (tx?.hash) {
-                        // setContent(
-                        //   <HeadlessUiModal.SubmittedModalContent
-                        //     txHash={tx?.hash}
-                        //     header={i18n._(t`Success!`)}
-                        //     subheader={i18n._(t`Success! Transaction successfully submitted`)}
-                        //     onDismiss={() => dispatch(setOnsenModalOpen(false))}
-                        //   />
-                        // )
-                        addTransaction(tx, {
-                          summary: `Deposit `,
-                        })
+
+                      if (stakedAmount && stakedAmount.greaterThan(ZERO)) {
+                        const tx = await increaseLockAmount(BigNumber.from(parsedDepositValue?.quotient.toString()))
+                        if (tx?.hash) {
+                          addTransaction(tx, {
+                            summary: `Deposit `,
+                          })
+                        }
+                      } else {
+                        const tx = await deposit(BigNumber.from(parsedDepositValue?.quotient.toString()), lockMode)
+                        if (tx?.hash) {
+                          addTransaction(tx, {
+                            summary: `Deposit `,
+                          })
+                        }
                       }
                     } catch (error) {
                       console.error(error)
@@ -294,51 +326,58 @@ export const ProphetStaking  : FC<ProphetStakingProps> = ({totalPoolSize }) => {
           <div className="px-5 mt-4 mb-4 balance bg-dark-800 rounded-3xl py-7 md:mt-0">
             <h2 className="mb-2 text-xl">Stake Balance</h2>
             <div className="flex items-center pb-1 balance1">
-              <Image
-                src="https://dex.oracleswap.io/PRO_Logo3Gold.png"
-                height={30}
-                width={30}
-                alt="true"
-              />
-              <p className="ml-2">{`PRO: ${lockedProAmount? lockedProAmount.toSignificant(6): ''}`}</p>
+              <Image src="https://dex.oracleswap.io/PRO_Logo3Gold.png" height={30} width={30} alt="true" />
+              <p className="ml-2">{`PRO: ${stakedAmount ? stakedAmount.toSignificant(6) : ''}`}</p>
             </div>
             <div className="flex items-center pb-1 balance2">
-              <Image
-                src="https://dex.oracleswap.io/profile_icon.webp"
-                height={30}
-                width={30}
-                alt="true"
-              />
+              <Image src="https://dex.oracleswap.io/profile_icon.webp" height={30} width={30} alt="true" />
               <p className="ml-2">{`ORACLE NFT: ${nftCount}`}</p>
             </div>
             <div className="flex items-center pb-1 balance3">
-              <Image
-                src="https://dex.oracleswap.io/ORACLE_SilverLogo.png"
-                height={30}
-                width={30}
-                alt="true"
-              />
-              <p className="ml-2">{`XORACLE: ${lockXOracle ? lockXOracle.toSignificant(6): ''}`}</p>
+              <Image src="https://dex.oracleswap.io/ORACLE_SilverLogo.png" height={30} width={30} alt="true" />
+              <p className="ml-2">{`XORACLE: ${lockXOracle ? lockXOracle.toSignificant(6) : ''}`}</p>
             </div>
             <p>
               YOUR TOTAL POOL SHARE:
-              <br /> <span className="text-green-600"> {`${userTotalWeight? userTotalWeight.toSignificant(6) : ''} = ${rate}%`}</span>
+              <br />{' '}
+              <span className="text-green-600">
+                {' '}
+                {`${userTotalWeight ? userTotalWeight.toSignificant(6) : ''} = ${rate}%`}
+              </span>
             </p>
             <p>
               TIME LOCK
               <br /> <span className={``}>{timeLock}</span>
             </p>
           </div>
-          <div className="flex flex-col justify-between flex-1 px-5 rewards bg-dark-800 rounded-3xl py-7">
-            <div>
-            <h2 className="mb-2 text-xl">Rewards</h2>
-            <div className="flex flex-col">
-              {userReward.map((item, index) => (
-                <p key={`user-rewardinfo-${index}`}>{`${item.token.symbol}: ${
-                  item.amount ? item.amount.toSignificant(6) : ''
-                }`}</p>
-              ))}
-            </div>
+          <div className="flex flex-col justify-between flex-1 px-4 py-4 rewards bg-dark-800 rounded-3xl">
+            <h2 className="mb-1 text-xl">Rewards</h2>
+            <div className="grid h-full grid-cols-2">
+              <div>
+                <h2 className="text-xl">Total</h2>
+                <div className="flex flex-col">
+                  {userTotalReward.map((item, index) => (
+                    <p key={`user-rewardinfo-${index}`}>{`${item.token.symbol}: ${
+                      item.amount ? item.amount.toSignificant(6) : ''
+                    }`}</p>
+                  ))}
+                </div>
+              </div>
+
+              <div>
+                <h2 className="text-xl">Pending</h2>
+                <div className="flex flex-col">
+                  {userReward.map((item, index) => (
+                    <p key={`user-rewardinfo-${index}`}>{`${item.token.symbol}: ${
+                      item.amount ? item.amount.toSignificant(6) : ''
+                    }`}</p>
+                  ))}
+                </div>
+              </div>
+
+              {/* {userReward?.length > 0 && (
+
+              )} */}
             </div>
 
             {/* <p className="flex items-center">
@@ -369,26 +408,27 @@ export const ProphetStaking  : FC<ProphetStakingProps> = ({totalPoolSize }) => {
             </button> */}
 
             <Button
-                fullWidth
-                color={'pink'}
-                onClick={async () => {
-                  try {
-                    // KMP decimals depend on asset, OLP is always 18
-                    // @ts-ignore TYPE NEEDS FIXING
-                    const tx = await harvest()
-                    if (tx?.hash) {
-                      addTransaction(tx, {
-                        summary: `harvest in pro staking`,
-                      })
-                    }
-                  } catch (error) {
-                    console.error(error)
+              className='mt-1'
+              fullWidth
+              color={'pink'}
+              onClick={async () => {
+                try {
+                  // KMP decimals depend on asset, OLP is always 18
+                  // @ts-ignore TYPE NEEDS FIXING
+                  const tx = await harvest()
+                  if (tx?.hash) {
+                    addTransaction(tx, {
+                      summary: `harvest in pro staking`,
+                    })
                   }
-                }}
-                disabled={!userReward || userReward?.length === 0}
-              >
-                {i18n._(t`HARVEST`)}
-              </Button>
+                } catch (error) {
+                  console.error(error)
+                }
+              }}
+              disabled={!userReward || userReward?.length === 0}
+            >
+              {i18n._(t`HARVEST`)}
+            </Button>
           </div>
         </div>
       </div>

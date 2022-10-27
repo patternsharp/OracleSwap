@@ -27,7 +27,6 @@ import TRSH from '../../../public/TRSH.png'
 import CGLD from '../../../public/CGLD.png'
 import dFLR from '../../../public/dFLR.png'
 
-
 // import PRO_Logo3Gold from '../../../public/PRO_Logo3Gold.png'
 
 const BLOCKCHAIN = {
@@ -79,11 +78,15 @@ export const getCurrencyLogoUrls = (currency): string[] => {
       // const hostname = window.location.hostname
       // const protocal = window.location.protocol
       // console.log('window.origin', window.origin)
-
       urls.push(
         // @ts-ignore TYPE NEEDS FIXING
-        `${window.origin}/${currency.symbol}.png`
+        `https://dex.oracleswap.io/${currency.symbol}.png`
       )
+
+      // urls.push(
+      //   // @ts-ignore TYPE NEEDS FIXING
+      //   `${window.origin}/${currency.symbol}.png`
+      // )
     }
   }
   return urls
