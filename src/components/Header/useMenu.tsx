@@ -1,5 +1,5 @@
-import { GlobeIcon, SwitchVerticalIcon, CollectionIcon,  CurrencyDollarIcon } from '@heroicons/react/outline'
-
+import { GlobeIcon, SwitchVerticalIcon, CollectionIcon,  CurrencyDollarIcon, PresentationChartBarIcon } from '@heroicons/react/outline'
+PresentationChartBarIcon
 import { t } from '@lingui/macro'
 import { useLingui } from '@lingui/react'
 import { SUSHI_ADDRESS } from '@sushiswap/core-sdk'
@@ -120,6 +120,14 @@ const useMenu: UseMenu = () => {
       icon: <CollectionIcon width={20} />,
     }
 
+    let analyticsMenu: MenuItem = {
+      key: 'analytics',
+      title: i18n._(t`Analytics`),
+      link: 'https://analytics.oracleswap.io/',
+      external: true,
+      icon: <PresentationChartBarIcon width={20} />,
+    }
+
 
     const exploreMenu: MenuItemLeaf[] = []
     // if (featureEnabled(Feature.VESTING, chainId)) {
@@ -189,6 +197,7 @@ const useMenu: UseMenu = () => {
     }
 
     mainItems.push(nftMenu)
+    mainItems.push(analyticsMenu)
     mainItems.push(earnMenu)
     // if (featureEnabled(Feature.KASHI, chainId)) {
     //   mainItems.push({
