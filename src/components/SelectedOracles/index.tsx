@@ -218,7 +218,7 @@ export const SelectedOracles = () => {
         ))}
       </div>
 
-      <div className="flex justify-center">
+      <div className="grid justify-center grid-cols-1 sm:flex">
         <div className={classNames('flex justify-between py-2 px-3 w-content')}>
           <div className="flex items-center gap-1.5 mr-1">
             <WalletIcon
