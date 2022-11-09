@@ -9,7 +9,7 @@ import axios from 'axios'
 import { useCallback, useEffect, useMemo, useState } from 'react'
 
 import { useAllTokens } from './Tokens'
-import { useOracleNFTContract, useProStakingContract } from './useContract'
+import { useOracleNFTContract, useProStakingContract, useProStakingDistributorContract, useProStakingOracleWeightContract } from './useContract'
 
 const fetchNFTMetaInfo = async (id: number) => {
   const url = `https://ipfs.io/ipfs/QmV3yAjc2WXQNZycGq3G8B6KGfNZutJFcQM3UuCRiXYgBH/${id}.json`
@@ -17,6 +17,28 @@ const fetchNFTMetaInfo = async (id: number) => {
   const token = response.data
 
   return token
+}
+
+export const useProStakingDistributeAction = () => {
+
+  const addTransaction = useTransactionAdder()
+
+  const distributor = useProStakingDistributorContract()
+
+  const distribute = useCallback(
+    async () => {
+      try {
+        const tx = await distributor?.distribute()
+
+        return addTransaction(tx, { summary: 'distribute in prostaking' })
+      } catch (e) {
+        return e
+      }
+    },
+    [addTransaction, distributor]
+  )
+
+  return { distribute }
 }
 
 export const useProStakingActions = () => {
@@ -324,6 +346,23 @@ export function useOracleNFTAllApproved() {
   return approved
 }
 
+export function useOracleNFTWeight(tokenId: number) {
+  const contract = useProStakingOracleWeightContract()
+
+  const args = useMemo(() => {
+    if (!tokenId) {
+      return
+    }
+    return [String(tokenId)]
+  }, [tokenId])
+
+  const weightInfo = useSingleCallResult(args ? contract : null, 'oracleNFTWeight', args)?.result
+
+  const weight = weightInfo?.[0]
+
+  return weight ? weight.toNumber() : undefined
+}
+
 export function useOracleNFTApproved(tokenId: number) {
   const contract = useOracleNFTContract()
 
@@ -395,7 +434,12 @@ export function useProPendingReward() {
     let infos: any[] = []
     rewardsInfo.map((item: { token: string; amount: BigNumber }) => {
       const OLPToken = new Token(ChainId.SGB, item.token, 18, 'OLP', 'OracleSwap LP Token')
-      const tokenInfo = alltokens[item.token] || OLPToken
+      let tokenInfo = alltokens[item.token] || OLPToken
+
+      if(item.token == '0x0000000000000000000000000000000000000000'){
+        tokenInfo = new Token(ChainId.SGB, item.token, 18, 'SGB', 'SGB');
+      }
+
 
       const amountInfo = item.amount ? JSBI.BigInt(item.amount.toString()) : undefined
 
@@ -439,7 +483,12 @@ export function useProUserTotalReward() {
     let infos: any[] = []
     rewardsInfo.map((item: { token: string; amount: BigNumber }) => {
       const OLPToken = new Token(ChainId.SGB, item.token, 18, 'OLP', 'OracleSwap LP Token')
-      const tokenInfo = alltokens[item.token] || OLPToken
+
+      let tokenInfo = alltokens[item.token] || OLPToken
+
+      if(item.token == '0x0000000000000000000000000000000000000000'){
+        tokenInfo = new Token(ChainId.SGB, item.token, 18, 'SGB', 'SGB');
+      }
 
       const amountInfo = item.amount ? JSBI.BigInt(item.amount.toString()) : undefined
 
@@ -532,7 +581,12 @@ export function useTotalDistributedReward() {
     let infos: any[] = []
     rewardsInfo.map((item: { token: string; amount: BigNumber }) => {
       const OLPToken = new Token(ChainId.SGB, item.token, 18, 'OLP', 'OracleSwap LP Token')
-      const tokenInfo = alltokens[item.token] || OLPToken
+
+      let tokenInfo = alltokens[item.token] || OLPToken
+
+      if(item.token == '0x0000000000000000000000000000000000000000'){
+        tokenInfo = new Token(ChainId.SGB, item.token, 18, 'SGB', 'SGB');
+      }
 
       const amountInfo = item.amount ? JSBI.BigInt(item.amount.toString()) : undefined
 

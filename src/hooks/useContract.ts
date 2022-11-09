@@ -24,7 +24,7 @@ import MISO from '@sushiswap/miso/exports/all.json'
 import TRIDENT from '@sushiswap/trident/exports/all.json'
 import { OLD_FARMS } from 'app/config/farms'
 import { tridentMigrationContracts } from 'app/config/tridentMigration'
-import { MASTERCHEF_ADDRESS, ORACLE_NFT_ADDRESS, ORACLE_DISTRIBUTOR_ADDRESS, PROPHET_SACRIFICE_ADDRESS,PROSTAKING_ADDRESS } from 'app/constants'
+import { MASTERCHEF_ADDRESS, ORACLE_DISTRIBUTOR_ADDRESS, ORACLE_NFT_ADDRESS, ORACLE_NFT_WEIGHT_ADDRESS, PROPHET_SACRIFICE_ADDRESS,PROSTAKING_ADDRESS, PROSTAKING_DISTRIBUTOR_ADDRESS } from 'app/constants'
 import {
   ARGENT_WALLET_DETECTOR_ABI,
   ARGENT_WALLET_DETECTOR_MAINNET_ADDRESS,
@@ -57,6 +57,8 @@ import ORACLE_DISTRIBUTOR_ABI from 'app/constants/abis/oracledistributor.json'
 import ORACLE_NFT_ABI  from 'app/constants/abis/oraclenft.json'
 import PROPHET_SACRIFICE_ABI from 'app/constants/abis/prophet-sacrifice.json'
 import PROSTAKING_ABI  from 'app/constants/abis/prostaking.json'
+import PROSTAKING_ORACLE_WEIGHT_ABI  from 'app/constants/abis/prostaking-oracle-weight.json'
+import PROSTAKING_DISTRIBUTOR_ABI  from 'app/constants/abis/prostakingdistributor.json'
 import ROUTER_ABI from 'app/constants/abis/router.json'
 import SUSHI_ABI from 'app/constants/abis/sushi.json'
 import SUSHIROLL_ABI from 'app/constants/abis/sushi-roll.json'
@@ -187,6 +189,16 @@ export function useRouterContract(withSignerIfPossible?: boolean): Contract | nu
 export function useSushiBarContract(withSignerIfPossible?: boolean): Contract | null {
   const { chainId } = useActiveWeb3React()
   return useContract(chainId ? BAR_ADDRESS[chainId] : undefined, BAR_ABI, withSignerIfPossible)
+}
+
+export function useProStakingOracleWeightContract(withSignerIfPossible?: boolean): Contract | null {
+  const { chainId } = useActiveWeb3React()
+  return useContract(chainId ? ORACLE_NFT_WEIGHT_ADDRESS : undefined, PROSTAKING_ORACLE_WEIGHT_ABI, withSignerIfPossible)
+}
+
+export function useProStakingDistributorContract(withSignerIfPossible?: boolean): Contract | null {
+  const { chainId } = useActiveWeb3React()
+  return useContract(chainId ? PROSTAKING_DISTRIBUTOR_ADDRESS : undefined, PROSTAKING_DISTRIBUTOR_ABI, withSignerIfPossible)
 }
 
 export function useProStakingContract(withSignerIfPossible?: boolean): Contract | null {
