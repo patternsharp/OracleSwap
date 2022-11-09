@@ -1,5 +1,5 @@
-
 import { XIcon } from '@heroicons/react/solid'
+import Button from 'app/components/Button'
 import Container from 'app/components/Container'
 import { ProphetStaking } from 'app/components/ProphetStaking'
 import { SelectedOracles } from 'app/components/SelectedOracles'
@@ -7,14 +7,17 @@ import Typography from 'app/components/Typography'
 import { Feature } from 'app/enums'
 import { classNames } from 'app/functions'
 import NetworkGuard from 'app/guards/Network'
-import {  useProStakingInfo, useTotalDistributedReward } from 'app/hooks/useProstaking'
-import { useDexWarningOpen, useProStakingWarningOpen, useToggleProStakingWarning,  } from 'app/state/application/hooks'
+import {
+  useProStakingDistributeAction,
+  useProStakingInfo,
+  useTotalDistributedReward,
+} from 'app/hooks/useProstaking'
+import { useActiveWeb3React } from 'app/services/web3'
+import { useDexWarningOpen, useProStakingWarningOpen, useToggleProStakingWarning } from 'app/state/application/hooks'
 import Head from 'next/head'
-import React from 'react'
-
+import React, { useState } from 'react'
 
 const INPUT_CHAR_LIMIT = 18
-
 
 const tabStyle = 'flex justify-center items-center h-full w-full rounded-lg cursor-pointer text-sm md:text-base'
 const activeTabStyle = `${tabStyle} text-high-emphesis font-bold bg-dark-900`
@@ -26,18 +29,52 @@ const buttonStyleEnabled = `${buttonStyle} text-high-emphesis bg-gradient-to-r f
 const buttonStyleInsufficientFunds = `${buttonStyleEnabled} opacity-60`
 const buttonStyleDisabled = `${buttonStyle} text-secondary bg-dark-700`
 const buttonStyleConnectWallet = `${buttonStyle} text-high-emphesis bg-blue hover:bg-opacity-90`
+const sendTx = async (txFunc: () => Promise<any>): Promise<boolean> => {
+  let success = true
+  try {
+    const ret = await txFunc()
+    if (ret?.error) {
+      success = false
+    }
+  } catch (e) {
+    console.error(e)
+    success = false
+  }
+  return success
+}
 
 function ProStaking() {
+  const { totalProAmount, totalxOracleAmount, totalPoolSize, totalNFTCount } = useProStakingInfo()
 
-  const {totalProAmount,totalxOracleAmount ,totalPoolSize,totalNFTCount} = useProStakingInfo()
-
-  const distributedReward =  useTotalDistributedReward()
+  const distributedReward = useTotalDistributedReward()
 
   const showUseDexWarning = useDexWarningOpen()
 
-  const showWarning  = useProStakingWarningOpen()
+  const showWarning = useProStakingWarningOpen()
 
   const toggleWarning = useToggleProStakingWarning()
+
+  const { distribute } = useProStakingDistributeAction()
+
+  const [pendingTx, setPendingTx] = useState(false)
+
+  const { account, chainId } = useActiveWeb3React()
+
+  const proDistribute = async () => {
+    if (!account) {
+      return
+    } else {
+      setPendingTx(true)
+
+      const success = await sendTx(() => distribute())
+      if (!success) {
+        setPendingTx(false)
+        return
+      }
+
+      setPendingTx(false)
+    }
+  }
 
   return (
     <Container id="prostaking-page" className="py-4 md:py-8 lg:py-12" maxWidth="5xl">
@@ -95,16 +132,21 @@ USE AT YOUR OWN RISK!`}
               <div className="flex flex-wrap p-5 rounded-md global-stat bg-dark-800">
                 <div className="w-full sm:w-1/2">
                   <h3 className="text-2xl">Global Stats</h3>
-                  <p>{`Current Global Pool Size:  ${totalPoolSize? totalPoolSize.toSignificant(6): ''}`}</p>
-                  <p>{`Total PRO Locked:  ${totalProAmount? totalProAmount.toSignificant(6): ''}`}</p>
-                  <p>{`Total Oracle NFTs Locked:  ${totalNFTCount? totalNFTCount: ''}`}</p>
-                  <p>{`Total XORACLE Locked:  ${totalxOracleAmount? totalxOracleAmount.toSignificant(6): ''}`}</p>
+                  <p>{`Current Global Pool Size:  ${totalPoolSize ? totalPoolSize.toSignificant(6) : ''}`}</p>
+                  <p>{`Total PRO Locked:  ${totalProAmount ? totalProAmount.toSignificant(6) : ''}`}</p>
+                  <p>{`Total Oracle NFTs Locked:  ${totalNFTCount ? totalNFTCount : ''}`}</p>
+                  <p>{`Total XORACLE Locked:  ${totalxOracleAmount ? totalxOracleAmount.toSignificant(6) : ''}`}</p>
+                  <Button size="sm" className="mt-3" color={'blue'} onClick={proDistribute} disabled={pendingTx}>
+                    {`Distribute`}
+                  </Button>
                 </div>
                 <div className="w-full mt-5 sm:w-1/2 sm:mt-0">
                   <p className="text-lg">DISTRIBUTED</p>
-                  {
-                    distributedReward.map((item,index) => (<p key={`rewardinfo-${index}`}>{`${item.token.symbol}: ${item.amount?item.amount.toSignificant(6):''}`}</p>))
-                  }
+                  {distributedReward.map((item, index) => (
+                    <p key={`rewardinfo-${index}`}>{`${item.token.symbol}: ${
+                      item.amount ? item.amount.toSignificant(6) : ''
+                    }`}</p>
+                  ))}
                   {/* <p>SGB: 3500</p>
                   <p>W56B: 3500</p>
                   <p>PRO: 5000</p>
@@ -115,7 +157,7 @@ USE AT YOUR OWN RISK!`}
               </div>
             </div>
             <div className="w-full md:w-[300px] mt-4 md:mt-0 bg-dark-800 rounded-3xl p-5">
-              <h2 className="mb-2 text-2xl">Prophet Parameters</h2>
+              <h2 className="mb-2 text-2xl">Parameters</h2>
               <p>
                 -Stake just PRO with or without a timelock. The timelock multiplies your PRO Power giving you a larger
                 share of the pool.
@@ -128,7 +170,7 @@ USE AT YOUR OWN RISK!`}
               </p>
             </div>
           </div>
-          <ProphetStaking  totalPoolSize={totalPoolSize} />
+          <ProphetStaking totalPoolSize={totalPoolSize} />
           <SelectedOracles />
         </div>
       </div>
