@@ -19,6 +19,7 @@ import { useActiveWeb3React } from 'app/services/web3'
 import { useTokenBalance } from 'app/state/wallet/hooks'
 import { isArray } from 'lodash'
 import Image from 'next/image'
+import CountDown from 'pages/prostaking/CountDown'
 import React, { FC, useEffect, useMemo, useState } from 'react'
 
 import AssetInput from '../AssetInput'
@@ -30,7 +31,7 @@ import Web3Connect from '../Web3Connect'
 
 const moment = require('moment')
 
-
+import PROLOGO from '../../../public/PRO_Logo3Gold.png'
 
 const sendTx = async (txFunc: () => Promise<any>): Promise<boolean> => {
   let success = true
@@ -62,11 +63,11 @@ export const ProphetStaking: FC<ProphetStakingProps> = ({ totalPoolSize }) => {
     },
     {
       value: 1,
-      label: '1W',
+      label: '1M',
     },
     {
       value: 2,
-      label: '1M',
+      label: '3M',
     },
     {
       value: 3,
@@ -195,31 +196,32 @@ export const ProphetStaking: FC<ProphetStakingProps> = ({ totalPoolSize }) => {
 
   const rate = useMemo(() => {
     if (totalPoolSize && userTotalWeight && totalPoolSize.greaterThan(ZERO)) {
-      const rateInfo = userTotalWeight.multiply(100).divide(totalPoolSize).quotient.toString()
 
-      return parseFloat(rateInfo)
+      return parseFloat(userTotalWeight.multiply(100).toSignificant(8)) / parseFloat(totalPoolSize?.toSignificant(8))
     }
     return 0
   }, [totalPoolSize, userTotalWeight])
 
-  const timeLock = useMemo(() => {
-    if (!unlockTime) {
-      return null
-    }
+  
 
-    var date = new Date(unlockTime * 1000)
-    var started = moment(date)
+  // const timeLock = useMemo(() => {
+  //   if (!unlockTime) {
+  //     return null
+  //   }
 
-    var current = moment()
+  //   var date = new Date(unlockTime * 1000)
+  //   var started = moment(date)
 
-    var diff = started.diff(current)
+  //   var current = moment()
 
-    var duration = moment.duration(diff)
+  //   var diff = started.diff(current)
 
-    var formated = duration.humanize(true)
+  //   var duration = moment.duration(diff)
 
-    return formated
-  }, [unlockTime])
+  //   var formated = duration.humanize(true)
+
+  //   return formated
+  // }, [unlockTime])
 
   return (
     <>
@@ -261,7 +263,7 @@ export const ProphetStaking: FC<ProphetStakingProps> = ({ totalPoolSize }) => {
               </div>
               <div className="flex justify-between p-2 rounded-md box-wrapper">
                 <p className="text-lg font-semibold">TIME LOCK</p>
-                <p className="text-lg font-semibold text-red-500">{timeLock}</p>
+                <p className="text-lg font-semibold text-red-500"><CountDown time={unlockTime}/></p>
               </div>
               <p className="mt-2 text-red-500">
                 *If you unstake your PRO before the time loack period is over you will forfiet 50% of your staked
@@ -272,12 +274,12 @@ export const ProphetStaking: FC<ProphetStakingProps> = ({ totalPoolSize }) => {
             <div className="flex flex-col w-full gap-1 p-4 stake-wrap">
               <p>Space Time Lock</p>
               <div className="px-2 slider-wrapper">
-                <div className="flex items-center justify-between mt-2 -mx-2 labels">
+                <div className="flex items-center justify-between mt-2 -mx-2 font-extrabold labels">
                   <p>1x</p>
                   <p>1.5x</p>
-                  <p>2x</p>
-                  <p>4x</p>
-                  <p>33x</p>
+                  <p>7x</p>
+                  <p>15x</p>
+                  <p>31x</p>
                 </div>
                 <Slider
                   aria-labelledby="track-inverted-slider"
@@ -294,7 +296,10 @@ export const ProphetStaking: FC<ProphetStakingProps> = ({ totalPoolSize }) => {
                       setLockMode(value)
                     }
                   }}
-                  sx={{ color: 'yellow' }}
+                  sx={{ color: 'yellow',    "& .MuiSlider-markLabel": {
+                    color: "yellow",
+                    fontWeight:700,
+                  } }}
                   min={0}
                   max={4}
                   step={1}
@@ -353,7 +358,8 @@ export const ProphetStaking: FC<ProphetStakingProps> = ({ totalPoolSize }) => {
           <div className="px-5 mt-4 mb-4 balance bg-dark-800 rounded-3xl py-7 md:mt-0">
             <h2 className="mb-2 text-xl">Stake Balance</h2>
             <div className="flex items-center pb-1 balance1">
-              <Image src="https://dex.oracleswap.io/PRO_Logo3Gold.png" height={30} width={30} alt="true" />
+              {/* <Image src="/PRO_Logo3Gold.png" height={32} width={32} alt="true" /> */}
+              <img src={PROLOGO.src} width={30} height={30} alt="Logo" />
               <p className="ml-2">{`PRO: ${stakedAmount ? stakedAmount.toSignificant(6) : ''}`}</p>
             </div>
             <div className="flex items-center pb-1 balance2">
@@ -369,19 +375,21 @@ export const ProphetStaking: FC<ProphetStakingProps> = ({ totalPoolSize }) => {
               <br />{' '}
               <span className="text-green-600">
                 {' '}
-                {`${userTotalWeight ? userTotalWeight.toSignificant(6) : ''} = ${rate}%`}
+                {`${userTotalWeight ? userTotalWeight.toSignificant(6) : ''} = ${rate.toFixed(10)}%`}
               </span>
             </p>
             <p>
               TIME LOCK
-              <br /> <span className={``}>{timeLock}</span>
+              <div><CountDown time={unlockTime}/></div>
+              
+              {/* <br /> <span className={``}>{timeLock}</span> */}
             </p>
           </div>
           <div className="flex flex-col justify-between flex-1 px-4 py-4 rewards bg-dark-800 rounded-3xl">
             <h2 className="mb-1 text-xl">Rewards</h2>
             <div className="grid h-full grid-cols-2">
               <div>
-                <h2 className="text-xl">Total</h2>
+                <h2 className="text-xl">Total Claimed</h2>
                 <div className="flex flex-col">
                   {userTotalReward.map((item, index) => (
                     <p key={`user-rewardinfo-${index}`}>{`${item.token.symbol}: ${
