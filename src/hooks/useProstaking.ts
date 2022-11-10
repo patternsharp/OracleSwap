@@ -3,7 +3,7 @@ import { ChainId, CurrencyAmount, JSBI, Token, ZERO } from '@sushiswap/core-sdk'
 import { PROPHET, XORACLE } from 'app/config/tokens'
 import { PROSTAKING_ADDRESS } from 'app/constants'
 import { useActiveWeb3React } from 'app/services/web3'
-import { useSingleCallResult } from 'app/state/multicall/hooks'
+import { useSingleCallResult, useSingleContractMultipleData } from 'app/state/multicall/hooks'
 import { useTransactionAdder } from 'app/state/transactions/hooks'
 import axios from 'axios'
 import { useCallback, useEffect, useMemo, useState } from 'react'
@@ -121,6 +121,32 @@ export const useProStakingActions = () => {
     [addTransaction, prostakingContract]
   )
 
+  const oracleMultiNFTStake = useCallback(
+    async (tokenIds: number[]) => {
+      try {
+        const tx = await prostakingContract?.batchNFTStake(tokenIds)
+
+        return addTransaction(tx, { summary: 'Oracle nft stake in ProStaking' })
+      } catch (e) {
+        return e
+      }
+    },
+    [addTransaction, prostakingContract]
+  )
+
+  const oracleMultiNFTWithdraw = useCallback(
+    async (tokenIds: number[]) => {
+      try {
+        const tx = await prostakingContract?.batchNFTWithdraw(tokenIds)
+
+        return addTransaction(tx, { summary: 'Oracle nft withdraw in ProStaking' })
+      } catch (e) {
+        return e
+      }
+    },
+    [addTransaction, prostakingContract]
+  )
+
   const extendLockMode = useCallback(
     async (lockMode: number) => {
       try {
@@ -134,7 +160,7 @@ export const useProStakingActions = () => {
     [addTransaction, prostakingContract]
   )
 
-  return { deposit, withdraw, harvest, oracleNFTStake, oracleNFTWithdraw, extendLockMode, increaseLockAmount }
+  return { deposit, withdraw, harvest, oracleNFTStake, oracleNFTWithdraw, extendLockMode, increaseLockAmount,oracleMultiNFTStake,oracleMultiNFTWithdraw }
 }
 
 export function useProStakingRewardHistory() {
@@ -209,6 +235,55 @@ export function useProStakingUserInfo() {
   return { lockMode, unlockTime, lockedProAmount, userNFTWeight, userTotalWeight, lockXOracle }
 }
 
+export function useProStakingNFTWeightInfo() : { [address: string]: number } {
+
+  const { account } = useActiveWeb3React()
+
+  const contract = useProStakingContract()
+
+  const args = useMemo(() => {
+    if (!account) {
+      return
+    }
+    return [String(account)]
+  }, [account])
+
+  const userStakedNFTInfo = useSingleCallResult(args ? contract : null, 'userStakedNFT', args)?.result
+
+  const userStakedNFT = userStakedNFTInfo?.[0]
+
+  const userWalletNFTInfo = useSingleCallResult(args ? contract : null, 'userWalletNFT', args)?.result
+
+  const userWalletNFT = userWalletNFTInfo?.[0]
+
+  const weightContract = useProStakingOracleWeightContract()
+
+  const weightArgs = useMemo(() => {
+    if (!userStakedNFT || !userWalletNFT) {
+      return
+    }
+    return [...userStakedNFT,...userWalletNFT].map((tokenId) => [String(tokenId.toNumber())])
+  }, [userStakedNFT,userWalletNFT])
+
+  // @ts-ignore TYPE NEEDS FIXING
+  const nftWeightInfo = useSingleContractMultipleData(weightArgs ? weightContract : null, 'oracleNFTWeight', weightArgs)
+
+  return useMemo(() => {
+
+    if (!nftWeightInfo) {
+      return {}
+    }
+
+    let map = {}
+    nftWeightInfo.map((data, i) => (
+      // @ts-ignore TYPE NEEDS FIXING
+      map[weightArgs[i][0]] = data.result?.[0].toNumber() || 0
+    ))
+
+    return map;
+  }, [weightArgs, nftWeightInfo])
+
+}
 export function useProStakingNFTInfo() {
   const { account, chainId } = useActiveWeb3React()
 
@@ -228,6 +303,34 @@ export function useProStakingNFTInfo() {
   const userWalletNFTInfo = useSingleCallResult(args ? contract : null, 'userWalletNFT', args)?.result
 
   const userWalletNFT = userWalletNFTInfo?.[0]
+
+  // const weightContract = useProStakingOracleWeightContract()
+
+
+  // const weightArgs = useMemo(() => {
+  //   if (!userStakedNFT || !userWalletNFT) {
+  //     return
+  //   }
+  //   return [...userStakedNFT,...userWalletNFT].map((tokenId) => [String(tokenId.toNumber())])
+  // }, [userStakedNFT,userWalletNFT])
+
+  // // @ts-ignore TYPE NEEDS FIXING
+  // const nftWeightInfo = useSingleContractMultipleData(weightArgs ? weightContract : null, 'oracleNFTWeight', weightArgs)
+
+  // const oracleStakingWeight =  useMemo(() => {
+  //   if (!nftWeightInfo) {
+  //     return undefined
+  //   }
+
+  //   let map = {}
+  //   nftWeightInfo.map((data, i) => (
+  //     // @ts-ignore TYPE NEEDS FIXING
+  //     map[weightArgs[i][0]] = data.result?.[0].toNumber() || 0
+  //   ))
+
+  //   return map;
+  // }, [weightArgs, nftWeightInfo])
+
 
   const [walletNFT, setWalletNFT] = useState<Array<any>>([])
 
