@@ -85,7 +85,7 @@ export const ProphetStaking: FC<ProphetStakingProps> = ({ totalPoolSize }) => {
 
   const liquidityToken = PROPHET
 
-  const balance = useTokenBalance(account?? undefined, liquidityToken)
+  const balance = useTokenBalance(account ?? undefined, liquidityToken)
 
   const {
     lockMode: userLockMode,
@@ -116,7 +116,7 @@ export const ProphetStaking: FC<ProphetStakingProps> = ({ totalPoolSize }) => {
   const isWithdrawValid = !withdrawError
   // const { setContent } = useFarmListItemDetailsModal()
 
-  const { deposit, withdraw, harvest, increaseLockAmount } = useProStakingActions()
+  const { deposit, withdraw, harvest, increaseLockAmount, extendLockMode } = useProStakingActions()
 
   const [pendingTx, setPendingTx] = useState(false)
 
@@ -150,8 +150,8 @@ export const ProphetStaking: FC<ProphetStakingProps> = ({ totalPoolSize }) => {
           setPendingTx(false)
           return
         }
-      }else{
-        const success = await sendTx(() => deposit(amount,lockMode))
+      } else {
+        const success = await sendTx(() => deposit(amount, lockMode))
         if (!success) {
           setPendingTx(false)
           return
@@ -179,12 +179,27 @@ export const ProphetStaking: FC<ProphetStakingProps> = ({ totalPoolSize }) => {
     }
   }
 
-
   const [lockMode, setLockMode] = useState(2)
 
   useEffect(() => {
     setLockMode(userLockMode)
   }, [userLockMode])
+
+  const increaseLockTime = async () => {
+    if (!account || lockMode <= userLockMode) {
+      return
+    } else {
+      setPendingTx(true)
+
+      const success = await sendTx(() => extendLockMode(lockMode))
+      if (!success) {
+        setPendingTx(false)
+        return
+      }
+
+      setPendingTx(false)
+    }
+  }
 
   const userReward = useProPendingReward()
 
@@ -196,13 +211,10 @@ export const ProphetStaking: FC<ProphetStakingProps> = ({ totalPoolSize }) => {
 
   const rate = useMemo(() => {
     if (totalPoolSize && userTotalWeight && totalPoolSize.greaterThan(ZERO)) {
-
       return parseFloat(userTotalWeight.multiply(100).toSignificant(8)) / parseFloat(totalPoolSize?.toSignificant(8))
     }
     return 0
   }, [totalPoolSize, userTotalWeight])
-
-  
 
   // const timeLock = useMemo(() => {
   //   if (!unlockTime) {
@@ -253,17 +265,19 @@ export const ProphetStaking: FC<ProphetStakingProps> = ({ totalPoolSize }) => {
 
           {!toggle ? (
             <div className="flex flex-col w-full gap-1 p-4 stake-wrap">
-              <div className="flex justify-between p-2 mt-2 mb-1 rounded-md box-wrapper">
+              {/* <div className="flex justify-between p-2 mt-2 mb-1 rounded-md box-wrapper">
                 <p className="text-lg font-semibold">ORACLES SELECTED</p>
                 <p className="text-lg font-semibold"></p>
               </div>
               <div className="flex justify-between p-2 rounded-md box-wrapper">
                 <p className="text-lg font-semibold">xORACLES SELECTED</p>
                 <p className="text-lg font-semibold"></p>
-              </div>
+              </div> */}
               <div className="flex justify-between p-2 rounded-md box-wrapper">
                 <p className="text-lg font-semibold">TIME LOCK</p>
-                <p className="text-lg font-semibold text-red-500"><CountDown time={unlockTime}/></p>
+                <p className="text-lg font-semibold text-red-500">
+                  <CountDown time={unlockTime} />
+                </p>
               </div>
               <p className="mt-2 text-red-500">
                 *If you unstake your PRO before the time loack period is over you will forfiet 50% of your staked
@@ -296,23 +310,26 @@ export const ProphetStaking: FC<ProphetStakingProps> = ({ totalPoolSize }) => {
                       setLockMode(value)
                     }
                   }}
-                  sx={{ color: 'yellow',    "& .MuiSlider-markLabel": {
-                    color: "yellow",
-                    fontWeight:700,
-                  } }}
+                  sx={{
+                    color: 'yellow',
+                    '& .MuiSlider-markLabel': {
+                      color: 'yellow',
+                      fontWeight: 700,
+                    },
+                  }}
                   min={0}
                   max={4}
                   step={1}
                 />
               </div>
-              <div className="flex justify-between p-2 mt-4 mb-2 rounded-md box-wrapper">
+              {/* <div className="flex justify-between p-2 mt-4 mb-2 rounded-md box-wrapper">
                 <p className="text-lg font-semibold">ORACLES SELECTED</p>
                 <p className="text-lg font-semibold"></p>
               </div>
               <div className="flex justify-between p-2 rounded-md box-wrapper">
                 <p className="text-lg font-semibold">xORACLES SELECTED</p>
                 <p className="text-lg font-semibold"></p>
-              </div>
+              </div> */}
             </div>
           )}
           <div className="p-4">
@@ -353,6 +370,17 @@ export const ProphetStaking: FC<ProphetStakingProps> = ({ totalPoolSize }) => {
               </Button>
             )}
           </div>
+
+          <div className="p-4">
+            <Button
+              fullWidth
+              color={'blue'}
+              onClick={increaseLockTime}
+              disabled={pendingTx || !account || lockMode <= userLockMode}
+            >
+              {i18n._(t`Extend Lock`)}
+            </Button>
+          </div>
         </div>
         <div className="w-full md:w-[300px] flex flex-col">
           <div className="px-5 mt-4 mb-4 balance bg-dark-800 rounded-3xl py-7 md:mt-0">
@@ -380,8 +408,9 @@ export const ProphetStaking: FC<ProphetStakingProps> = ({ totalPoolSize }) => {
             </p>
             <p>
               TIME LOCK
-              <div><CountDown time={unlockTime}/></div>
-              
+              <div>
+                <CountDown time={unlockTime} />
+              </div>
               {/* <br /> <span className={``}>{timeLock}</span> */}
             </p>
           </div>
@@ -439,7 +468,7 @@ export const ProphetStaking: FC<ProphetStakingProps> = ({ totalPoolSize }) => {
             </button> */}
 
             <Button
-              className='mt-1'
+              className="mt-1"
               fullWidth
               color={'pink'}
               onClick={proHarvest}
