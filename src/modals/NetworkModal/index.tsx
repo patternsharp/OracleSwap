@@ -204,7 +204,7 @@ export const SUPPORTED_NETWORKS: {
       symbol: 'SGB',
       decimals: 18,
     },
-    rpcUrls: ['https://rpc.sgbftso.com/http'],
+    rpcUrls: ['https://sgb.ftso.com.au/ext/bc/C/rpc'],
     blockExplorerUrls: ['https://songbird-explorer.flare.network'],
   },
 }
