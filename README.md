@@ -4,3 +4,4 @@ OracleSwap.io
 7-20-22 - Prophet Sacrifice system added
 9-28-22 - List new tokens and add earning app
 11-3-22 - Add Analytics Link
+11-14-22 - Add new tokens to list
