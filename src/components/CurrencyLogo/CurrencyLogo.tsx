@@ -26,6 +26,13 @@ import SRIBBITS from '../../../public/SRIBBITS.png'
 import TRSH from '../../../public/TRSH.png'
 import CGLD from '../../../public/CGLD.png'
 import dFLR from '../../../public/dFLR.png'
+import CANARY from '../../../public/CANARY.png'
+import CARE from '../../../public/CARE.png'
+import LIZ from '../../../public/LIZ.png'
+import INFT from '../../../public/INFT.png'
+
+
+
 
 
 // import PRO_Logo3Gold from '../../../public/PRO_Logo3Gold.png'
@@ -198,6 +205,22 @@ const CurrencyLogo: FunctionComponent<CurrencyLogoProps> = ({ currency, size = '
       return <img src={PSB.src} width={size} height={size} className={className} />
     }
 
+    if (currency.symbol === 'CANARY') {
+      return <img src={CANARY.src} width={size} height={size} className={className} />
+    }
+
+    if (currency.symbol === 'CARE') {
+      return <img src={CARE.src} width={size} height={size} className={className} />
+    }
+
+    if (currency.symbol === 'LIZ') {
+      return <img src={LIZ.src} width={size} height={size} className={className} />
+    }
+
+    if (currency.symbol === 'INFT') {
+      return <img src={INFT.src} width={size} height={size} className={className} />
+    }
+
     if (currency.symbol === 'dFLR') {
       return <img src={dFLR.src} width={size} height={size} className={className} />
     }
@@ -276,6 +299,22 @@ const CurrencyLogo: FunctionComponent<CurrencyLogoProps> = ({ currency, size = '
 
       if (currency.symbol === 'PSB') {
         return <img src={PSB.src} width={size} height={size} className={className} />
+      }
+
+      if (currency.symbol === 'CANARY') {
+        return <img src={CANARY.src} width={size} height={size} className={className} />
+      }
+  
+      if (currency.symbol === 'CARE') {
+        return <img src={CARE.src} width={size} height={size} className={className} />
+      }
+  
+      if (currency.symbol === 'LIZ') {
+        return <img src={LIZ.src} width={size} height={size} className={className} />
+      }
+  
+      if (currency.symbol === 'INFT') {
+        return <img src={INFT.src} width={size} height={size} className={className} />
       }
 
       if (currency.symbol === 'dFLR') {
