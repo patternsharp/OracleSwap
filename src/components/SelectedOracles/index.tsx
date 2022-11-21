@@ -209,7 +209,7 @@ export const SelectedOracles = () => {
     } else {
       setPendingTx(true)
 
-      const success = await sendTx(() => oracleMultiNFTStake(selectedIDs))
+      const success = await sendTx(() => oracleNFTStake(selectedIDs[0]))
       if (!success) {
         setPendingTx(false)
         return
@@ -239,7 +239,7 @@ export const SelectedOracles = () => {
     } else {
       setPendingTx(true)
 
-      const success = await sendTx(() => oracleMultiNFTWithdraw(selectedStakedIDs))
+      const success = await sendTx(() => oracleNFTWithdraw(selectedStakedIDs[0]))
       if (!success) {
         setPendingTx(false)
         return
