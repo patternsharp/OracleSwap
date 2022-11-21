@@ -4,6 +4,7 @@ import useCountDown from 'react-countdown-hook'
 interface CountDownProps {
   text?: string
   time?: number
+  hidden?:boolean
 }
 
 const getDateStringFromSeconds = (miliseconds: number) => {
@@ -20,7 +21,7 @@ const getDateStringFromSeconds = (miliseconds: number) => {
   return String(days) + ' days :' + hoursmins
 }
 
-const CountDown = ({ text, time }: CountDownProps) => {
+const CountDown = ({ text, time, hidden = false }: CountDownProps) => {
   var current = Date.now()
 
   const leftTime = useMemo(() => {
@@ -40,10 +41,15 @@ const CountDown = ({ text, time }: CountDownProps) => {
     }
   }, [leftTime, start])
 
+  if(hidden)
+  {
+    return null
+  }
+
   return (
-    <p className="text-lg font-normal text-left text-primary">
+    <div className="text-lg font-normal text-left text-primary">
       {text}<span className="ml-1 font-medium text-white">{timeLeft === 0 ? 'Now' : harvestScheduleDateString}</span>
-    </p>
+    </div>
   )
 }
 

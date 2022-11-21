@@ -17,8 +17,7 @@ import {
 } from 'app/hooks/useProstaking'
 import { useActiveWeb3React } from 'app/services/web3'
 import { useTokenBalance } from 'app/state/wallet/hooks'
-import React, { useEffect, useMemo, useState } from 'react'
-import { string } from 'yup'
+import React, { useMemo, useState } from 'react'
 
 import Button from '../Button'
 import { WalletIcon } from '../Icon'
@@ -72,43 +71,26 @@ export const SelectedOracles = () => {
 
   const oracleStakingWeight = useProStakingNFTWeightInfo()
 
-  const [selectedOracles, setSelectedOracles] = useState<Array<any>>(walletNFT)
+  // const [selectedOracles, setSelectedOracles] = useState<Array<any>>(walletNFT)
 
-  const selectedIDs = useMemo(() => {
-    let ids: number[] = []
+  const [selectedIDs, setSelectedIDs] = useState<Array<number>>([])
 
-    selectedOracles.map((item) => {
-      if (item.selected) {
-        ids.push(item.edition)
-      }
-    })
-    return ids
-  }, [selectedOracles])
+  const [updater, setUpdater] = useState(0)
 
-  const [selectedStakedOracles, setSelectedStakedOracles] = useState<Array<any>>(stakedNFT)
+  const [selectedStakedIDs, setSelectedStakedIDs] = useState<Array<number>>([])
 
-  const selectedStaledIDs = useMemo(() => {
-    let ids: number[] = []
+  // const [selectedStakedOracles, setSelectedStakedOracles] = useState<Array<any>>(stakedNFT)
 
-    selectedStakedOracles.map((item) => {
-      if (item.selected) {
-        ids.push(item.edition)
-      }
-    })
-    return ids
-  }, [selectedStakedOracles])
+  // const selectedStaledIDs = useMemo(() => {
+  //   let ids: number[] = []
 
-  useEffect(() => {
-    if (selectedOracles.length === 0 && walletNFT.length > 0) {
-      setSelectedOracles(walletNFT)
-    }
-  }, [walletNFT, selectedOracles])
-
-  useEffect(() => {
-    if (selectedStakedOracles.length === 0 && stakedNFT.length > 0) {
-      setSelectedStakedOracles(stakedNFT)
-    }
-  }, [stakedNFT, selectedStakedOracles])
+  //   selectedStakedOracles.map((item) => {
+  //     if (item.selected) {
+  //       ids.push(item.edition)
+  //     }
+  //   })
+  //   return ids
+  // }, [selectedStakedOracles])
 
   // @ts-ignore TYPE NEEDS FIXING
   const [approvalState, approve] = useApproveCallback(
@@ -129,32 +111,74 @@ export const SelectedOracles = () => {
   const { oracleNFTStake, oracleNFTWithdraw, oracleMultiNFTStake, oracleMultiNFTWithdraw } = useProStakingActions()
 
   const handleSelectOracles = (id: number) => {
-    // setSelected(id)
-    setSelectedOracles(
-      selectedOracles.map((item) => {
-        if (item.edition === id) {
-          return { ...item, selected: !item.selected }
-        }
-        return item
-      })
-    )
+    let ids = [...selectedIDs]
+
+    if (selectedIDs.includes(id)) {
+      let index = ids.indexOf(id)
+
+      if (index > -1) {
+        selectedIDs.splice(index, 1)
+      }
+      setSelectedIDs(selectedIDs)
+
+      setUpdater(Date.now())
+    } else {
+      ids.push(id)
+      if (ids.length >= 50) {
+        return
+      }
+      setSelectedIDs(ids)
+    }
   }
   const handleAllSelect = (isSelect: boolean) => {
-    setSelectedOracles(selectedOracles.map((item) => ({ ...item, selected: isSelect })))
+    if (isSelect) {
+      let ids: number[] = []
+      walletNFT.map((item) => {
+        if (ids.length <= 25) {
+          ids.push(item.edition)
+        }
+      })
+      setSelectedIDs(ids)
+    } else {
+      setSelectedIDs([])
+    }
   }
 
+  // console.log('handleSelectOracles all', selectedIDs)
+
   const handleStakedSelectOracles = (id: number) => {
-    setSelectedStakedOracles(
-      selectedStakedOracles.map((item) => {
-        if (item.edition === id) {
-          return { ...item, selected: !item.selected }
-        }
-        return item
-      })
-    )
+    let ids = [...selectedStakedIDs]
+
+    if (selectedStakedIDs.includes(id)) {
+      let index = ids.indexOf(id)
+
+      if (index > -1) {
+        selectedStakedIDs.splice(index, 1)
+      }
+      setSelectedStakedIDs(selectedStakedIDs)
+
+      setUpdater(Date.now())
+    } else {
+      ids.push(id)
+      if (ids.length >= 50) {
+        return
+      }
+      setSelectedStakedIDs(ids)
+    }
   }
+
   const handleStakedAllSelect = (isSelect: boolean) => {
-    setSelectedStakedOracles(selectedStakedOracles.map((item) => ({ ...item, selected: isSelect })))
+    if (isSelect) {
+      let ids: number[] = []
+      stakedNFT.map((item) => {
+        if (ids.length <= 25) {
+          ids.push(item.edition)
+        }
+      })
+      setSelectedStakedIDs(ids)
+    } else {
+      setSelectedStakedIDs([])
+    }
   }
 
   // const [selected, setSelected] = useState<number>()
@@ -210,12 +234,12 @@ export const SelectedOracles = () => {
   // }
 
   const multiUnStakeNFT = async () => {
-    if (!account || selectedStaledIDs?.length === 0) {
+    if (!account || selectedStakedIDs?.length === 0) {
       return
     } else {
       setPendingTx(true)
 
-      const success = await sendTx(() => oracleMultiNFTWithdraw(selectedStaledIDs))
+      const success = await sendTx(() => oracleMultiNFTWithdraw(selectedStakedIDs))
       if (!success) {
         setPendingTx(false)
         return
@@ -273,11 +297,11 @@ export const SelectedOracles = () => {
         UNSELECT ALL
       </button>
       <div className="flex flex-wrap justify-between mt-5 items-wrapper">
-        {selectedOracles.map((nft) => (
+        {walletNFT.map((nft) => (
           <div
             key={nft.edition}
             className={`item p-4 mb-5 sm:mb-0 w-full sm:w-[calc(50%-20px)] md:w-[calc(25%-20px)] rounded-md border-[5px] border-solid ${
-              nft.selected ? 'border-green-500' : 'border-green-500/0'
+              selectedIDs.includes(nft.edition) ? 'border-green-500' : 'border-green-500/0'
             }`}
             onClick={() => {
               // if (selected === nft.edition) {
@@ -285,18 +309,19 @@ export const SelectedOracles = () => {
               // } else {
               //   setSelected(nft.edition)
               // }
+              console.log('dfgsdfgsdf  click')
               handleSelectOracles(nft.edition)
             }}
           >
-            <p className="flex flex-col pb-1 text-xs">
+            <div className="flex flex-col pb-1 text-xs">
               <p>{nft.name}</p>
               <p>Weight: {Object.values(oracleStakingWeight).length > 0 ? oracleStakingWeight[nft.edition] : ''}</p>
-            </p>
+            </div>
 
             <img
+              className="object-cover object-center w-full"
               src={`https://ipfs.io/ipfs/QmfZhkQgWgG98JmaoaiUR5qNYPJh6ZS6HVFk5U6gRPaf1W/${nft.edition}.jpeg`}
               alt="oracle"
-              className="w"
             />
           </div>
         ))}
@@ -430,7 +455,7 @@ export const SelectedOracles = () => {
         </Button> */}
       </div>
 
-      {selectedStakedOracles?.length > 0 && (
+      {stakedNFT?.length > 0 && (
         <div>
           <h2 className="mt-3 text-xl">Select Your Staked Oracles</h2>
 
@@ -452,32 +477,26 @@ export const SelectedOracles = () => {
           </button>
 
           <div className="flex flex-wrap justify-between mt-5 items-wrapper">
-            {selectedStakedOracles.map((nft) => (
+            {stakedNFT.map((nft) => (
               <div
                 key={nft.edition}
                 className={`item p-4 mb-5 sm:mb-0 w-full sm:w-[calc(50%-20px)] md:w-[calc(25%-20px)] rounded-md border-[5px] border-solid ${
-                  nft.selected ? 'border-green-500' : 'border-green-500/0'
+                  selectedStakedIDs.length === 0 || !selectedStakedIDs.includes(nft.edition)
+                    ? 'border-green-500/0'
+                    : 'border-green-500'
                 }`}
                 onClick={() => {
-                  // if (stakedSelected === nft.edition) {
-                  //   setStakedSelected(undefined)
-                  // } else {
-                  //   setStakedSelected(nft.edition)
-                  // }
-
-                  // handleSelectOracles(nft.edition)
                   handleStakedSelectOracles(nft.edition)
                 }}
               >
-                <p className="flex flex-col pb-1 text-xs">
+                <div className="flex flex-col pb-1 text-xs">
                   <p>{nft.name}</p>
                   <p>Weight: {Object.values(oracleStakingWeight).length > 0 ? oracleStakingWeight[nft.edition] : ''}</p>
-                </p>
+                </div>
 
                 <img
                   src={`https://ipfs.io/ipfs/QmfZhkQgWgG98JmaoaiUR5qNYPJh6ZS6HVFk5U6gRPaf1W/${nft.edition}.jpeg`}
                   alt="oracle"
-                  className="w"
                 />
               </div>
             ))}
@@ -485,9 +504,9 @@ export const SelectedOracles = () => {
           <div className="flex justify-center mt-4">
             <Button
               fullWidth
-              color={selectedStaledIDs.length === 0 ? 'red' : 'blue'}
+              color={selectedStakedIDs.length === 0 ? 'red' : 'blue'}
               onClick={multiUnStakeNFT}
-              disabled={pendingTx || !account || selectedStaledIDs.length === 0}
+              disabled={pendingTx || !account || selectedStakedIDs.length === 0}
             >
               {i18n._(t`Unstake NFT`)}
             </Button>

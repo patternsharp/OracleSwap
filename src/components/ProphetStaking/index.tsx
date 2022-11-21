@@ -96,6 +96,7 @@ export const ProphetStaking: FC<ProphetStakingProps> = ({ totalPoolSize }) => {
     lockXOracle,
   } = useProStakingUserInfo()
 
+
   const parsedDepositValue = tryParseAmount(depositValue, liquidityToken)
   const parsedWithdrawValue = tryParseAmount(withdrawValue, liquidityToken)
   // @ts-ignore TYPE NEEDS FIXING
@@ -275,9 +276,9 @@ export const ProphetStaking: FC<ProphetStakingProps> = ({ totalPoolSize }) => {
               </div> */}
               <div className="flex justify-between p-2 rounded-md box-wrapper">
                 <p className="text-lg font-semibold">TIME LOCK</p>
-                <p className="text-lg font-semibold text-red-500">
-                  <CountDown time={unlockTime} />
-                </p>
+                <div className="text-lg font-semibold text-red-500">
+                  <CountDown time={unlockTime} hidden={!userTotalWeight || userTotalWeight?.equalTo(ZERO)} />
+                </div>
               </div>
               <p className="mt-2 text-red-500">
                 *If you unstake your PRO before the time loack period is over you will forfiet 50% of your staked
@@ -406,13 +407,13 @@ export const ProphetStaking: FC<ProphetStakingProps> = ({ totalPoolSize }) => {
                 {`${userTotalWeight ? userTotalWeight.toSignificant(6) : ''} = ${rate.toFixed(10)}%`}
               </span>
             </p>
-            <p>
+            <div>
               TIME LOCK
               <div>
-                <CountDown time={unlockTime} />
+                <CountDown time={unlockTime} hidden={!userTotalWeight || userTotalWeight?.equalTo(ZERO)} />
               </div>
               {/* <br /> <span className={``}>{timeLock}</span> */}
-            </p>
+            </div>
           </div>
           <div className="flex flex-col justify-between flex-1 px-4 py-4 rewards bg-dark-800 rounded-3xl">
             <h2 className="mb-1 text-xl">Rewards</h2>
