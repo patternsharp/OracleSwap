@@ -21,6 +21,7 @@ import PRO from '../../../public/PRO.png'
 import LOVE from '../../../public/LOVE.png'
 import SFORT from '../../../public/sFORT.png'
 import PSB from '../../../public/PNG.png'
+import xATH from '../../../public/xATH.png'
 import SDOOD from '../../../public/sDOOD.png'
 import SRIBBITS from '../../../public/SRIBBITS.png'
 import TRSH from '../../../public/TRSH.png'
@@ -205,6 +206,10 @@ const CurrencyLogo: FunctionComponent<CurrencyLogoProps> = ({ currency, size = '
       return <img src={PSB.src} width={size} height={size} className={className} />
     }
 
+    if (currency.symbol === 'xATH') {
+      return <img src={xATH.src} width={size} height={size} className={className} />
+    }
+
     if (currency.symbol === 'CANARY') {
       return <img src={CANARY.src} width={size} height={size} className={className} />
     }
@@ -299,6 +304,10 @@ const CurrencyLogo: FunctionComponent<CurrencyLogoProps> = ({ currency, size = '
 
       if (currency.symbol === 'PSB') {
         return <img src={PSB.src} width={size} height={size} className={className} />
+      }
+
+      if (currency.symbol === 'xATH') {
+        return <img src={xATH.src} width={size} height={size} className={className} />
       }
 
       if (currency.symbol === 'CANARY') {
