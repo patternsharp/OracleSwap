@@ -5,3 +5,4 @@ OracleSwap.io
 9-28-22 - List new tokens and add earning app
 11-3-22 - Add Analytics Link
 11-14-22 - Add new tokens to list
+12-19-22 - Add xATH token
