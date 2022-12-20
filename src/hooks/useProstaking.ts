@@ -160,7 +160,20 @@ export const useProStakingActions = () => {
     [addTransaction, prostakingContract]
   )
 
-  return { deposit, withdraw, harvest, oracleNFTStake, oracleNFTWithdraw, extendLockMode, increaseLockAmount,oracleMultiNFTStake,oracleMultiNFTWithdraw }
+  const shortenLockMode = useCallback(
+    async (lockMode: number) => {
+      try {
+        const tx = await prostakingContract?.shortenLockTime(lockMode)
+
+        return addTransaction(tx, { summary: 'shorten lock time in ProStaking' })
+      } catch (e) {
+        return e
+      }
+    },
+    [addTransaction, prostakingContract]
+  )
+
+  return { deposit, withdraw, harvest, oracleNFTStake, oracleNFTWithdraw, extendLockMode, increaseLockAmount,oracleMultiNFTStake,oracleMultiNFTWithdraw,shortenLockMode }
 }
 
 export function useProStakingRewardHistory() {

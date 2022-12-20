@@ -56,16 +56,19 @@ export const SelectedOracles = () => {
 
   // const parsedDepositValue = tryParseAmount(depositValue, liquidityToken)
 
-  const { lockedProAmount } = useProStakingUserInfo()
+  const { lockedProAmount,lockMode,lockXOracle } = useProStakingUserInfo()
 
   const minProAmount = useMinProAmount()
 
   const lowProAmount = useMemo(() => {
-    if (minProAmount && lockedProAmount) {
-      return minProAmount.subtract(lockedProAmount).greaterThan(ZERO)
+    if(lockMode > 0){
+      if (minProAmount && lockedProAmount) {
+        return minProAmount.subtract(lockedProAmount).greaterThan(ZERO)
+      }
+      return true
     }
-    return true
-  }, [minProAmount, lockedProAmount])
+    return false
+  }, [minProAmount, lockedProAmount,lockMode])
 
   const { walletNFT, stakedNFT } = useProStakingNFTInfo()
 
@@ -209,7 +212,7 @@ export const SelectedOracles = () => {
     } else {
       setPendingTx(true)
 
-      const success = await sendTx(() => oracleNFTStake(selectedIDs[0]))
+      const success = await sendTx(() => oracleMultiNFTStake(selectedIDs))
       if (!success) {
         setPendingTx(false)
         return
@@ -239,7 +242,7 @@ export const SelectedOracles = () => {
     } else {
       setPendingTx(true)
 
-      const success = await sendTx(() => oracleNFTWithdraw(selectedStakedIDs[0]))
+      const success = await sendTx(() => oracleMultiNFTWithdraw(selectedStakedIDs))
       if (!success) {
         setPendingTx(false)
         return
@@ -412,7 +415,7 @@ export const SelectedOracles = () => {
       <div className="flex justify-center mt-4">
         {!account ? (
           <Web3Connect size="lg" color="blue" fullWidth />
-        ) : isDepositValid &&
+        ) : (isDepositValid && lockMode > 0) &&
           (approvalState === ApprovalState.NOT_APPROVED || approvalState === ApprovalState.PENDING) ? (
           <Button
             fullWidth

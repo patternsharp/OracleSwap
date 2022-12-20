@@ -4,11 +4,13 @@ import { i18n } from '@lingui/core'
 import { t } from '@lingui/macro'
 import Slider from '@mui/material/Slider'
 import { Currency, CurrencyAmount, ZERO } from '@sushiswap/core-sdk'
-import { PROPHET } from 'app/config/tokens'
+import { PROPHET,  } from 'app/config/tokens'
 import { PROSTAKING_ADDRESS } from 'app/constants'
 import { tryParseAmount } from 'app/functions'
 import { ApprovalState, useApproveCallback } from 'app/hooks'
 import {
+  useMinProAmount,
+  useMinXOracleAmount,
   useProPendingReward,
   useProStakingActions,
   useProStakingUserInfo,
@@ -29,10 +31,9 @@ import Switch from '../Switch'
 import Typography from '../Typography'
 import Web3Connect from '../Web3Connect'
 
-const moment = require('moment')
-
 import PROLOGO from '../../../public/PRO_Logo3Gold.png'
 
+const moment = require('moment')
 const sendTx = async (txFunc: () => Promise<any>): Promise<boolean> => {
   let success = true
   try {
@@ -96,7 +97,6 @@ export const ProphetStaking: FC<ProphetStakingProps> = ({ totalPoolSize }) => {
     lockXOracle,
   } = useProStakingUserInfo()
 
-
   const parsedDepositValue = tryParseAmount(depositValue, liquidityToken)
   const parsedWithdrawValue = tryParseAmount(withdrawValue, liquidityToken)
   // @ts-ignore TYPE NEEDS FIXING
@@ -117,7 +117,7 @@ export const ProphetStaking: FC<ProphetStakingProps> = ({ totalPoolSize }) => {
   const isWithdrawValid = !withdrawError
   // const { setContent } = useFarmListItemDetailsModal()
 
-  const { deposit, withdraw, harvest, increaseLockAmount, extendLockMode } = useProStakingActions()
+  const { deposit, withdraw, harvest, increaseLockAmount, extendLockMode, shortenLockMode } = useProStakingActions()
 
   const [pendingTx, setPendingTx] = useState(false)
 
@@ -180,22 +180,33 @@ export const ProphetStaking: FC<ProphetStakingProps> = ({ totalPoolSize }) => {
     }
   }
 
-  const [lockMode, setLockMode] = useState(2)
+  const [lockMode, setLockMode] = useState(0)
 
   useEffect(() => {
     setLockMode(userLockMode)
   }, [userLockMode])
 
-  const increaseLockTime = async () => {
-    if (!account || lockMode <= userLockMode) {
+  const updateLockTime = async () => {
+    if (!account || lockMode === userLockMode) {
       return
     } else {
-      setPendingTx(true)
-
-      const success = await sendTx(() => extendLockMode(lockMode))
-      if (!success) {
-        setPendingTx(false)
-        return
+      if (lockMode > userLockMode) {
+        setPendingTx(true)
+        const success = await sendTx(() => extendLockMode(lockMode))
+        if (!success) {
+          setPendingTx(false)
+          return
+        }
+      } else {
+        if (!freeLockTime) {
+          return
+        }
+        setPendingTx(true)
+        const success = await sendTx(() => shortenLockMode(lockMode))
+        if (!success) {
+          setPendingTx(false)
+          return
+        }
       }
 
       setPendingTx(false)
@@ -217,6 +228,21 @@ export const ProphetStaking: FC<ProphetStakingProps> = ({ totalPoolSize }) => {
     return 0
   }, [totalPoolSize, userTotalWeight])
 
+  var current = Date.now()
+
+  const freeLockTime = useMemo(() => {
+    if (userLockMode > 0) {
+      if (unlockTime) {
+        if (unlockTime * 1000 > current) {
+          return false
+        } else {
+          return true
+        }
+      }
+    }
+    return false
+  }, [current, unlockTime, userLockMode])
+
   // const timeLock = useMemo(() => {
   //   if (!unlockTime) {
   //     return null
@@ -235,6 +261,32 @@ export const ProphetStaking: FC<ProphetStakingProps> = ({ totalPoolSize }) => {
 
   //   return formated
   // }, [unlockTime])
+
+  const minProAmount = useMinProAmount()
+
+  const lowProAmount = useMemo(() => {
+    if (minProAmount && stakedAmount) {
+      return minProAmount.subtract(stakedAmount).greaterThan(ZERO)
+    }
+    return true
+  }, [minProAmount, stakedAmount])
+
+  const minXOracleAmount = useMinXOracleAmount()
+
+  // @ts-ignore TYPE NEEDS FIXING
+  const [xOracleApprovalState, xOralceApprove] = useApproveCallback(
+    minXOracleAmount?.multiply(nftCount),
+    PROSTAKING_ADDRESS
+  )
+
+  const extendError = stakedAmount?.equalTo(ZERO)
+    ? 'No Lock to extend'
+    : userLockMode === 0 && lowProAmount
+    ? 'Low PRO Amount to Extend NFT Staking'
+    : xOracleApprovalState !== ApprovalState.APPROVED
+    ? 'Not Approved xOracle'
+    : undefined
+
 
   return (
     <>
@@ -299,16 +351,27 @@ export const ProphetStaking: FC<ProphetStakingProps> = ({ totalPoolSize }) => {
                 <Slider
                   aria-labelledby="track-inverted-slider"
                   getAriaValueText={valuetext}
-                  defaultValue={2}
+                  defaultValue={userLockMode}
                   marks={marks}
                   onChange={(e, value, activeThumb) => {
-                    console.log(value, activeThumb)
                     if (isArray(value)) {
                       if (value && value.length > 0) {
-                        setLockMode(value[0])
+                        if (freeLockTime) {
+                          setLockMode(value[0])
+                        } else {
+                          if (value[0] >= userLockMode) {
+                            setLockMode(value[0])
+                          }
+                        }
                       }
                     } else {
-                      setLockMode(value)
+                      if (freeLockTime) {
+                        setLockMode(value)
+                      } else {
+                        if (value >= userLockMode) {
+                          setLockMode(value)
+                        }
+                      }
                     }
                   }}
                   sx={{
@@ -318,6 +381,9 @@ export const ProphetStaking: FC<ProphetStakingProps> = ({ totalPoolSize }) => {
                       fontWeight: 700,
                     },
                   }}
+                  disableSwap={true}
+                  // disabled={lockMode < userLockMode}
+                  value={lockMode}
                   min={0}
                   max={4}
                   step={1}
@@ -373,13 +439,35 @@ export const ProphetStaking: FC<ProphetStakingProps> = ({ totalPoolSize }) => {
           </div>
 
           <div className="p-4">
+            {userLockMode === 0 &&
+              nftCount > 0 &&
+              (xOracleApprovalState === ApprovalState.NOT_APPROVED ||
+                xOracleApprovalState === ApprovalState.PENDING) && (
+                <Button
+                  fullWidth
+                  className="mb-2"
+                  loading={xOracleApprovalState === ApprovalState.PENDING}
+                  color="gradient"
+                  onClick={xOralceApprove}
+                  disabled={xOracleApprovalState !== ApprovalState.NOT_APPROVED}
+                >
+                  {i18n._(t`Approve xORACLE To Extend NFT Staking`)}
+                </Button>
+              )}
             <Button
               fullWidth
               color={'blue'}
-              onClick={increaseLockTime}
-              disabled={pendingTx || !account || lockMode <= userLockMode}
+              onClick={updateLockTime}
+              disabled={
+                pendingTx ||
+                !account ||
+                lockMode === userLockMode ||
+                (lockMode < userLockMode && !freeLockTime) ||
+                !!extendError
+              }
             >
-              {i18n._(t`Extend Lock`)}
+              {lockMode >= userLockMode && extendError ? extendError : i18n._(t`Extend Lock`)}
+              {lockMode < userLockMode && i18n._(t`Shorten Lock`)}
             </Button>
           </div>
         </div>
