@@ -64,6 +64,11 @@ export const SelectedOracles = () => {
 
   const lowProAmount = useMemo(() => {
     if(lockMode > 0){
+
+      if(lockedProAmount && lockedProAmount.equalTo(ZERO)){
+        return false
+      }
+      
       if (minProAmount && lockedProAmount) {
         return minProAmount.subtract(lockedProAmount).greaterThan(ZERO)
       }
@@ -105,7 +110,7 @@ export const SelectedOracles = () => {
 
   const depositError = !minXOracleAmount
     ? 'Invalid xOracle'
-    : balance?.lessThan(minXOracleAmount?.multiply(selectedIDs.length))
+    : balance?.lessThan(minXOracleAmount?.multiply(selectedIDs.length)) && lockMode > 0
     ? 'Insufficient xOracle balance'
     : lowProAmount
     ? 'Low Prophet Staked'
@@ -407,9 +412,9 @@ export const SelectedOracles = () => {
             className={classNames(minXOracleAmount ? 'text-high-emphesis' : 'text-low-emphesis', 'truncate')}
             id={'xoracle approve'}
           >
-            {minXOracleAmount
+            {minXOracleAmount && lockMode > 0
               ? `${minXOracleAmount.multiply(selectedIDs.length).toSignificant(6)} ${minXOracleAmount.currency.symbol}`
-              : '0.0000'}
+              : '0 xORACLE'}
           </Typography>
         </div>
       </div>
