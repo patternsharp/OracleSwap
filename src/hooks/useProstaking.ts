@@ -41,6 +41,17 @@ export const useProStakingDistributeAction = () => {
   return { distribute }
 }
 
+export function useCheckPossibleDistribute() {
+  const contract = useProStakingDistributorContract()
+
+
+  const possibleDistribute = useSingleCallResult(contract , 'possibleDistribute')?.result
+
+  const check = possibleDistribute?.[0]
+
+  return check 
+}
+
 export const useProStakingActions = () => {
   const addTransaction = useTransactionAdder()
 

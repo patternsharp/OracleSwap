@@ -8,6 +8,7 @@ import { Feature } from 'app/enums'
 import { classNames } from 'app/functions'
 import NetworkGuard from 'app/guards/Network'
 import {
+  useCheckPossibleDistribute,
   useProStakingDistributeAction,
   useProStakingInfo,
   useTotalDistributedReward,
@@ -55,6 +56,8 @@ function ProStaking() {
   const toggleWarning = useToggleProStakingWarning()
 
   const { distribute } = useProStakingDistributeAction()
+
+  const possibleDistribute =  useCheckPossibleDistribute();
 
   const [pendingTx, setPendingTx] = useState(false)
 
@@ -136,7 +139,7 @@ USE AT YOUR OWN RISK!`}
                   <p>{`Total PRO Locked:  ${totalProAmount ? totalProAmount.toSignificant(6) : ''}`}</p>
                   <p>{`Total Oracle NFTs Locked:  ${totalNFTCount ? totalNFTCount : ''}`}</p>
                   <p>{`Total XORACLE Locked:  ${totalxOracleAmount ? totalxOracleAmount.toSignificant(6) : ''}`}</p>
-                  <Button size="sm" className="mt-3" color={'blue'} onClick={proDistribute} disabled={pendingTx}>
+                  <Button size="sm" className="mt-3" color={'blue'} onClick={proDistribute} disabled={pendingTx || !possibleDistribute}>
                     {`Distribute`}
                   </Button>
                 </div>

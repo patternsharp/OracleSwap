@@ -40,6 +40,8 @@ const sendTx = async (txFunc: () => Promise<any>): Promise<boolean> => {
 export const SelectedOracles = () => {
   const { account } = useActiveWeb3React()
 
+  const maxSelectAmount  = 40;
+
   ///ipfs://QmV3yAjc2WXQNZycGq3G8B6KGfNZutJFcQM3UuCRiXYgBH/61.json
   ///https://ipfs.io/ipfs/QmV3yAjc2WXQNZycGq3G8B6KGfNZutJFcQM3UuCRiXYgBH/61.json
 
@@ -137,7 +139,7 @@ export const SelectedOracles = () => {
     if (isSelect) {
       let ids: number[] = []
       walletNFT.map((item) => {
-        if (ids.length <= 25) {
+        if (ids.length <= maxSelectAmount) {
           ids.push(item.edition)
         }
       })
@@ -174,7 +176,7 @@ export const SelectedOracles = () => {
     if (isSelect) {
       let ids: number[] = []
       stakedNFT.map((item) => {
-        if (ids.length <= 25) {
+        if (ids.length <= maxSelectAmount) {
           ids.push(item.edition)
         }
       })
