@@ -88,6 +88,10 @@ export const ProphetStaking: FC<ProphetStakingProps> = ({ totalPoolSize }) => {
 
   const balance = useTokenBalance(account ?? undefined, liquidityToken)
 
+  
+  const [lockMode, setLockMode] = useState(0)
+  
+
   const {
     lockMode: userLockMode,
     unlockTime,
@@ -96,6 +100,19 @@ export const ProphetStaking: FC<ProphetStakingProps> = ({ totalPoolSize }) => {
     userTotalWeight,
     lockXOracle,
   } = useProStakingUserInfo()
+
+  const minProAmount = useMinProAmount()
+
+  const lowProAmount = useMemo(() => {
+    if (minProAmount && stakedAmount) {
+      return minProAmount.subtract(stakedAmount).greaterThan(ZERO)
+    }
+    return true
+  }, [minProAmount, stakedAmount])
+
+  const minXOracleAmount = useMinXOracleAmount()
+
+  const nftCount = useProStakingUserNFTCount()
 
   const parsedDepositValue = tryParseAmount(depositValue, liquidityToken)
   const parsedWithdrawValue = tryParseAmount(withdrawValue, liquidityToken)
@@ -106,7 +123,7 @@ export const ProphetStaking: FC<ProphetStakingProps> = ({ totalPoolSize }) => {
     ? 'Enter an amount'
     : balance?.lessThan(parsedDepositValue)
     ? 'Insufficient balance'
-    : undefined
+    : (nftCount > 0 && lockMode > 0 && lowProAmount) ? "Should Over Min PRO Amount for NFT Staking": undefined
   const isDepositValid = !depositError
   const withdrawError = !parsedWithdrawValue
     ? 'Enter an amount'
@@ -162,7 +179,49 @@ export const ProphetStaking: FC<ProphetStakingProps> = ({ totalPoolSize }) => {
     }
   }
 
+  var current = Date.now()
+  
+  const freeLockTime = useMemo(() => {
+    if (userLockMode > 0) {
+      if (unlockTime) {
+        if (unlockTime * 1000 > current) {
+          return false
+        } else {
+          return true
+        }
+      }
+    }
+    return false
+  }, [current, unlockTime, userLockMode])
+  
   const proWithdraw = async () => {
+
+    
+    if (!account || !isWithdrawValid) {
+      return
+    } else {
+
+      if(freeLockTime){
+        setPendingTx(true)
+
+        const amount = BigNumber.from(parsedWithdrawValue?.quotient.toString())
+  
+        const success = await sendTx(() => withdraw(amount))
+        if (!success) {
+          setPendingTx(false)
+          return
+        }
+  
+        setPendingTx(false)
+      }else{
+        setShowConfirmation(true);
+      }
+    }
+  }
+
+
+  const proWithdrawAction = async () => {
+
     if (!account || !isWithdrawValid) {
       return
     } else {
@@ -171,16 +230,18 @@ export const ProphetStaking: FC<ProphetStakingProps> = ({ totalPoolSize }) => {
       const amount = BigNumber.from(parsedWithdrawValue?.quotient.toString())
 
       const success = await sendTx(() => withdraw(amount))
+      
       if (!success) {
         setPendingTx(false)
         return
       }
 
       setPendingTx(false)
+      setShowConfirmation(false)
     }
   }
 
-  const [lockMode, setLockMode] = useState(0)
+
 
   useEffect(() => {
     setLockMode(userLockMode)
@@ -219,7 +280,7 @@ export const ProphetStaking: FC<ProphetStakingProps> = ({ totalPoolSize }) => {
 
   // const stakedAmount = lockedProAmount
 
-  const nftCount = useProStakingUserNFTCount()
+
 
   const rate = useMemo(() => {
     if (totalPoolSize && userTotalWeight && totalPoolSize.greaterThan(ZERO)) {
@@ -228,20 +289,9 @@ export const ProphetStaking: FC<ProphetStakingProps> = ({ totalPoolSize }) => {
     return 0
   }, [totalPoolSize, userTotalWeight])
 
-  var current = Date.now()
 
-  const freeLockTime = useMemo(() => {
-    if (userLockMode > 0) {
-      if (unlockTime) {
-        if (unlockTime * 1000 > current) {
-          return false
-        } else {
-          return true
-        }
-      }
-    }
-    return false
-  }, [current, unlockTime, userLockMode])
+
+
 
   // const timeLock = useMemo(() => {
   //   if (!unlockTime) {
@@ -262,16 +312,6 @@ export const ProphetStaking: FC<ProphetStakingProps> = ({ totalPoolSize }) => {
   //   return formated
   // }, [unlockTime])
 
-  const minProAmount = useMinProAmount()
-
-  const lowProAmount = useMemo(() => {
-    if (minProAmount && stakedAmount) {
-      return minProAmount.subtract(stakedAmount).greaterThan(ZERO)
-    }
-    return true
-  }, [minProAmount, stakedAmount])
-
-  const minXOracleAmount = useMinXOracleAmount()
 
   // @ts-ignore TYPE NEEDS FIXING
   const [xOracleApprovalState, xOralceApprove] = useApproveCallback(
@@ -287,6 +327,9 @@ export const ProphetStaking: FC<ProphetStakingProps> = ({ totalPoolSize }) => {
     ? 'Not Approved xOracle'
     : undefined
 
+
+
+  const [showConfirmation, setShowConfirmation] = useState(false)
 
   return (
     <>
@@ -439,7 +482,7 @@ export const ProphetStaking: FC<ProphetStakingProps> = ({ totalPoolSize }) => {
           </div>
 
           <div className="p-4">
-            {userLockMode === 0 &&
+            {lockMode > 0 &&
               nftCount > 0 &&
               (xOracleApprovalState === ApprovalState.NOT_APPROVED ||
                 xOracleApprovalState === ApprovalState.PENDING) && (
@@ -451,7 +494,7 @@ export const ProphetStaking: FC<ProphetStakingProps> = ({ totalPoolSize }) => {
                   onClick={xOralceApprove}
                   disabled={xOracleApprovalState !== ApprovalState.NOT_APPROVED}
                 >
-                  {i18n._(t`Approve xORACLE To Extend NFT Staking`)}
+                  {i18n._(t`Approve xORACLE FOR NFT Staking`)}
                 </Button>
               )}
             <Button
@@ -529,32 +572,7 @@ export const ProphetStaking: FC<ProphetStakingProps> = ({ totalPoolSize }) => {
               </div>
             </div>
 
-            {/* <p className="flex items-center">
-              <span className="w-1/2">SGB .01</span>
-              <span className="w-1/2 text-xl">OLPs</span>
-            </p>
-            <p className="flex items-center">
-              <span className="w-1/2">SGB .01</span>
-              <span className="w-1/2">PRO/WSGB .01</span>
-            </p>
-            <p className="flex items-center">
-              <span className="w-1/2">SGB .01</span>
-              <span className="w-1/2">PRO/WSGB .01</span>
-            </p>
-            <p className="flex items-center">
-              <span className="w-1/2">SGB .01</span>
-              <span className="w-1/2">PRO/WSGB .01</span>
-            </p>
-            <p className="flex items-center">
-              <span className="w-1/2">SGB .01</span>
-              <span className="w-1/2">PRO/WSGB .01</span>
-            </p> */}
-            {/* <button
-              type="button"
-              className="inline-block px-4 py-2 mt-4 text-xl font-semibold text-white rounded-md bg-yellow"
-            >
-              HARVEST
-            </button> */}
+          
 
             <Button
               className="mt-1"
@@ -568,6 +586,31 @@ export const ProphetStaking: FC<ProphetStakingProps> = ({ totalPoolSize }) => {
           </div>
         </div>
       </div>
+
+      <HeadlessUiModal.Controlled isOpen={showConfirmation} onDismiss={() => setShowConfirmation(false)} maxWidth="md">
+        <div className="flex flex-col gap-4">
+          <HeadlessUiModal.Header header={i18n._(t`Confirm`)} onClose={() => setShowConfirmation(false)} />
+          <HeadlessUiModal.BorderedContent className="flex flex-col gap-3 !border-yellow/40  border-0">
+            <Typography variant="lg" weight={700} className="text-white ">
+              {i18n._(t`Warning you are about to break your time lock!.`)}
+            </Typography>
+            <Typography variant="sm" weight={700} className="text-red">
+              {i18n._(t`You will lose:  ${stakedAmount?.divide(2)?.toSignificant(5)} PRO`)}
+            </Typography>
+          </HeadlessUiModal.BorderedContent>
+          <Button
+            id="confirm-expert-mode"
+            color="red"
+            variant="filled"
+            onClick={() => {
+              proWithdrawAction()
+            }}
+          >
+            {i18n._(t`Break Lock`)}
+          </Button>
+        </div>
+      </HeadlessUiModal.Controlled>
+
     </>
   )
 }

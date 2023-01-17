@@ -27,7 +27,7 @@ function Web3Network(): JSX.Element | null {
         ) : (
           <Image
             // @ts-ignore TYPE NEEDS FIXING
-            src={NETWORK_ICON[key]}
+            src={NETWORK_ICON[chainId]}
             alt="Switch Network"
             className="rounded-md"
             width="22px"

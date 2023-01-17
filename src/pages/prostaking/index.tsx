@@ -9,6 +9,7 @@ import { classNames } from 'app/functions'
 import NetworkGuard from 'app/guards/Network'
 import {
   useCheckPossibleDistribute,
+
   useProStakingDistributeAction,
   useProStakingInfo,
   useTotalDistributedReward,
@@ -60,6 +61,7 @@ function ProStaking() {
   const possibleDistribute =  useCheckPossibleDistribute();
 
   const [pendingTx, setPendingTx] = useState(false)
+
 
   const { account, chainId } = useActiveWeb3React()
 
@@ -173,7 +175,7 @@ USE AT YOUR OWN RISK!`}
               </p>
             </div>
           </div>
-          <ProphetStaking totalPoolSize={totalPoolSize} />
+          <ProphetStaking totalPoolSize={totalPoolSize}  />
           <SelectedOracles />
         </div>
       </div>

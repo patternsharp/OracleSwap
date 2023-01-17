@@ -1,6 +1,11 @@
 import { i18n } from '@lingui/core'
 import { t } from '@lingui/macro'
 import { ZERO } from '@sushiswap/core-sdk'
+import Button from 'app/components/Button'
+import { WalletIcon } from 'app/components/Icon'
+import { HeadlessUiModal } from 'app/components/Modal'
+import Typography from 'app/components/Typography'
+import Web3Connect from 'app/components/Web3Connect'
 import { XORACLE } from 'app/config/tokens'
 import { PROSTAKING_ADDRESS } from 'app/constants'
 import { classNames } from 'app/functions'
@@ -19,10 +24,10 @@ import { useActiveWeb3React } from 'app/services/web3'
 import { useTokenBalance } from 'app/state/wallet/hooks'
 import React, { useMemo, useState } from 'react'
 
-import Button from '../Button'
-import { WalletIcon } from '../Icon'
-import Typography from '../Typography'
-import Web3Connect from '../Web3Connect'
+// import Button from '../Button'
+// import { WalletIcon } from '../Icon'
+// import Typography from '../Typography'
+// import Web3Connect from '../Web3Connect'
 
 const sendTx = async (txFunc: () => Promise<any>): Promise<boolean> => {
   let success = true
@@ -40,7 +45,7 @@ const sendTx = async (txFunc: () => Promise<any>): Promise<boolean> => {
 export const SelectedOracles = () => {
   const { account } = useActiveWeb3React()
 
-  const maxSelectAmount  = 40;
+  const maxSelectAmount = 40
 
   ///ipfs://QmV3yAjc2WXQNZycGq3G8B6KGfNZutJFcQM3UuCRiXYgBH/61.json
   ///https://ipfs.io/ipfs/QmV3yAjc2WXQNZycGq3G8B6KGfNZutJFcQM3UuCRiXYgBH/61.json
@@ -58,24 +63,23 @@ export const SelectedOracles = () => {
 
   // const parsedDepositValue = tryParseAmount(depositValue, liquidityToken)
 
-  const { lockedProAmount,lockMode,lockXOracle } = useProStakingUserInfo()
+  const { lockedProAmount, lockMode, lockXOracle, unlockTime } = useProStakingUserInfo()
 
   const minProAmount = useMinProAmount()
 
   const lowProAmount = useMemo(() => {
-    if(lockMode > 0){
-
-      if(lockedProAmount && lockedProAmount.equalTo(ZERO)){
+    if (lockMode > 0) {
+      if (lockedProAmount && lockedProAmount.equalTo(ZERO)) {
         return false
       }
-      
+
       if (minProAmount && lockedProAmount) {
         return minProAmount.subtract(lockedProAmount).greaterThan(ZERO)
       }
       return true
     }
     return false
-  }, [minProAmount, lockedProAmount,lockMode])
+  }, [minProAmount, lockedProAmount, lockMode])
 
   const { walletNFT, stakedNFT } = useProStakingNFTInfo()
 
@@ -247,6 +251,28 @@ export const SelectedOracles = () => {
     if (!account || selectedStakedIDs?.length === 0) {
       return
     } else {
+
+      if(freeLockTime){
+        setPendingTx(true)
+
+        const success = await sendTx(() => oracleMultiNFTWithdraw(selectedStakedIDs))
+        if (!success) {
+          setPendingTx(false)
+          return
+        }
+  
+        setPendingTx(false)
+      }else{
+        setShowConfirmation(true)
+      }
+    }
+  }
+
+  const multiUnStakeNFTAction = async () => {
+    if (!account || selectedStakedIDs?.length === 0) {
+      return
+    } else {
+
       setPendingTx(true)
 
       const success = await sendTx(() => oracleMultiNFTWithdraw(selectedStakedIDs))
@@ -256,6 +282,7 @@ export const SelectedOracles = () => {
       }
 
       setPendingTx(false)
+      setShowConfirmation(false)
     }
   }
 
@@ -281,6 +308,23 @@ export const SelectedOracles = () => {
       setPendingTx(false)
     }
   }
+
+  var current = Date.now()
+
+  const freeLockTime = useMemo(() => {
+    if (lockMode > 0) {
+      if (unlockTime) {
+        if (unlockTime * 1000 > current) {
+          return false
+        } else {
+          return true
+        }
+      }
+    }
+    return false
+  }, [current, unlockTime, lockMode])
+
+  const [showConfirmation, setShowConfirmation] = useState(false)
 
   return (
     <div className="mt-5 select-oracles">
@@ -422,7 +466,8 @@ export const SelectedOracles = () => {
       <div className="flex justify-center mt-4">
         {!account ? (
           <Web3Connect size="lg" color="blue" fullWidth />
-        ) : (isDepositValid && lockMode > 0) &&
+        ) : isDepositValid &&
+          lockMode > 0 &&
           (approvalState === ApprovalState.NOT_APPROVED || approvalState === ApprovalState.PENDING) ? (
           <Button
             fullWidth
@@ -523,6 +568,30 @@ export const SelectedOracles = () => {
           </div>
         </div>
       )}
+
+      <HeadlessUiModal.Controlled isOpen={showConfirmation} onDismiss={() => setShowConfirmation(false)} maxWidth="md">
+        <div className="flex flex-col gap-4">
+          <HeadlessUiModal.Header header={i18n._(t`Confirm`)} onClose={() => setShowConfirmation(false)} />
+          <HeadlessUiModal.BorderedContent className="flex flex-col gap-3 !border-yellow/40  border-0">
+            <Typography variant="lg" weight={700} className="text-white ">
+              {i18n._(t`Warning you are about to break your time lock!.`)}
+            </Typography>
+            <Typography variant="sm" weight={700} className="text-red">
+              {i18n._(t`You will lose:  ${lockXOracle?.divide(2)?.toSignificant(5)} xORACLE`)}
+            </Typography>
+          </HeadlessUiModal.BorderedContent>
+          <Button
+            id="confirm-expert-mode"
+            color="red"
+            variant="filled"
+            onClick={() => {
+              multiUnStakeNFTAction()
+            }}
+          >
+            {i18n._(t`Break Lock`)}
+          </Button>
+        </div>
+      </HeadlessUiModal.Controlled>
     </div>
   )
 }
