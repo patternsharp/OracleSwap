@@ -122,11 +122,11 @@ export const ProphetStaking: FC<ProphetStakingProps> = ({ totalPoolSize }) => {
   const [approvalState, approve] = useApproveCallback(parsedDepositValue, PROSTAKING_ADDRESS)
 
   const depositLowProAmount = useMemo(() => {
-    if (minProAmount && parsedDepositValue) {
-      return minProAmount.subtract(parsedDepositValue).greaterThan(ZERO)
+    if (minProAmount && parsedDepositValue && stakedAmount) {
+      return minProAmount.subtract(parsedDepositValue).subtract(stakedAmount).greaterThan(ZERO)
     }
     return true
-  }, [minProAmount, parsedDepositValue])
+  }, [minProAmount, parsedDepositValue,stakedAmount])
 
 
   const depositError = !parsedDepositValue
