@@ -123,7 +123,7 @@ export const ProphetStaking: FC<ProphetStakingProps> = ({ totalPoolSize }) => {
 
   const depositLowProAmount = useMemo(() => {
     if (minProAmount && parsedDepositValue && stakedAmount) {
-      return minProAmount.subtract(parsedDepositValue).subtract(stakedAmount).greaterThan(ZERO)
+      return minProAmount.add(parsedDepositValue?.divide(100)).subtract(parsedDepositValue).subtract(stakedAmount).greaterThan(ZERO)
     }
     return true
   }, [minProAmount, parsedDepositValue,stakedAmount])
@@ -134,6 +134,7 @@ export const ProphetStaking: FC<ProphetStakingProps> = ({ totalPoolSize }) => {
     : balance?.lessThan(parsedDepositValue)
     ? 'Insufficient balance'
     : (nftCount > 0 && lockMode > 0 && depositLowProAmount) ? "Should Over Min PRO Amount for NFT Staking": undefined
+
   const isDepositValid = !depositError
   const withdrawError = !parsedWithdrawValue
     ? 'Enter an amount'
@@ -142,6 +143,8 @@ export const ProphetStaking: FC<ProphetStakingProps> = ({ totalPoolSize }) => {
     ? 'Insufficient balance'
     : undefined
   const isWithdrawValid = !withdrawError
+
+  
   // const { setContent } = useFarmListItemDetailsModal()
 
   const { deposit, withdraw, harvest, increaseLockAmount, extendLockMode, shortenLockMode } = useProStakingActions()
@@ -163,6 +166,15 @@ export const ProphetStaking: FC<ProphetStakingProps> = ({ totalPoolSize }) => {
       setPendingTx(false)
     }
   }
+
+  const isLockAmount =  useMemo(()=> {
+    if (stakedAmount && stakedAmount.greaterThan(ZERO)) {
+      return true;
+    }
+    return false;
+  },[stakedAmount])
+
+  const depositButtonString =  isLockAmount ? i18n._(t`Increase Lock`) :i18n._(t`Confirm Deposit`);
 
   const proDeposit = async () => {
     if (!account || !isDepositValid) {
@@ -205,7 +217,6 @@ export const ProphetStaking: FC<ProphetStakingProps> = ({ totalPoolSize }) => {
   }, [current, unlockTime, userLockMode])
   
   const proWithdraw = async () => {
-
     
     if (!account || !isWithdrawValid) {
       return
@@ -421,9 +432,16 @@ export const ProphetStaking: FC<ProphetStakingProps> = ({ totalPoolSize }) => {
                       if (freeLockTime) {
                         setLockMode(value)
                       } else {
-                        if (value >= userLockMode) {
-                          setLockMode(value)
+                        if(isLockAmount){
+                          if (value >= userLockMode) {
+                            setLockMode(value)
+                          }
+                        }else{
+                          if ( value == 0 || value >= userLockMode) {
+                            setLockMode(value)
+                          }
                         }
+
                       }
                     }
                   }}
@@ -474,7 +492,7 @@ export const ProphetStaking: FC<ProphetStakingProps> = ({ totalPoolSize }) => {
                   onClick={proDeposit}
                   disabled={!isDepositValid || pendingTx}
                 >
-                  {depositError || i18n._(t`Confirm Deposit`)}
+                  {depositError ||  depositButtonString}
                 </Button>
               )
             ) : !account ? (
@@ -605,7 +623,7 @@ export const ProphetStaking: FC<ProphetStakingProps> = ({ totalPoolSize }) => {
               {i18n._(t`Warning you are about to break your time lock!.`)}
             </Typography>
             <Typography variant="sm" weight={700} className="text-red">
-              {i18n._(t`You will lose: `)} +  ${stakedAmount?.divide(2)?.toSignificant(5)} + {' PRO'}
+              {i18n._(t`You will lose: `)}   {stakedAmount?.divide(2)?.toSignificant(5)}  {' PRO'}
             </Typography>
           </HeadlessUiModal.BorderedContent>
           <Button

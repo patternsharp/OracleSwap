@@ -577,7 +577,7 @@ export const SelectedOracles = () => {
               {i18n._(t`Warning you are about to break your time lock!.`)}
             </Typography>
             <Typography variant="sm" weight={700} className="text-red">
-              {i18n._(t`You will lose: `)} +  ${lockXOracle?.divide(2)?.toSignificant(5)} + {' xORACLE'}
+              {i18n._(t`You will lose: `)}  {lockXOracle?.divide(2)?.toSignificant(5)}  {' xORACLE'}
             </Typography>
           </HeadlessUiModal.BorderedContent>
           <Button
