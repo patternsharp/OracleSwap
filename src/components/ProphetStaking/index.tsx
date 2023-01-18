@@ -110,6 +110,8 @@ export const ProphetStaking: FC<ProphetStakingProps> = ({ totalPoolSize }) => {
     return true
   }, [minProAmount, stakedAmount])
 
+
+
   const minXOracleAmount = useMinXOracleAmount()
 
   const nftCount = useProStakingUserNFTCount()
@@ -119,11 +121,19 @@ export const ProphetStaking: FC<ProphetStakingProps> = ({ totalPoolSize }) => {
   // @ts-ignore TYPE NEEDS FIXING
   const [approvalState, approve] = useApproveCallback(parsedDepositValue, PROSTAKING_ADDRESS)
 
+  const depositLowProAmount = useMemo(() => {
+    if (minProAmount && parsedDepositValue) {
+      return minProAmount.subtract(parsedDepositValue).greaterThan(ZERO)
+    }
+    return true
+  }, [minProAmount, parsedDepositValue])
+
+
   const depositError = !parsedDepositValue
     ? 'Enter an amount'
     : balance?.lessThan(parsedDepositValue)
     ? 'Insufficient balance'
-    : (nftCount > 0 && lockMode > 0 && lowProAmount) ? "Should Over Min PRO Amount for NFT Staking": undefined
+    : (nftCount > 0 && lockMode > 0 && depositLowProAmount) ? "Should Over Min PRO Amount for NFT Staking": undefined
   const isDepositValid = !depositError
   const withdrawError = !parsedWithdrawValue
     ? 'Enter an amount'
@@ -595,7 +605,7 @@ export const ProphetStaking: FC<ProphetStakingProps> = ({ totalPoolSize }) => {
               {i18n._(t`Warning you are about to break your time lock!.`)}
             </Typography>
             <Typography variant="sm" weight={700} className="text-red">
-              {i18n._(t`You will lose:  ${stakedAmount?.divide(2)?.toSignificant(5)} PRO`)}
+              {i18n._(t`You will lose: `)} +  ${stakedAmount?.divide(2)?.toSignificant(5)} + {' PRO'}
             </Typography>
           </HeadlessUiModal.BorderedContent>
           <Button
