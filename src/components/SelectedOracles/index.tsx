@@ -268,6 +268,18 @@ export const SelectedOracles = () => {
     }
   }
 
+  const withdrawXOracle =  useMemo(()=>{
+    if(selectedStakedIDs && selectedStakedIDs.length> 0 && minXOracleAmount && lockXOracle){
+      if(minXOracleAmount.multiply(selectedStakedIDs.length).greaterThan(lockXOracle)){
+        return lockXOracle.divide(2)
+
+      }else{
+        return minXOracleAmount.multiply(selectedStakedIDs.length).divide(2)
+      }
+    }
+    return lockXOracle;
+  },[selectedStakedIDs,minXOracleAmount,lockXOracle])
+
   const multiUnStakeNFTAction = async () => {
     if (!account || selectedStakedIDs?.length === 0) {
       return
@@ -577,7 +589,7 @@ export const SelectedOracles = () => {
               {i18n._(t`Warning you are about to break your time lock!.`)}
             </Typography>
             <Typography variant="sm" weight={700} className="text-red">
-              {i18n._(t`You will lose: `)}  {lockXOracle?.divide(2)?.toSignificant(5)}  {' xORACLE'}
+              {i18n._(t`You will lose: `)}  {withdrawXOracle?.toSignificant(5)}  {' xORACLE'}
             </Typography>
           </HeadlessUiModal.BorderedContent>
           <Button

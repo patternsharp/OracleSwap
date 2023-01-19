@@ -623,7 +623,7 @@ export const ProphetStaking: FC<ProphetStakingProps> = ({ totalPoolSize }) => {
               {i18n._(t`Warning you are about to break your time lock!.`)}
             </Typography>
             <Typography variant="sm" weight={700} className="text-red">
-              {i18n._(t`You will lose: `)}   {stakedAmount?.divide(2)?.toSignificant(5)}  {' PRO'}
+              {i18n._(t`You will lose: `)}   {parsedWithdrawValue?.divide(2)?.toSignificant(5)}  {' PRO'}
             </Typography>
           </HeadlessUiModal.BorderedContent>
           <Button
