@@ -213,7 +213,7 @@ export const ProphetStaking: FC<ProphetStakingProps> = ({ totalPoolSize }) => {
         }
       }
     }
-    return false
+    return true
   }, [current, unlockTime, userLockMode])
   
   const proWithdraw = async () => {

@@ -324,7 +324,7 @@ export const SelectedOracles = () => {
   var current = Date.now()
 
   const freeLockTime = useMemo(() => {
-    if (lockMode > 0) {
+    if (lockMode > 0  && lockedProAmount?.greaterThan(ZERO)) {
       if (unlockTime) {
         if (unlockTime * 1000 > current) {
           return false
@@ -333,8 +333,8 @@ export const SelectedOracles = () => {
         }
       }
     }
-    return false
-  }, [current, unlockTime, lockMode])
+    return true
+  }, [current, unlockTime, lockMode,lockedProAmount])
 
   const [showConfirmation, setShowConfirmation] = useState(false)
 
