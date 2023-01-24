@@ -174,7 +174,7 @@ export const ProphetStaking: FC<ProphetStakingProps> = ({ totalPoolSize }) => {
     return false;
   },[stakedAmount])
 
-  const depositButtonString =  isLockAmount ? i18n._(t`Increase Lock`) :i18n._(t`Confirm Deposit`);
+  const depositButtonString =  isLockAmount ? i18n._(t`Increase Deposit`) :i18n._(t`Confirm Deposit`);
 
   const proDeposit = async () => {
     if (!account || !isDepositValid) {
@@ -500,7 +500,7 @@ export const ProphetStaking: FC<ProphetStakingProps> = ({ totalPoolSize }) => {
             ) : (
               <Button
                 fullWidth
-                color={!isWithdrawValid && !!parsedWithdrawValue ? 'red' : 'pink'}
+                color={!isWithdrawValid && !!parsedWithdrawValue ? 'red' : 'gradient'}
                 onClick={proWithdraw}
                 disabled={!isWithdrawValid || pendingTx}
               >
@@ -538,7 +538,7 @@ export const ProphetStaking: FC<ProphetStakingProps> = ({ totalPoolSize }) => {
               }
             >
               {lockMode >= userLockMode && extendError ? extendError : i18n._(t`Extend Lock`)}
-              {lockMode < userLockMode && i18n._(t`Shorten Lock`)}
+              {/* {lockMode < userLockMode && i18n._(t`Shorten Lock`)} */}
             </Button>
           </div>
         </div>
@@ -563,7 +563,7 @@ export const ProphetStaking: FC<ProphetStakingProps> = ({ totalPoolSize }) => {
               <br />{' '}
               <span className="text-green-600">
                 {' '}
-                {`${userTotalWeight ? userTotalWeight.toSignificant(6) : ''} = ${rate.toFixed(10)}%`}
+                {`${userTotalWeight ? userTotalWeight.toSignificant(6) : ''} = ${rate.toFixed(6)}%`}
               </span>
             </p>
             <div>
@@ -582,7 +582,7 @@ export const ProphetStaking: FC<ProphetStakingProps> = ({ totalPoolSize }) => {
                 <div className="flex flex-col">
                   {userTotalReward.map((item, index) => (
                     <p key={`user-rewardinfo-${index}`}>{`${item.token.symbol}: ${
-                      item.amount ? item.amount.toSignificant(6) : ''
+                      item.amount ? item.amount.toSignificant(3) : ''
                     }`}</p>
                   ))}
                 </div>
@@ -593,7 +593,7 @@ export const ProphetStaking: FC<ProphetStakingProps> = ({ totalPoolSize }) => {
                 <div className="flex flex-col">
                   {userReward.map((item, index) => (
                     <p key={`user-rewardinfo-${index}`}>{`${item.token.symbol}: ${
-                      item.amount ? item.amount.toSignificant(6) : ''
+                      item.amount ? item.amount.toSignificant(3) : ''
                     }`}</p>
                   ))}
                 </div>
@@ -605,7 +605,7 @@ export const ProphetStaking: FC<ProphetStakingProps> = ({ totalPoolSize }) => {
             <Button
               className="mt-1"
               fullWidth
-              color={'pink'}
+              color={'gradient'}
               onClick={proHarvest}
               disabled={!userReward || userReward?.length === 0}
             >

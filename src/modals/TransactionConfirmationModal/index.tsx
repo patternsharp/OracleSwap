@@ -75,7 +75,7 @@ export const TransactionSubmittedContent: FC<TransactionSubmittedContentProps> =
       {currencyToAdd && library?.provider?.isMetaMask && (
         <Button color="blue" onClick={!success ? addToken : onDismiss}>
           <Typography variant="sm" weight={700}>
-            {!success ? i18n._(t`Add `) + ' ' + currencyToAdd.symbol + ' ' +  i18n._(t` to MetaMask`) : i18n._(t`Dismiss`)}
+            {!success ? i18n._(t`Add  `) + ' ' + currencyToAdd.symbol + ' ' +  i18n._(t`  to MetaMask`) : i18n._(t`Dismiss`)}
           </Typography>
         </Button>
       )}

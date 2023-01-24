@@ -341,9 +341,9 @@ export const SelectedOracles = () => {
     <div className="mt-5 select-oracles">
       <h2 className="text-xl">Select Your Oracles</h2>
       <p className="mb-2">
-        Select The Oracles you would like to deploy. Some Oracles weild more power than others, choose wisely! Each
-        Oracle selected must be pair with XORACLE The more Oracles you select the more XORACLE you must pair. Tap to
-        select or select all
+        Select The Oracles you would like to deploy. Some Oracles wield more power than others, choose wisely! Each
+        Oracle selected must be paired with XORACLE.Tap to
+        select or select max (40).
       </p>
       <button
         onClick={() => {
@@ -351,7 +351,7 @@ export const SelectedOracles = () => {
         }}
         className="inline-block px-2 py-1 mr-2 text-xs text-white rounded-md bg-green/50"
       >
-        SELECT ALL
+        SELECT MAX
       </button>
       <button
         onClick={() => {
@@ -458,7 +458,7 @@ export const SelectedOracles = () => {
         <div className={classNames('flex justify-between py-2 px-3 w-content')}>
           <div className="flex items-center gap-1.5 mr-1">
             <Typography variant="sm" className={'text-white'}>
-              {i18n._(t`xOracle Selected:`)}
+              {i18n._(t`xOracle Required:`)}
             </Typography>
           </div>
           <Typography
