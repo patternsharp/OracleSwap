@@ -385,7 +385,7 @@ export const SelectedOracles = () => {
 
             <img
               className="object-cover object-center w-full"
-              src={`https://ipfs.io/ipfs/QmfZhkQgWgG98JmaoaiUR5qNYPJh6ZS6HVFk5U6gRPaf1W/${nft.edition}.jpeg`}
+              src={`https://oracle.mypinata.cloud/ipfs/QmfZhkQgWgG98JmaoaiUR5qNYPJh6ZS6HVFk5U6gRPaf1W/${nft.edition}.jpeg`}
               alt="oracle"
             />
           </div>
@@ -561,7 +561,7 @@ export const SelectedOracles = () => {
                 </div>
 
                 <img
-                  src={`https://ipfs.io/ipfs/QmfZhkQgWgG98JmaoaiUR5qNYPJh6ZS6HVFk5U6gRPaf1W/${nft.edition}.jpeg`}
+                  src={`https://oracle.mypinata.cloud/ipfs/QmfZhkQgWgG98JmaoaiUR5qNYPJh6ZS6HVFk5U6gRPaf1W/${nft.edition}.jpeg`}
                   alt="oracle"
                 />
               </div>
