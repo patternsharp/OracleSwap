@@ -1,7 +1,8 @@
 import { ChainId } from '@sushiswap/core-sdk'
 
 const RPC = {
-  [ChainId.ETHEREUM]: 'https://songbird.towolabs.com/rpc',
+
+  [ChainId.ETHEREUM]: 'https://sgb.ftso.com.au/ext/bc/C/rpc',
   // [ChainId.ETHEREUM]: 'https://eth-mainnet.alchemyapi.io/v2/HNQXSfiUcPjfpDBQaWYXjqlhTr1cEY9c',
   // [ChainId.MAINNET]: 'https://eth-mainnet.alchemyapi.io/v2/q1gSNoSMEzJms47Qn93f9-9Xg5clkmEC',
   [ChainId.ROPSTEN]: 'https://eth-ropsten.alchemyapi.io/v2/cidKix2Xr-snU3f6f6Zjq_rYdalKKHmW',
@@ -30,7 +31,7 @@ const RPC = {
   [ChainId.CELO]: 'https://forno.celo.org',
   [ChainId.MOONRIVER]: 'https://rpc.moonriver.moonbeam.network',
   [ChainId.TELOS]: 'https://mainnet.telos.net/evm',
-  [ChainId.SGB]: 'https://songbird.towolabs.com/rpc',
+  [ChainId.SGB]: 'https://sgb.ftso.com.au/ext/bc/C/rpc',
 }
 
 export default RPC

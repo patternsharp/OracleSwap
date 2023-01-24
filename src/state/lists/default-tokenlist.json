@@ -3835,6 +3835,46 @@
       "logoURI": "https://raw.githubusercontent.com/trustwallet/assets/master/blockchains/ethereum/assets/0xd0A1E359811322d97991E03f863a0C30C2cF029C/logo.png"
     },
     {
+      "name": "Athena",
+      "address": "0x15148d99cB8Ca101296EF8a5203954ffc5718B3a",
+      "symbol": "xATH",
+      "decimals": 18,
+      "chainId": 19,
+      "logoURI": "https://raw.githubusercontent.com/trustwallet/assets/master/blockchains/ethereum/assets/0xd0A1E359811322d97991E03f863a0C30C2cF029C/logo.png"
+    },
+    {
+      "name": "LizArt",
+      "address": "0x2373aa3F73De2ad58ae5C32Ea010ceC351D840ba",
+      "symbol": "LIZ",
+      "decimals": 18,
+      "chainId": 19,
+      "logoURI": "https://raw.githubusercontent.com/trustwallet/assets/master/blockchains/ethereum/assets/0xd0A1E359811322d97991E03f863a0C30C2cF029C/logo.png"
+    },
+    {
+      "name": "LoveToken2",
+      "address": "0xb1D60fA6FABd9A2Ad89960d070350552E47fb0D6",
+      "symbol": "CARE",
+      "decimals": 18,
+      "chainId": 19,
+      "logoURI": "https://raw.githubusercontent.com/trustwallet/assets/master/blockchains/ethereum/assets/0xd0A1E359811322d97991E03f863a0C30C2cF029C/logo.png"
+    },
+    {
+      "name": "Canary",
+      "address": "0xB2cD91b79df296ea181AA5f6d729E5136e1853A4",
+      "symbol": "CANARY",
+      "decimals": 18,
+      "chainId": 19,
+      "logoURI": "https://raw.githubusercontent.com/trustwallet/assets/master/blockchains/ethereum/assets/0xd0A1E359811322d97991E03f863a0C30C2cF029C/logo.png"
+    },
+    {
+      "name": "Infinity Token",
+      "address": "0xd46bd7A5EBE52199BD6f0EfD59a1d7CeF7f35eae",
+      "symbol": "INFT",
+      "decimals": 18,
+      "chainId": 19,
+      "logoURI": "https://raw.githubusercontent.com/trustwallet/assets/master/blockchains/ethereum/assets/0xd0A1E359811322d97991E03f863a0C30C2cF029C/logo.png"
+    },
+    {
       "name": "xWhales Trash",
       "address": "0x43344Ced39E2d7a6Be7Eda306E1750747D9Dcb01",
       "symbol": "TRSH",
