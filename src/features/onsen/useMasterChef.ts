@@ -63,7 +63,7 @@ export default function useMasterChef(chef: Chef) {
         let tx
 
         if (chef === Chef.MASTERCHEF) {
-          console.log('farmharvest:', chef, pid)
+          // console.log('farmharvest:', chef, pid)
           tx = await contract?.deposit(pid, Zero)
         } else if (chef === Chef.MASTERCHEF_V2) {
           const pendingSushi = await contract?.pendingPro(pid, account)

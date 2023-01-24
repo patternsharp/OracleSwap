@@ -73,7 +73,6 @@ function Stake() {
 
   const enabled = useOracleDistributorEnableCheck()
 
-  console.log('lpConvertClick', enabled)
 
   const walletConnected = !!account
   const toggleWalletModal = useWalletModalToggle()

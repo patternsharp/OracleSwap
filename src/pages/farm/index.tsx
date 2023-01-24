@@ -4,6 +4,7 @@ import { ChainId, ZERO } from '@sushiswap/core-sdk'
 import Button from 'app/components/Button'
 // import Button from 'app/components/Button'
 import ExternalLink from 'app/components/ExternalLink'
+import QuestionHelper from 'app/components/QuestionHelper'
 // import QuestionHelper from 'app/components/QuestionHelper'
 import Search from 'app/components/Search'
 import Typography from 'app/components/Typography'
@@ -21,14 +22,12 @@ import { TridentBody } from 'app/layouts/Trident'
 import { useActiveWeb3React } from 'app/services/web3'
 import { useDexWarningOpen, useWalletModalToggle } from 'app/state/application/hooks'
 import { useTokenBalance } from 'app/state/wallet/hooks'
+import Head from 'next/head'
 import { useRouter } from 'next/router'
 import React, { useState } from 'react'
 
-import PROLOGO from '../../../public/PRO_Logo3Gold.png'
-
 import LogoImage from '../../../public/ORACLEGold.png'
-import Head from 'next/head'
-import QuestionHelper from 'app/components/QuestionHelper'
+import PROLOGO from '../../../public/PRO_Logo3Gold.png'
 
 const sendTx = async (txFunc: () => Promise<any>): Promise<boolean> => {
   let success = true

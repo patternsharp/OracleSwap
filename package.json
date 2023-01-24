@@ -70,7 +70,7 @@
     "@react-hook/window-scroll": "^1.3.0",
     "@reduxjs/toolkit": "^1.7.1",
     "@sentry/browser": "^6.15.0",
-    "@sentry/nextjs": "^6.13.0",
+    "@sentry/nextjs": "^7.28.1",
     "@sentry/tracing": "^6.15.0",
     "@sushiswap/bentobox-sdk": "1.0.0-canary.48",
     "@sushiswap/chainlink-whitelist": "0.2.8",
@@ -210,5 +210,11 @@
     "not ie 11",
     "not dead",
     "not op_mini all"
-  ]
+  ],
+  "dependencies": {
+    "@emotion/react": "^11.10.4",
+    "@emotion/styled": "^11.10.4",
+    "@mui/material": "^5.10.11",
+    "react-countdown-hook": "^1.1.1"
+  }
 }

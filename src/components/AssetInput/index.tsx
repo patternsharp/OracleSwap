@@ -220,23 +220,23 @@ const AssetInputPanel = ({
         className={classNames(
           error ? 'border-red border-opacity-40' : 'border-dark-800',
           size === 'md' ? 'py-4' : 'py-2',
-          'flex gap-3 py-4 px-3 items-center border-b justify-between'
+          'flex gap-2 py-4 px-3 items-center border-b justify-between flex-row'
         )}
       >
-        <div className="flex flex-row">
+        <div className="flex flex-row flex-1">
           {currencyLogo && (
-            <div className={classNames(size === 'md' ? 'w-[48px]' : 'w-40px')}>
+            <div className={classNames(size === 'md' ? 'w-[48px]  min-w-[48px]' : 'w-40px min-w-[40px]')}>
               <CurrencyLogo currency={currency} size={size === 'md' ? 48 : 40} className="!rounded-full" />
             </div>
           )}
-          <div className="flex flex-col justify-between ml-2 w-content ">
+          <div className="flex flex-col justify-between flex-1 ml-2 ">
             <Typography variant="h3" weight={700} className="relative flex flex-row items-baseline overflow-hidden">
               <NumericalInput
                 disabled={disabled}
                 value={value || ''}
                 onUserInput={onChange}
                 placeholder="0.00"
-                className="flex-1 bg-transparent w-content max-w-[220px]"
+                className="bg-transparent w-content "
                 autoFocus
               />
 
@@ -255,7 +255,9 @@ const AssetInputPanel = ({
         </div>
 
         {error ? (
-          <ExclamationCircleIcon className="w-8 h-8 mr-2 text-red" />
+          <div className="w-8 h-8 mr-1 min-w-8 min-h-8">
+            <ExclamationCircleIcon className="w-8 h-8 min-w-8 min-h-8 text-red" />
+          </div>
         ) : (
           showMax && (
             <Button size="xs" variant="outlined" color="gray" className="!border" onClick={() => onMax()}>

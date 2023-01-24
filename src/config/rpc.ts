@@ -1,6 +1,7 @@
 import { ChainId } from '@sushiswap/core-sdk'
 
 const RPC = {
+
   [ChainId.ETHEREUM]: 'https://sgb.ftso.com.au/ext/bc/C/rpc',
   // [ChainId.ETHEREUM]: 'https://eth-mainnet.alchemyapi.io/v2/HNQXSfiUcPjfpDBQaWYXjqlhTr1cEY9c',
   // [ChainId.MAINNET]: 'https://eth-mainnet.alchemyapi.io/v2/q1gSNoSMEzJms47Qn93f9-9Xg5clkmEC',

@@ -168,12 +168,7 @@ const ManageBar = ({ farm }) => {
                 // KMP decimals depend on asset, OLP is always 18
                 // @ts-ignore TYPE NEEDS FIXING
 
-                console.log(
-                  'parsedDepositValue',
-                  parsedDepositValue,
-                  parsedDepositValue?.quotient,
-                  parsedDepositValue?.quotient.toString()
-                )
+
                 const tx = await deposit(farm.id, BigNumber.from(parsedDepositValue?.quotient.toString()))
                 if (tx?.hash) {
                   setContent(

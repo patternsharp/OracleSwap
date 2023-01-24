@@ -23,7 +23,7 @@ export const Web3ReactManager: FC = ({ children }) => {
   // try to eagerly connect to an injected provider, if it exists and has granted access already
   const triedEager = useEagerConnect()
 
-  console.log('Web3ReactManager_active:', active, networkActive, networkError)
+  // console.log('Web3ReactManager_active:', active, networkActive, networkError)
 
   useNetworkOrchistrator()
 
@@ -32,7 +32,7 @@ export const Web3ReactManager: FC = ({ children }) => {
     const activate = async () => {
       if (triedEager && !networkActive && !networkError && !active) {
         const Cookies = (await import('js-cookie')).default
-        console.log('CHANGE CHAIN TO ' + Number(Cookies.get('chain-id')))
+        // console.log('CHANGE CHAIN TO ' + Number(Cookies.get('chain-id')))
         if (!isNaN(Number(Cookies.get('chain-id')))) {
           network.changeChainId(Number(Cookies.get('chain-id')))
         }

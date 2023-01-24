@@ -45,6 +45,9 @@ export const setChainConnectivityWarning = createAction<{ chainConnectivityWarni
   'application/setChainConnectivityWarning'
 )
 export const setDexUseWarning = createAction<{ dexUseWarning: boolean }>('application/setDexUseWarning')
+
+export const setProStakingWarning = createAction<{ proStakingWarning: boolean }>('application/setProStakingWarning')
+
 export const setImplements3085 = createAction<{ implements3085: boolean }>('application/setImplements3085')
 export const setOpenModal = createAction<ApplicationModal | null>('application/setOpenModal')
 export const addPopup = createAction<{
