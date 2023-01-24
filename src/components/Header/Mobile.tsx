@@ -29,7 +29,7 @@ const Mobile: FC = () => {
 
   return (
     <>
-      {showUseDexWarning && (
+      {/* {showUseDexWarning && (
         <div className="py-2 px-4 text-[1rem] text-high-emphesis bg-[#eb4326] relative">
           <div className="absolute right-1 top-1">
             <div
@@ -45,7 +45,7 @@ const Mobile: FC = () => {
   platforms.`}
           </Typography>
         </div>
-      )}
+      )} */}
       <header className="w-full flex items-center justify-between min-h-[64px] h-[64px] px-4">
         <div className="flex justify-between flex-grow">
           <div className="p-2 rounded-full hover:bg-white/10">

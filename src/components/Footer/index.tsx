@@ -91,6 +91,10 @@ const Footer = () => {
               <a href="https://docs.oracleswap.io/" target="_blank" rel="noreferrer">
                 <span className="text-low-emphesis">{i18n._(t`Docs`)}</span>
               </a>
+ 
+            <a href="https://docs.oracleswap.io/about/privacy" target="_blank" rel="noreferrer">
+                <span className="text-low-emphesis"> {i18n._(t`Privacy`)} </span>
+            </a>
             </div>
           </div>
           {/* <div className="flex flex-col gap-1 text-right">

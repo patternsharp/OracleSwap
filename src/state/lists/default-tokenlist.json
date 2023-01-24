@@ -3835,6 +3835,14 @@
       "logoURI": "https://raw.githubusercontent.com/trustwallet/assets/master/blockchains/ethereum/assets/0xd0A1E359811322d97991E03f863a0C30C2cF029C/logo.png"
     },
     {
+      "name": "Gokubi",
+      "address": "0x1915462FeCE97854d6738b90d3F9Ec09e723D451",
+      "symbol": "GKB",
+      "decimals": 18,
+      "chainId": 19,
+      "logoURI": "https://raw.githubusercontent.com/trustwallet/assets/master/blockchains/ethereum/assets/0xd0A1E359811322d97991E03f863a0C30C2cF029C/logo.png"
+    },
+    {
       "name": "Athena",
       "address": "0x15148d99cB8Ca101296EF8a5203954ffc5718B3a",
       "symbol": "xATH",

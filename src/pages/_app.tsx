@@ -116,7 +116,7 @@ function MyApp({ Component, pageProps, fallback, err }) {
         strategy="afterInteractive"
         src={`https://www.googletagmanager.com/gtag/js?id=${GOOGLE_ANALYTICS_TRACKING_ID}`}
       />
-      <Script strategy="afterInteractive" src={`https://files.coinmarketcap.com/static/widget/currency.js`} />
+      {/* <Script strategy="afterInteractive" src={`https://files.coinmarketcap.com/static/widget/currency.js`} /> */}
 
       <Script
         id="gtag-init"
