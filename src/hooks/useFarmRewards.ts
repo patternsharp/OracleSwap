@@ -950,7 +950,7 @@ export default function useFarmRewards() {
   const masterChefV1TotalAllocPoint = useMasterChefTotalAllocPoint() //useMasterChefV1TotalAllocPoint()
   const masterChefV1SushiPerBlock = useMasterChefRewardPerBlock() // useMasterChefV1SushiPerBlock()
 
-  console.log('masterChef', masterChefV1TotalAllocPoint, masterChefV1SushiPerBlock)
+
 
   const [
     sushiPrice,
@@ -1259,7 +1259,7 @@ export default function useFarmRewards() {
       const stakedBalance = Object.values(stakedBalaces).find(
         (token) => token.currency.address.toLowerCase() === pool.pair.toLowerCase()
       )
-      console.log('stakedBalace:', pool.pair, stakedBalance?.toExact())
+      
       if (stakedBalance) {
         balance = parseFloat(stakedBalance.toExact())
       }

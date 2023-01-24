@@ -158,7 +158,6 @@ export const SelectedOracles = () => {
     }
   }
 
-  // console.log('handleSelectOracles all', selectedIDs)
 
   const handleStakedSelectOracles = (id: number) => {
     let ids = [...selectedStakedIDs]
@@ -375,7 +374,7 @@ export const SelectedOracles = () => {
               // } else {
               //   setSelected(nft.edition)
               // }
-              console.log('dfgsdfgsdf  click')
+
               handleSelectOracles(nft.edition)
             }}
           >

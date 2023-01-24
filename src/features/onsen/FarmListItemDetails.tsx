@@ -36,7 +36,7 @@ const FarmListItemDetails = ({ farm, onDismiss }) => {
     }
   }, [])
 
-  console.log('FarmListItemDetails', farm, PairType.SINGLE)
+  // console.log('FarmListItemDetails', farm, PairType.SINGLE)
 
   return (
     <Context.Provider value={useMemo(() => ({ content, setContent }), [content, setContent])}>
