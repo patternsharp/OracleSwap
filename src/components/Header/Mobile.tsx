@@ -13,8 +13,8 @@ import Link from 'next/link'
 import React, { FC, Fragment, useState } from 'react'
 import LogoImage from '../../../public/icons/icon-72x72.png'
 import { NavigationItem } from './NavigationItem'
-import { XIcon } from '@heroicons/react/outline'
-import Typography from 'app/components/Typography'
+// import { XIcon } from '@heroicons/react/outline'
+// import Typography from 'app/components/Typography'
 import ExternalLink from '../ExternalLink'
 
 const Mobile: FC = () => {
