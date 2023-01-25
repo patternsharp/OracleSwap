@@ -342,7 +342,7 @@ export const SelectedOracles = () => {
       <h2 className="text-xl">Select Your Oracles</h2>
       <p className="mb-2">
         Select The Oracles you would like to deploy. Some Oracles wield more power than others, choose wisely! Each
-        Oracle selected must be paired with XORACLE.Tap to
+        Oracle selected must be paired with XORACLE. Tap to
         select or select max (40).
       </p>
       <button
@@ -385,7 +385,7 @@ export const SelectedOracles = () => {
 
             <img
               className="object-cover object-center w-full"
-              src={`https://oracle.mypinata.cloud/ipfs/QmfZhkQgWgG98JmaoaiUR5qNYPJh6ZS6HVFk5U6gRPaf1W/${nft.edition}.jpeg`}
+              src={`https://the-oracles.fra1.cdn.digitaloceanspaces.com/assets/${nft.edition}.jpeg`}
               alt="oracle"
             />
           </div>
@@ -561,7 +561,7 @@ export const SelectedOracles = () => {
                 </div>
 
                 <img
-                  src={`https://oracle.mypinata.cloud/ipfs/QmfZhkQgWgG98JmaoaiUR5qNYPJh6ZS6HVFk5U6gRPaf1W/${nft.edition}.jpeg`}
+                  src={`https://the-oracles.fra1.cdn.digitaloceanspaces.com/assets/${nft.edition}.jpeg`}
                   alt="oracle"
                 />
               </div>
