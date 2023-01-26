@@ -12,7 +12,7 @@ import { useAllTokens } from './Tokens'
 import { useOracleNFTContract, useProStakingContract, useProStakingDistributorContract, useProStakingOracleWeightContract } from './useContract'
 
 const fetchNFTMetaInfo = async (id: number) => {
-  const url = `https://the-oracles.fra1.cdn.digitaloceanspaces.com/metadata/${id}.json`
+  const url = `https://cors-anywhere.herokuapp.com/https://the-oracles.fra1.cdn.digitaloceanspaces.com/metadata/${id}.json`
   const response = await axios.get(url)
   const token = response.data
 
