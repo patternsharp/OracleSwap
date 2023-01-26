@@ -387,7 +387,7 @@ export const SelectedOracles = () => {
               crossOrigin="anonymous"
               referrerPolicy="origin"
               className="object-cover object-center w-full"
-              src={`https://cors-anywhere.herokuapp.com/https://the-oracles.fra1.cdn.digitaloceanspaces.com/assets/${nft.edition}.jpeg`}
+              src={`https://the-oracles.fra1.cdn.digitaloceanspaces.com/assets/${nft.edition}.jpeg`}
               alt="oracle"
             />
           </div>
@@ -565,7 +565,7 @@ export const SelectedOracles = () => {
                 <img
                   crossOrigin="anonymous"
                   referrerPolicy="origin"
-                  src={`https://cors-anywhere.herokuapp.com/https://the-oracles.fra1.cdn.digitaloceanspaces.com/assets/${nft.edition}.jpeg`}
+                  src={`https://the-oracles.fra1.cdn.digitaloceanspaces.com/assets/${nft.edition}.jpeg`}
                   alt="oracle"
                 />
               </div>
@@ -589,7 +589,7 @@ export const SelectedOracles = () => {
           <HeadlessUiModal.Header header={i18n._(t`Confirm`)} onClose={() => setShowConfirmation(false)} />
           <HeadlessUiModal.BorderedContent className="flex flex-col gap-3 !border-yellow/40  border-0">
             <Typography variant="lg" weight={700} className="text-white ">
-              {i18n._(t`Warning you are about to break your time lock!.`)}
+              {i18n._(t`Warning you are about to break your time lock!`)}
             </Typography>
             <Typography variant="sm" weight={700} className="text-red">
               {i18n._(t`You will lose: `)}  {withdrawXOracle?.toSignificant(5)}  {' xORACLE'}

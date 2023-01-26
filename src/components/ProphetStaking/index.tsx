@@ -620,7 +620,7 @@ export const ProphetStaking: FC<ProphetStakingProps> = ({ totalPoolSize }) => {
           <HeadlessUiModal.Header header={i18n._(t`Confirm`)} onClose={() => setShowConfirmation(false)} />
           <HeadlessUiModal.BorderedContent className="flex flex-col gap-3 !border-yellow/40  border-0">
             <Typography variant="lg" weight={700} className="text-white ">
-              {i18n._(t`Warning you are about to break your time lock!.`)}
+              {i18n._(t`Warning you are about to break your time lock!`)}
             </Typography>
             <Typography variant="sm" weight={700} className="text-red">
               {i18n._(t`You will lose: `)}   {parsedWithdrawValue?.divide(2)?.toSignificant(5)}  {' PRO'}
