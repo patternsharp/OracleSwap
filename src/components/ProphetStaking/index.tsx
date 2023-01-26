@@ -133,7 +133,7 @@ export const ProphetStaking: FC<ProphetStakingProps> = ({ totalPoolSize }) => {
     ? 'Enter an amount'
     : balance?.lessThan(parsedDepositValue)
     ? 'Insufficient balance'
-    : (nftCount > 0 && lockMode > 0 && depositLowProAmount) ? "Should Over Min PRO Amount for NFT Staking": undefined
+    : (nftCount > 0 && lockMode > 0 && depositLowProAmount) ? "Mor PRO Required for NFT Staking": undefined
 
   const isDepositValid = !depositError
   const withdrawError = !parsedWithdrawValue
@@ -343,9 +343,9 @@ export const ProphetStaking: FC<ProphetStakingProps> = ({ totalPoolSize }) => {
   const extendError = stakedAmount?.equalTo(ZERO)
     ? 'No Lock to extend'
     : userLockMode === 0 && lowProAmount
-    ? 'Low PRO Amount to Extend NFT Staking'
+    ? 'More PRO Required to Extend NFT Staking'
     : xOracleApprovalState !== ApprovalState.APPROVED
-    ? 'Not Approved xOracle'
+    ? 'xOracle Not Approved'
     : undefined
 
 
