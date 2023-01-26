@@ -384,6 +384,8 @@ export const SelectedOracles = () => {
             </div>
 
             <img
+              crossOrigin="anonymous"
+              referrerPolicy="origin"
               className="object-cover object-center w-full"
               src={`https://cors-anywhere.herokuapp.com/https://the-oracles.fra1.cdn.digitaloceanspaces.com/assets/${nft.edition}.jpeg`}
               alt="oracle"
@@ -561,6 +563,8 @@ export const SelectedOracles = () => {
                 </div>
 
                 <img
+                  crossOrigin="anonymous"
+                  referrerPolicy="origin"
                   src={`https://cors-anywhere.herokuapp.com/https://the-oracles.fra1.cdn.digitaloceanspaces.com/assets/${nft.edition}.jpeg`}
                   alt="oracle"
                 />
