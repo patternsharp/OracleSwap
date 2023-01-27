@@ -18,6 +18,7 @@ import { useActiveWeb3React } from 'app/services/web3'
 import { useDexWarningOpen, useProStakingWarningOpen, useToggleProStakingWarning } from 'app/state/application/hooks'
 import Head from 'next/head'
 import React, { useState } from 'react'
+import OracleDistributor from './OracleDistributor'
 
 const INPUT_CHAR_LIMIT = 18
 
@@ -144,6 +145,7 @@ USE AT YOUR OWN RISK!`}
                   <Button size="sm" className="mt-3" color={'blue'} onClick={proDistribute} disabled={pendingTx || !possibleDistribute}>
                     {`Distribute`}
                   </Button>
+                  <OracleDistributor/>
                 </div>
                 <div className="w-full mt-5 sm:w-1/2 sm:mt-0">
                   <p className="text-lg">DISTRIBUTED</p>
