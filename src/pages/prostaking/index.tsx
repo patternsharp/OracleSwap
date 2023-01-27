@@ -136,17 +136,13 @@ USE AT YOUR OWN RISK!`}
                   <span className="text-lg font-bold md:text-xl text-blue"> LEARN MORE </span>
                 </a>
               </div>
-              <div className="p-5 mb-4 text-sm font-normal bg-red-500 rounded-md warning md:text-base">
-                <p>
-                  Warning: 1% of your PRO will be burnt when you STAKE/UNSTAKE. Be mindful of this when staking. If you
-                  break your timelocks you will lose 50% of your PRO/XORACLE stake. It is not recommended to lock up all of your holdings. Use at your own risk.
-                </p>
-              </div>
+              
+              
               <div className="flex flex-wrap p-5 rounded-md global-stat bg-dark-800">
                 <div className="w-full sm:w-1/2">
 
                   <div className="self-end text-lg font-bold md:text-xl text-high-emphesis md:mb-1">
-                    {i18n._(t`Global Stats`)}
+                    {i18n._(t`Global Stats🌎`)}
                   </div>
 
                   <p>{`Current Global Pool Size:  ${totalPoolSize ? totalPoolSize.toSignificant(6) : ''}`}</p>
@@ -154,13 +150,14 @@ USE AT YOUR OWN RISK!`}
                   <p>{`Total Oracle NFTs Locked:  ${totalNFTCount ? totalNFTCount : ''}`}</p>
                   <p>{`Total XORACLE Locked:  ${totalxOracleAmount ? totalxOracleAmount.toSignificant(6) : ''}`}</p>
                   <Button size="sm" className="mt-3" color={'blue'} onClick={proDistribute} disabled={pendingTx || !possibleDistribute}>
-                    {`Distribute Fees`}
+                    {`Distribute Fee`}
                   </Button>
                 </div>
+                
                 <div className="w-full mt-5 sm:w-1/2 sm:mt-0">
                   
                   <div className="self-end text-lg font-bold md:text-xl text-high-emphesis md:mb-1">
-                    {i18n._(t`Global Stats`)}
+                    {i18n._(t`Distributed`)}
                   </div>
 
                   {distributedReward.map((item, index) => (
@@ -175,11 +172,20 @@ USE AT YOUR OWN RISK!`}
                   <p>OLPs Total: 500</p> */}
                 </div>
               </div>
+
+              <div className="p-5 mt-3 mb-1 text-sm font-bold bg-red-500 rounded-md warning md:text-base">
+                <p>
+                  Warning: 1% of your PRO will be burnt when you STAKE/UNSTAKE. Be mindful of this when staking. If you
+                  break your timelocks you will lose 50% of your PRO/XORACLE stake. It is not recommended to lock up all of your holdings. Use at your own risk.
+                </p>
+              </div>
+
             </div>
-            <div className="w-full md:w-[300px] mt-4 md:mt-0 bg-dark-800 rounded-3xl p-5">
+            
+            <div className="w-full md:w-[300px] mt-2 md:mt-0 bg-dark-900 rounded-3xl p-5">
 
               <div className="self-end text-lg font-bold md:text-2xl text-high-emphesis md:mb-1">
-                {i18n._(t`Parameters`)}
+                {i18n._(t`Parameters📜`)}
               </div>
 
               <p className='text-sm font-normal md:text-base'>
@@ -190,6 +196,10 @@ USE AT YOUR OWN RISK!`}
                 <br />
                 -Consequences for breaking the spacetime barrier: Forfeit 50% of your locked PRO/xORACLE. Half of this
                 PRO/xORACLE gets sent to the void. Half goes back to the Loyal Stakers.
+                <br />
+                -If you are not yet wise, it is recommended to experiment with the system using neglible amounts of Tokens before going All In.
+                <br />
+                -Your Pool Share percentage will change as the other Oracles move in and out of the pool.
               </p>
             </div>
           </div>

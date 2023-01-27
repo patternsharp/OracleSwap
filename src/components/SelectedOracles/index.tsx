@@ -340,8 +340,8 @@ export const SelectedOracles = () => {
   return (
     <div className="mt-5 select-oracles">
 
-      <div className="self-end text-sm md:text-2xl text-high-emphesis md:mb-1">
-        {i18n._(t`Select You Oracles`)}
+      <div className="self-end text-2xl md:text-2xl text-high-emphesis md:mb-1">
+        {i18n._(t`Select Your Oracles`)}
       </div>
 
       <p className="mb-2">
@@ -479,7 +479,7 @@ export const SelectedOracles = () => {
         </div>
       </div>
 
-      <div className="flex justify-center mt-4">
+      <div className="flex justify-center mt-4 mb-6">
         {!account ? (
           <Web3Connect size="lg" color="blue" fullWidth />
         ) : isDepositValid &&
@@ -528,8 +528,8 @@ export const SelectedOracles = () => {
 
       {stakedNFT?.length > 0 && (
         <div>
-          <div className="self-end text-sm md:text-2xl text-high-emphesis md:mb-1">
-            {i18n._(t`Select You Oracles`)}
+          <div className="self-end text-2xl md:text-2xl text-high-emphesis md:mb-1">
+            {i18n._(t`Select Your Staked Oracles`)}
           </div>
 
           <button

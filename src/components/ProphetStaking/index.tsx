@@ -29,6 +29,7 @@ import Button from '../Button'
 import { HeadlessUiModal } from '../Modal'
 import Switch from '../Switch'
 import Typography from '../Typography'
+import QuestionHelper from 'app/components/QuestionHelper'
 import Web3Connect from '../Web3Connect'
 
 import PROLOGO from '../../../public/PRO_Logo3Gold.png'
@@ -355,8 +356,8 @@ export const ProphetStaking: FC<ProphetStakingProps> = ({ totalPoolSize }) => {
   return (
     <>
       <div className="flex flex-wrap mt-4 prophet-staking-wrapper">
-        <div className="w-full md:w-[calc(100%-316px)] md:mr-4 md:pr-4 bg-dark-800 rounded-3xl p-5">
-          <HeadlessUiModal.BorderedContent className="flex flex-col gap-4 bg-dark-800/40">
+        <div className="w-full md:w-[calc(100%-316px)] md:mr-4 md:pr-4 bg-dark-900 rounded-3xl p-5">
+          <HeadlessUiModal.BorderedContent className="flex flex-col gap-4 bg-dark-00/40">
             <div className="flex justify-between">
               <Typography variant="h3" weight={700} className="text-high-emphesis">
                 {toggle ? i18n._(t`Prophet Staking`) : i18n._(t`Prophet Unstake`)}
@@ -543,10 +544,10 @@ export const ProphetStaking: FC<ProphetStakingProps> = ({ totalPoolSize }) => {
           </div>
         </div>
         <div className="w-full md:w-[300px] flex flex-col">
-          <div className="px-5 mt-4 mb-4 balance bg-dark-800 rounded-3xl py-7 md:mt-0">
+          <div className="px-5 mt-4 mb-4 balance bg-dark-900 rounded-3xl py-7 md:mt-0">
 
             <div className="self-end text-lg font-bold md:text-xl text-high-emphesis md:mb-1">
-              {i18n._(t`Stake Balance`)}
+              {i18n._(t`Stake Balance🥩`)}
             </div>
 
             <div className="flex items-center pb-1 balance1">
@@ -579,11 +580,21 @@ export const ProphetStaking: FC<ProphetStakingProps> = ({ totalPoolSize }) => {
             </div>
           </div>
 
-          <div className="flex flex-col justify-between flex-1 px-4 py-4 rewards bg-dark-800 rounded-3xl">
+          <div className="flex flex-col justify-between flex-1 px-4 py-4 rewards bg-dark-900 rounded-3xl">
 
-            <div className="self-start text-lg font-bold md:text-xl text-high-emphesis md:mb-1">
-              {i18n._(t`Rewards`)}
+
+            <div className="flex flex-row mb-3">
+
+              <div className="self-start text-lg font-bold md:text-xl text-high-emphesis md:mb-1">
+                {i18n._(t`Rewards🌟`)}
+              </div>
+
+              <QuestionHelper
+                className="!bg-dark-800 !shadow-xl p-2"
+                text={`You may notice some tokens called OLP. Each OLP is different and represents a pair. For exampled: PRO/WSGB, PRO/ORACLE & PRO/xORACLE. Go to Pool > Browse to visualize it.`}
+              />
             </div>
+
 
             <div className="grid h-full grid-cols-2">
 
