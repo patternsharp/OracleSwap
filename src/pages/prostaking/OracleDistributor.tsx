@@ -114,7 +114,7 @@ const OracleDistributor = () => {
       </div>
       <div className="flex flex-col text-base">
         <div>
-          ORACLE LETT: <span>{balance?.toSignificant(6)}</span>
+          ORACLE LEFT: <span>{balance?.toSignificant(6)}</span>
         </div>
         <div>
           NEXT DIST:{' '}
