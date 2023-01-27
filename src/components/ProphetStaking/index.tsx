@@ -591,7 +591,7 @@ export const ProphetStaking: FC<ProphetStakingProps> = ({ totalPoolSize }) => {
 
               <QuestionHelper
                 className="!bg-dark-800 !shadow-xl p-2"
-                text={`You may notice some tokens called OLP. Each OLP is different and represents a pair. For exampled: PRO/WSGB, PRO/ORACLE & PRO/xORACLE. Go to Pool > Browse to visualize it.`}
+                text={`You may notice some tokens called OLP. Each OLP is different and represents a pair. For example: PRO/WSGB, PRO/ORACLE & PRO/xORACLE. Go to Pool > Browse to visualize it.`}
               />
             </div>
 

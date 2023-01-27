@@ -150,7 +150,7 @@ USE AT YOUR OWN RISK!`}
                   <p>{`Total Oracle NFTs Locked:  ${totalNFTCount ? totalNFTCount : ''}`}</p>
                   <p>{`Total XORACLE Locked:  ${totalxOracleAmount ? totalxOracleAmount.toSignificant(6) : ''}`}</p>
                   <Button size="sm" className="mt-3" color={'blue'} onClick={proDistribute} disabled={pendingTx || !possibleDistribute}>
-                    {`Distribute Fee`}
+                    {`Distribute`}
                   </Button>
                 </div>
                 
@@ -197,7 +197,7 @@ USE AT YOUR OWN RISK!`}
                 -Consequences for breaking the spacetime barrier: Forfeit 50% of your locked PRO/xORACLE. Half of this
                 PRO/xORACLE gets sent to the void. Half goes back to the Loyal Stakers.
                 <br />
-                -If you are not yet wise, it is recommended to experiment with the system using neglible amounts of Tokens before going All In.
+                -If you are not yet wise, it is recommended to experiment with the system using neglible amounts of tokens before going all In.
                 <br />
                 -Your Pool Share percentage will change as the other Oracles move in and out of the pool.
               </p>

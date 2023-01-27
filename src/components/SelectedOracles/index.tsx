@@ -346,8 +346,8 @@ export const SelectedOracles = () => {
 
       <p className="mb-2">
         Select The Oracles you would like to deploy. Some Oracles wield more power than others, choose wisely! Each
-        Oracle selected must be paired with XORACLE. Tap to
-        select or select max (40).
+        Oracle selected must be paired with XORACLE. The highest PRO weight is 8500, the lowest PRO weight is 600, the average PRO Weight is 1073. Tap to
+        select or select max 40 at a time.
       </p>
       <button
         onClick={() => {
