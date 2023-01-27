@@ -115,10 +115,10 @@ export const SelectedOracles = () => {
   const depositError = !minXOracleAmount
     ? 'Invalid xOracle'
     : balance?.lessThan(minXOracleAmount?.multiply(selectedIDs.length)) && lockMode > 0
-    ? 'Insufficient xOracle balance'
-    : lowProAmount
-    ? 'Low Prophet Staked'
-    : undefined
+      ? 'Insufficient xOracle balance'
+      : lowProAmount
+        ? 'Low Prophet Staked'
+        : undefined
 
   const isDepositValid = !depositError
 
@@ -251,7 +251,7 @@ export const SelectedOracles = () => {
       return
     } else {
 
-      if(freeLockTime){
+      if (freeLockTime) {
         setPendingTx(true)
 
         const success = await sendTx(() => oracleMultiNFTWithdraw(selectedStakedIDs))
@@ -259,25 +259,25 @@ export const SelectedOracles = () => {
           setPendingTx(false)
           return
         }
-  
+
         setPendingTx(false)
-      }else{
+      } else {
         setShowConfirmation(true)
       }
     }
   }
 
-  const withdrawXOracle =  useMemo(()=>{
-    if(selectedStakedIDs && selectedStakedIDs.length> 0 && minXOracleAmount && lockXOracle){
-      if(minXOracleAmount.multiply(selectedStakedIDs.length).greaterThan(lockXOracle)){
+  const withdrawXOracle = useMemo(() => {
+    if (selectedStakedIDs && selectedStakedIDs.length > 0 && minXOracleAmount && lockXOracle) {
+      if (minXOracleAmount.multiply(selectedStakedIDs.length).greaterThan(lockXOracle)) {
         return lockXOracle.divide(2)
 
-      }else{
+      } else {
         return minXOracleAmount.multiply(selectedStakedIDs.length).divide(2)
       }
     }
     return lockXOracle;
-  },[selectedStakedIDs,minXOracleAmount,lockXOracle])
+  }, [selectedStakedIDs, minXOracleAmount, lockXOracle])
 
   const multiUnStakeNFTAction = async () => {
     if (!account || selectedStakedIDs?.length === 0) {
@@ -323,7 +323,7 @@ export const SelectedOracles = () => {
   var current = Date.now()
 
   const freeLockTime = useMemo(() => {
-    if (lockMode > 0  && lockedProAmount?.greaterThan(ZERO)) {
+    if (lockMode > 0 && lockedProAmount?.greaterThan(ZERO)) {
       if (unlockTime) {
         if (unlockTime * 1000 > current) {
           return false
@@ -333,13 +333,17 @@ export const SelectedOracles = () => {
       }
     }
     return true
-  }, [current, unlockTime, lockMode,lockedProAmount])
+  }, [current, unlockTime, lockMode, lockedProAmount])
 
   const [showConfirmation, setShowConfirmation] = useState(false)
 
   return (
     <div className="mt-5 select-oracles">
-      <h2 className="text-xl">Select Your Oracles</h2>
+
+      <div className="self-end text-sm md:text-2xl text-high-emphesis md:mb-1">
+        {i18n._(t`Select You Oracles`)}
+      </div>
+
       <p className="mb-2">
         Select The Oracles you would like to deploy. Some Oracles wield more power than others, choose wisely! Each
         Oracle selected must be paired with XORACLE. Tap to
@@ -365,9 +369,8 @@ export const SelectedOracles = () => {
         {walletNFT.map((nft) => (
           <div
             key={nft.edition}
-            className={`item p-4 mb-5 sm:mb-0 w-full sm:w-[calc(50%-20px)] md:w-[calc(25%-20px)] rounded-md border-[5px] border-solid ${
-              selectedIDs.includes(nft.edition) ? 'border-green-500' : 'border-green-500/0'
-            }`}
+            className={`item p-4 mb-5 sm:mb-0 w-full sm:w-[calc(50%-20px)] md:w-[calc(25%-20px)] rounded-md border-[5px] border-solid ${selectedIDs.includes(nft.edition) ? 'border-green-500' : 'border-green-500/0'
+              }`}
             onClick={() => {
               // if (selected === nft.edition) {
               //   setSelected(undefined)
@@ -451,7 +454,7 @@ export const SelectedOracles = () => {
             // onClick={() => onClick(balance)}
             id={'xoracle approve'}
           >
-            {minProAmount ? `${minProAmount.toSignificant(6)} ${minProAmount.currency.symbol}` : '0.0000'}
+            {minProAmount ? `${minProAmount.toSignificant(6)} ${minProAmount.currency.symbol}` : '0.0000'} + 1%
           </Typography>
         </div>
       </div>
@@ -525,7 +528,9 @@ export const SelectedOracles = () => {
 
       {stakedNFT?.length > 0 && (
         <div>
-          <h2 className="mt-3 text-xl">Select Your Staked Oracles</h2>
+          <div className="self-end text-sm md:text-2xl text-high-emphesis md:mb-1">
+            {i18n._(t`Select You Oracles`)}
+          </div>
 
           <button
             onClick={() => {
@@ -533,7 +538,7 @@ export const SelectedOracles = () => {
             }}
             className="inline-block px-2 py-1 mr-2 text-xs text-white rounded-md bg-green/50"
           >
-            SELECT ALL
+            SELECT MAX
           </button>
           <button
             onClick={() => {
@@ -548,11 +553,10 @@ export const SelectedOracles = () => {
             {stakedNFT.map((nft) => (
               <div
                 key={nft.edition}
-                className={`item p-4 mb-5 sm:mb-0 w-full sm:w-[calc(50%-20px)] md:w-[calc(25%-20px)] rounded-md border-[5px] border-solid ${
-                  selectedStakedIDs.length === 0 || !selectedStakedIDs.includes(nft.edition)
-                    ? 'border-green-500/0'
-                    : 'border-green-500'
-                }`}
+                className={`item p-4 mb-5 sm:mb-0 w-full sm:w-[calc(50%-20px)] md:w-[calc(25%-20px)] rounded-md border-[5px] border-solid ${selectedStakedIDs.length === 0 || !selectedStakedIDs.includes(nft.edition)
+                  ? 'border-green-500/0'
+                  : 'border-green-500'
+                  }`}
                 onClick={() => {
                   handleStakedSelectOracles(nft.edition)
                 }}

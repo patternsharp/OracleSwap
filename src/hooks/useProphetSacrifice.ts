@@ -15,7 +15,7 @@ const useProphetSacrifice = () => {
     try {
       const tx = await prophetSacrifice?.burnPro()
 
-      return addTransaction(tx, { summary: 'Burn Pro in ProphetSacrifice' })
+      return addTransaction(tx, { summary: '🔥 Burn Pro ProphetSacrifice' })
     } catch (e) {
       return e
     }

@@ -4,7 +4,7 @@ import { i18n } from '@lingui/core'
 import { t } from '@lingui/macro'
 import Slider from '@mui/material/Slider'
 import { Currency, CurrencyAmount, ZERO } from '@sushiswap/core-sdk'
-import { PROPHET,  } from 'app/config/tokens'
+import { PROPHET, } from 'app/config/tokens'
 import { PROSTAKING_ADDRESS } from 'app/constants'
 import { tryParseAmount } from 'app/functions'
 import { ApprovalState, useApproveCallback } from 'app/hooks'
@@ -88,9 +88,9 @@ export const ProphetStaking: FC<ProphetStakingProps> = ({ totalPoolSize }) => {
 
   const balance = useTokenBalance(account ?? undefined, liquidityToken)
 
-  
+
   const [lockMode, setLockMode] = useState(0)
-  
+
 
   const {
     lockMode: userLockMode,
@@ -126,25 +126,25 @@ export const ProphetStaking: FC<ProphetStakingProps> = ({ totalPoolSize }) => {
       return minProAmount.add(parsedDepositValue?.divide(100)).subtract(parsedDepositValue).subtract(stakedAmount).greaterThan(ZERO)
     }
     return true
-  }, [minProAmount, parsedDepositValue,stakedAmount])
+  }, [minProAmount, parsedDepositValue, stakedAmount])
 
 
   const depositError = !parsedDepositValue
     ? 'Enter an amount'
     : balance?.lessThan(parsedDepositValue)
-    ? 'Insufficient balance'
-    : (nftCount > 0 && lockMode > 0 && depositLowProAmount) ? "Mor PRO Required for NFT Staking": undefined
+      ? 'Insufficient balance'
+      : (nftCount > 0 && lockMode > 0 && depositLowProAmount) ? "More PRO Required for NFT Staking" : undefined
 
   const isDepositValid = !depositError
   const withdrawError = !parsedWithdrawValue
     ? 'Enter an amount'
     : // @ts-ignore TYPE NEEDS FIXING
     stakedAmount?.lessThan(parsedWithdrawValue)
-    ? 'Insufficient balance'
-    : undefined
+      ? 'Insufficient balance'
+      : undefined
   const isWithdrawValid = !withdrawError
 
-  
+
   // const { setContent } = useFarmListItemDetailsModal()
 
   const { deposit, withdraw, harvest, increaseLockAmount, extendLockMode, shortenLockMode } = useProStakingActions()
@@ -167,14 +167,14 @@ export const ProphetStaking: FC<ProphetStakingProps> = ({ totalPoolSize }) => {
     }
   }
 
-  const isLockAmount =  useMemo(()=> {
+  const isLockAmount = useMemo(() => {
     if (stakedAmount && stakedAmount.greaterThan(ZERO)) {
       return true;
     }
     return false;
-  },[stakedAmount])
+  }, [stakedAmount])
 
-  const depositButtonString =  isLockAmount ? i18n._(t`Increase Deposit`) :i18n._(t`Confirm Deposit`);
+  const depositButtonString = isLockAmount ? i18n._(t`Increase Deposit`) : i18n._(t`Confirm Deposit`);
 
   const proDeposit = async () => {
     if (!account || !isDepositValid) {
@@ -202,7 +202,7 @@ export const ProphetStaking: FC<ProphetStakingProps> = ({ totalPoolSize }) => {
   }
 
   var current = Date.now()
-  
+
   const freeLockTime = useMemo(() => {
     if (userLockMode > 0) {
       if (unlockTime) {
@@ -215,26 +215,26 @@ export const ProphetStaking: FC<ProphetStakingProps> = ({ totalPoolSize }) => {
     }
     return true
   }, [current, unlockTime, userLockMode])
-  
+
   const proWithdraw = async () => {
-    
+
     if (!account || !isWithdrawValid) {
       return
     } else {
 
-      if(freeLockTime){
+      if (freeLockTime) {
         setPendingTx(true)
 
         const amount = BigNumber.from(parsedWithdrawValue?.quotient.toString())
-  
+
         const success = await sendTx(() => withdraw(amount))
         if (!success) {
           setPendingTx(false)
           return
         }
-  
+
         setPendingTx(false)
-      }else{
+      } else {
         setShowConfirmation(true);
       }
     }
@@ -251,7 +251,7 @@ export const ProphetStaking: FC<ProphetStakingProps> = ({ totalPoolSize }) => {
       const amount = BigNumber.from(parsedWithdrawValue?.quotient.toString())
 
       const success = await sendTx(() => withdraw(amount))
-      
+
       if (!success) {
         setPendingTx(false)
         return
@@ -343,10 +343,10 @@ export const ProphetStaking: FC<ProphetStakingProps> = ({ totalPoolSize }) => {
   const extendError = stakedAmount?.equalTo(ZERO)
     ? 'No Lock to extend'
     : userLockMode === 0 && lowProAmount
-    ? 'More PRO Required to Extend NFT Staking'
-    : xOracleApprovalState !== ApprovalState.APPROVED
-    ? 'xOracle Not Approved'
-    : undefined
+      ? 'More PRO Required to Extend NFT Staking'
+      : xOracleApprovalState !== ApprovalState.APPROVED
+        ? 'xOracle Not Approved'
+        : undefined
 
 
 
@@ -391,19 +391,19 @@ export const ProphetStaking: FC<ProphetStakingProps> = ({ totalPoolSize }) => {
                 <p className="text-lg font-semibold"></p>
               </div> */}
               <div className="flex justify-between p-2 rounded-md box-wrapper">
-                <p className="text-lg font-semibold">TIME LOCK</p>
+                <p className="text-lg font-semibold">TIME-LOCK</p>
                 <div className="text-lg font-semibold text-red-500">
                   <CountDown time={unlockTime} hidden={!userTotalWeight || userTotalWeight?.equalTo(ZERO)} />
                 </div>
               </div>
-              <p className="mt-2 text-red-500">
-                *If you unstake your PRO before the time loack period is over you will forfiet 50% of your staked
+              <p className="mt-2 font-bold text-red-500">
+                *If you withdraw your PRO before the time-lock period is over you will forfeit 50% of your staked
                 PRO/xORACLES!
               </p>
             </div>
           ) : (
             <div className="flex flex-col w-full gap-1 p-4 stake-wrap">
-              <p>Space Time Lock</p>
+              <p>Space-Time Lock</p>
               <div className="px-2 slider-wrapper">
                 <div className="flex items-center justify-between mt-2 -mx-2 font-extrabold labels">
                   <p>1x</p>
@@ -432,12 +432,12 @@ export const ProphetStaking: FC<ProphetStakingProps> = ({ totalPoolSize }) => {
                       if (freeLockTime) {
                         setLockMode(value)
                       } else {
-                        if(isLockAmount){
+                        if (isLockAmount) {
                           if (value >= userLockMode) {
                             setLockMode(value)
                           }
-                        }else{
-                          if ( value == 0 || value >= userLockMode) {
+                        } else {
+                          if (value == 0 || value >= userLockMode) {
                             setLockMode(value)
                           }
                         }
@@ -492,7 +492,7 @@ export const ProphetStaking: FC<ProphetStakingProps> = ({ totalPoolSize }) => {
                   onClick={proDeposit}
                   disabled={!isDepositValid || pendingTx}
                 >
-                  {depositError ||  depositButtonString}
+                  {depositError || depositButtonString}
                 </Button>
               )
             ) : !account ? (
@@ -544,7 +544,11 @@ export const ProphetStaking: FC<ProphetStakingProps> = ({ totalPoolSize }) => {
         </div>
         <div className="w-full md:w-[300px] flex flex-col">
           <div className="px-5 mt-4 mb-4 balance bg-dark-800 rounded-3xl py-7 md:mt-0">
-            <h2 className="mb-2 text-xl">Stake Balance</h2>
+
+            <div className="self-end text-lg font-bold md:text-xl text-high-emphesis md:mb-1">
+              {i18n._(t`Stake Balance`)}
+            </div>
+
             <div className="flex items-center pb-1 balance1">
               {/* <Image src="/PRO_Logo3Gold.png" height={32} width={32} alt="true" /> */}
               <img src={PROLOGO.src} width={30} height={30} alt="Logo" />
@@ -574,34 +578,43 @@ export const ProphetStaking: FC<ProphetStakingProps> = ({ totalPoolSize }) => {
               {/* <br /> <span className={``}>{timeLock}</span> */}
             </div>
           </div>
+
           <div className="flex flex-col justify-between flex-1 px-4 py-4 rewards bg-dark-800 rounded-3xl">
-            <h2 className="mb-1 text-xl">Rewards</h2>
+
+            <div className="self-start text-lg font-bold md:text-xl text-high-emphesis md:mb-1">
+              {i18n._(t`Rewards`)}
+            </div>
+
             <div className="grid h-full grid-cols-2">
-              <div>
-                <h2 className="text-xl">Total Claimed</h2>
+
+              <div className="border-r mr-2 ml-2">
+
+                <div className="self-end text-sm md:text-xl text-high-emphesis md:mb-1">
+                  {i18n._(t`Claimed`)}
+                </div>
+
                 <div className="flex flex-col">
                   {userTotalReward.map((item, index) => (
-                    <p key={`user-rewardinfo-${index}`}>{`${item.token.symbol}: ${
-                      item.amount ? item.amount.toSignificant(3) : ''
-                    }`}</p>
+                    <p key={`user-rewardinfo-${index}`}>{`${item.token.symbol}: ${item.amount ? item.amount.toSignificant(3) : ''
+                      }`}</p>
                   ))}
                 </div>
               </div>
 
               <div>
-                <h2 className="text-xl">Pending</h2>
+
+                <div className="self-end text-sm md:text-xl text-high-emphesis md:mb-1">
+                  {i18n._(t`Pending`)}
+                </div>
+
                 <div className="flex flex-col">
                   {userReward.map((item, index) => (
-                    <p key={`user-rewardinfo-${index}`}>{`${item.token.symbol}: ${
-                      item.amount ? item.amount.toSignificant(3) : ''
-                    }`}</p>
+                    <p key={`user-rewardinfo-${index}`}>{`${item.token.symbol}: ${item.amount ? item.amount.toSignificant(3) : ''
+                      }`}</p>
                   ))}
                 </div>
               </div>
             </div>
-
-          
-
             <Button
               className="mt-1"
               fullWidth
@@ -612,6 +625,7 @@ export const ProphetStaking: FC<ProphetStakingProps> = ({ totalPoolSize }) => {
               {i18n._(t`HARVEST`)}
             </Button>
           </div>
+
         </div>
       </div>
 

@@ -30,7 +30,7 @@ export const useProStakingDistributeAction = () => {
       try {
         const tx = await distributor?.distribute()
 
-        return addTransaction(tx, { summary: 'distribute in prostaking' })
+        return addTransaction(tx, { summary: 'Distribute To MultiStaking' })
       } catch (e) {
         return e
       }
@@ -62,7 +62,7 @@ export const useProStakingActions = () => {
       try {
         const tx = await prostakingContract?.deposit(amount, lockMode)
 
-        return addTransaction(tx, { summary: 'Deposit in prostaking' })
+        return addTransaction(tx, { summary: 'Deposit In MultiStaking' })
       } catch (e) {
         return e
       }
@@ -74,7 +74,7 @@ export const useProStakingActions = () => {
     try {
       const tx = await prostakingContract?.harvest()
 
-      return addTransaction(tx, { summary: 'harvest in prostaking' })
+      return addTransaction(tx, { summary: 'Harvest From MultiStaking' })
     } catch (e) {
       return e
     }
@@ -85,7 +85,7 @@ export const useProStakingActions = () => {
       try {
         const tx = await prostakingContract?.withdraw(amount)
 
-        return addTransaction(tx, { summary: 'withdraw in prostaking' })
+        return addTransaction(tx, { summary: 'Withdraw From MultiStaking' })
       } catch (e) {
         return e
       }
@@ -98,7 +98,7 @@ export const useProStakingActions = () => {
       try {
         const tx = await prostakingContract?.increaseLockAmount(amount)
 
-        return addTransaction(tx, { summary: 'increaseLockAmount in prostaking' })
+        return addTransaction(tx, { summary: 'Increase Lock Amount' })
       } catch (e) {
         return e
       }
@@ -111,7 +111,7 @@ export const useProStakingActions = () => {
       try {
         const tx = await prostakingContract?.NFTStake(tokenId)
 
-        return addTransaction(tx, { summary: 'Oracle nft stake in ProStaking' })
+        return addTransaction(tx, { summary: 'Stake Oracle NFT' })
       } catch (e) {
         return e
       }
@@ -124,7 +124,7 @@ export const useProStakingActions = () => {
       try {
         const tx = await prostakingContract?.NFTWithdraw(tokenId)
 
-        return addTransaction(tx, { summary: 'Oracle nft withdraw in ProStaking' })
+        return addTransaction(tx, { summary: 'Withdraw Oracle NFT' })
       } catch (e) {
         return e
       }
@@ -137,7 +137,7 @@ export const useProStakingActions = () => {
       try {
         const tx = await prostakingContract?.batchNFTStake(tokenIds)
 
-        return addTransaction(tx, { summary: 'Oracle nft stake in ProStaking' })
+        return addTransaction(tx, { summary: 'Stake Oracle NFT' })
       } catch (e) {
         return e
       }
@@ -150,7 +150,7 @@ export const useProStakingActions = () => {
       try {
         const tx = await prostakingContract?.batchNFTWithdraw(tokenIds)
 
-        return addTransaction(tx, { summary: 'Oracle nft withdraw in ProStaking' })
+        return addTransaction(tx, { summary: 'Withdraw Oracle NFT' })
       } catch (e) {
         return e
       }
@@ -163,7 +163,7 @@ export const useProStakingActions = () => {
       try {
         const tx = await prostakingContract?.extendLockTime(lockMode)
 
-        return addTransaction(tx, { summary: 'extend lock time in ProStaking' })
+        return addTransaction(tx, { summary: 'Extend Lock Time' })
       } catch (e) {
         return e
       }
@@ -176,7 +176,7 @@ export const useProStakingActions = () => {
       try {
         const tx = await prostakingContract?.shortenLockTime(lockMode)
 
-        return addTransaction(tx, { summary: 'shorten lock time in ProStaking' })
+        return addTransaction(tx, { summary: 'Shorten Lock Time' })
       } catch (e) {
         return e
       }
@@ -515,7 +515,7 @@ export function useOracleNFTApprove() {
   const approveAll = useCallback(async () => {
     try {
       const tx = await contract?.setApprovalForAll(PROSTAKING_ADDRESS, true)
-      return addTransaction(tx, { summary: 'approve all oracle nft in prostaking' })
+      return addTransaction(tx, { summary: 'Approve All Oracle NFTs For Multistaking' })
     } catch (e) {
       return e
     }
@@ -525,7 +525,7 @@ export function useOracleNFTApprove() {
     async (tokenId: number) => {
       try {
         const tx = await contract?.approve(PROSTAKING_ADDRESS, tokenId)
-        return addTransaction(tx, { summary: 'approve oracle nft in prostaking' })
+        return addTransaction(tx, { summary: 'Approve Oracle NFT For Multistaking' })
       } catch (e) {
         return e
       }
