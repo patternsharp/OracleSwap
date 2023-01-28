@@ -199,7 +199,7 @@ USE AT YOUR OWN RISK!`}
                 -Consequences for breaking the spacetime barrier: Forfeit 50% of your locked PRO/xORACLE. Half of this
                 PRO/xORACLE gets sent to the void. Half goes back to the Loyal Stakers.
                 <br />
-                -If you are not yet wise, it is recommended to experiment with the system using neglible amounts of tokens before going all In.
+                -If you are not yet wise, it is recommended to experiment with the system using negligible amounts of tokens before going all In.
                 <br />
                 -Your Pool Share percentage will change as the other Oracles move in and out of the pool.
               </p>

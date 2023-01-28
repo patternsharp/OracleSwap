@@ -1,6 +1,6 @@
 import { t } from '@lingui/macro'
 import { useLingui } from '@lingui/react'
-import { DiscordIcon, TwitterIcon, TelegramIcon, YoutubeIcon } from 'app/components/Icon'
+import { DiscordIcon, TwitterIcon, TelegramIcon, YoutubeIcon, GithubIcon } from 'app/components/Icon'
 // import Typography from 'app/components/Typography'
 // import { Feature } from 'app/enums'
 // import { featureEnabled } from 'app/functions'
@@ -55,6 +55,10 @@ const Footer = () => {
               <a href="https://discord.gg/WbDnWcRBxw" target="_blank" rel="noreferrer">
                 <DiscordIcon width={16} className="text-low-emphesis" />
               </a>
+              <a href="https://github.com/Oracle-Swap" target="_blank" rel="noreferrer">
+                <GithubIcon width={16} className="text-low-emphesis" />
+              </a>
+              
 
               <Link href="/portfolio" passHref={true}>
                 <a className="text-low-emphesis ">

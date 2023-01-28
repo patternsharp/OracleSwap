@@ -463,7 +463,7 @@ export const SelectedOracles = () => {
         <div className={classNames('flex justify-between py-2 px-3 w-content')}>
           <div className="flex items-center gap-1.5 mr-1">
             <Typography variant="sm" className={'text-white'}>
-              {i18n._(t`xOracle Required:`)}
+              {i18n._(t`xOracle Required For Multiplier:`)}
             </Typography>
           </div>
           <Typography
